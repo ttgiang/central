@@ -1,0 +1,306 @@
+/* --- SITEWIDE CSS --- */
+a,a:visited {
+	color: #00f;
+}
+
+a:hover {
+	color: #f00;
+}
+
+#header {
+	background-color: #369;
+	padding: 5px;
+	color: #fff;
+	font-weight: bold;
+}
+
+#subheader {
+	font-weight: normal;
+	font-size: 8pt;
+	color: #900;
+	border-bottom: 1px solid #ccc;
+	padding: 1px 5px 2px 5px;
+}
+
+#subheader a,#subheader a:visited {
+	text-decoration: none;
+	color: #900;
+}
+
+#subheader a:hover {
+	text-decoration: underline;
+	color: #000;
+}
+
+#buildVersion {
+	font-weight: normal;
+	font-size: 8pt;
+	color: #999;
+	padding: 1px 5px 1px 5px;
+}
+
+#content {
+	padding: 10px;
+}
+
+h1 {
+	font-size: 1.2em
+}
+
+h2 {
+	font-size: 1.1em
+}
+
+h3 {
+	font-size: 1.0em
+}
+
+h4 {
+	font-size: 0.9em
+}
+
+label {
+	font: bold 1em Verdana;
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 0.25em;
+}
+
+fieldset {
+	width: 500px;
+	border: 1px solid #999;
+	padding: 10px;
+}
+
+legend {
+	padding: 1px 4px;
+	border-color: #999 #ccc #ccc #999;
+	border-style: solid;
+	border-width: 1px;
+	background: #eee;
+}
+
+label {
+	font-size: 0.8em;
+}
+
+input [type="text"] {
+	background-color: #ffd;
+	border-width: 1px;
+}
+
+input [type="button"] {
+	border: 1px solid #999;
+	background-color: #eee;
+	cursor: pointer;
+	color: #000;
+}
+
+#homepageTable {
+	border: 1px solid #ccc;
+	width: 650px;
+}
+
+#homepageTable THEAD TR TH {
+	border-bottom: 2px solid #999;
+	background-color: #eee;
+}
+
+#homepageTable TBODY TR TD:first-child {
+	font-weight: bold;
+}
+
+#homepageTable TBODY TR.description TD {
+	font-size: 90%;
+	font-weight: normal;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 20px;
+}
+
+.FIELDSET {
+	width: 96%;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSETYELLOW {
+	width: 96%;
+	border: 1px solid #ccc;
+	background-color: #FFFFF0;
+	padding: 1em;
+}
+
+.FIELDSETBLUE {
+	width: 96%;
+	border: 1px solid #ccc;
+	background-color: #e5f1f4;
+	padding: 1em;
+}
+
+.FIELDSETGOLD {
+	width: 96%;
+	border: 1px solid #083772;
+	background-color: #E87B10;
+	padding: 1em;
+}
+
+.FIELDSET90 {
+	width: 90%;
+	border: 1px solid #ccc;
+	padding: 1em;
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+.FIELDSET95 {
+	width: 95%;
+	border: 1px solid #ccc;
+	padding: 1em;
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+.FIELDSET96 {
+	width: 96%;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET100 {
+	width: 96%;
+	border: 1px solid #ccc;
+	padding: 1em;
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+.FIELDSET100L {
+	text-align: left;
+	width: 96%;
+	border: 1px solid #ccc;
+	padding: 1em;
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+
+.FIELDSET180{
+	width: 180px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET240{
+	width: 240px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET280{
+	width: 280px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET560{
+	width: 560px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET640{
+	width: 640px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET700{
+	width: 700px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+.FIELDSET {
+	width: 560px;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+FORM.aseForm LEGEND {
+	width: 90%;
+	font-weight: bold;
+	font-size: 1.0em;
+	color: 000;
+	font-weight: bold;
+	background-color: #edf3f3;
+	border: 1px solid #ccc;
+	padding: 4px 2px;
+}
+
+FORM.aseForm LABEL {
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 0.25em;
+}
+
+FORM.aseForm INPUT {
+	font: normal 12px Verdana, Arial;
+	padding: 3px;
+}
+
+FORM.aseForm INPUT[type="text"] {
+	border: 1px solid #ccc;
+}
+
+FORM.aseForm INPUT[type="text"]:focus {
+	border-color: #000;
+}
+
+.table-title { BACKGROUND-COLOR: #e4efc7 }
+TD.title-bar { BACKGROUND-COLOR: #e4efc7; COLOR: #000 }
+TR.title-bar { BACKGROUND-COLOR: #e4efc7; COLOR: #000 }
+DIV.title-bar { BACKGROUND-COLOR: #e4efc7; COLOR: #000 }
+
+.sidebarHelp {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; WIDTH: 100%; BORDER-TOP: 0px; BORDER-RIGHT: 0px
+}
+.sidebarHelp P {
+	MARGIN: 0px 0px 10px
+}
+.sidebarHelp UL LI A {
+	DISPLAY: block
+}
+.sidebarHelp DT {
+	MARGIN: 0px; FONT-WEIGHT: bold
+}
+.sidebarHelp DT IMG {
+	MARGIN-RIGHT: 5px
+}
+.sidebarHelp DD {
+	MARGIN: 0px 0px 10px
+}
+.sidebarHelp DD OL {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 0px 0px 22px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.sidebarHelp DD OL OL {
+	LIST-STYLE-TYPE: lower-alpha
+}
+.sidebarHelp DD OL P {
+	MARGIN-TOP: 5px
+}
+.sidebarHelpContainer .title-bar {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; WIDTH: 165px; PADDING-RIGHT: 5px; PADDING-TOP: 0px
+}
+.sidebarHelpContainer .sidebarHelp {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; WIDTH: 165px; PADDING-RIGHT: 5px; PADDING-TOP: 0px
+}
+.sidebarHelpContainer .sidebarHelp {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; PADDING-TOP: 5px
+}
+
+.page-help {
+	BORDER-BOTTOM: #b2b2b2 1px solid; BORDER-LEFT: #b2b2b2 1px solid; BACKGROUND-COLOR: #fff; COLOR: #000; BORDER-TOP: #b2b2b2 1px solid; BORDER-RIGHT: #b2b2b2 1px solid
+}
+
+.legendgold {
+	background-color: #fad163;
+}

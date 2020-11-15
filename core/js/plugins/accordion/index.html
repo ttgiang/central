@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>JavaScript Accordion</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+<div id="accordion">
+	<dl class="accordion" id="slider">
+		<dt>About</dt>
+		<dd>
+			<span>This lightweight (1.2 KB) JavaScript accordion can easily be customized to integrate with any website. For more information visit <a href="http://www.leigeber.com">leigeber.com</a>.</span>
+		</dd>
+		<dt>Instructions</dt>
+		<dd>
+			<span>To initialize an accordion use the following code:<br /><br />
+				<code>
+					var mySlider=new accordion.slider("mySlider");
+					<br />mySlider.init("slider",0,"open");
+				</code><br /><br />
+				The init function takes 3 parameters: the id of the "dl", the location of the initially expanded section (optional) and the class for the active header (optional).
+			</span>
+		</dd>
+		<dt>Licensing &amp; Support</dt>
+		<dd>
+			<span>This script is provided as-is with no warranty or guarantee. It is available at no cost for any project, non-commercial or commercial. Paid support is available by <a href="http://www.leigeber.com/contact/">clicking here</a>.</span>
+		</dd>
+	</dl>
+</div>
+<div id="accordion2">
+	<dl class="accordion2" id="slider2">
+		<dt>About</dt>
+		<dd>
+			<span>This lightweight (1.2 KB) JavaScript accordion can easily be customized to integrate with any website. For more information visit <a href="http://www.leigeber.com">leigeber.com</a>/</span>
+		</dd>
+		<dt>Instructions</dt>
+		<dd>
+			<span>To initialize an accordion use the following code:<br /><br />
+				<code>
+					var mySlider=new accordion.slider("mySlider");
+					<br />mySlider.init("slider",0,"open");
+				</code><br /><br />
+				The init function takes 3 parameters: the id of the "dl", the location of the initially expanded section (optional) and the class for the active header (optional).
+			</span>
+		</dd>
+		<dt>Licensing &amp; Support</dt>
+		<dd>
+			<span>This script is provided as-is with no warranty or guarantee. It is available at no cost for any project, non-commercial or commercial. Paid support is available by <a href="http://www.leigeber.com/contact/">clicking here</a>.</span>
+		</dd>
+	</dl>
+</div>
+
+<script type="text/javascript">
+
+var slider1=new accordion.slider("slider1");
+slider1.init("slider");
+
+var slider2=new accordion.slider("slider2");
+slider2.init("slider2",0,"open");
+
+</script>
+
+</body>
+</html>

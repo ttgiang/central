@@ -1,0 +1,26 @@
+--cancelling fnd does not remove task
+
+review
+	--cancelling review loses submitted by and task description
+	--sent to reviewer; logged on as reviewer; task disappeared;
+	--invite reviewer
+
+	reviewservlet unfinished - need to include foundation keys in table
+		--need to work out delete / updates
+		enabledForEdits = "" + qseq; needs to work on for return trip
+	
+	fndappr unfinished - where to go back
+
+	--fndrvwer - popup screen needs foundation key
+	
+	jqueryservlet (reviewservlet)
+		have to work out enabled 
+
+	taskdb
+		need to resetreviewers
+		
+	need to retest review/remove strays and more
+	--need to remove review task when finishing with review
+	
+edit
+	toggling spinner moving too fast to see

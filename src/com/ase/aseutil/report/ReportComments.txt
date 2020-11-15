@@ -1,0 +1,296 @@
+/**
+ * Copyright 2007 Applied Software Engineering,LLC. All rights reserved. You may
+ * not modify,use,reproduce,or distribute this software except in compliance
+ * with the terms of the License made with Applied Software Engineernig
+ *
+ * @author ttgiang
+ */
+
+//
+// ReportComments.java
+//
+package com.ase.aseutil.report;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import com.ase.aseutil.AsePool;
+import com.ase.aseutil.AseUtil;
+import com.ase.aseutil.CampusDB;
+import com.ase.aseutil.Constant;
+import com.ase.aseutil.CourseDB;
+import com.ase.aseutil.Encrypter;
+import com.ase.aseutil.Helper;
+import com.ase.aseutil.ProgramsDB;
+import com.ase.aseutil.ReviewerDB;
+import com.ase.aseutil.WebSite;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+public class ReportComments extends ReportTemplate {
+
+	private static final long serialVersionUID = 6524277708436373642L;
+
+	private static Logger logger = Logger.getLogger(ReportComments.class.getName());
+
+	private static Font BOLD = new Font(Font.HELVETICA, 9, Font.BOLD, BaseColor.BLACK);
+	private static Font UNDERLINED = new Font(Font.HELVETICA, 9, Font.UNDERLINE, BaseColor.BLACK);
+	private static Font BOLD_UNDERLINED = new Font(Font.HELVETICA, 9, Font.BOLD | Font.UNDERLINE);
+
+	public ReportComments(){
+		super.initParams();
+	}
+
+	 /**
+	  * Creates a PDF document.
+	  * @param filename the path to the new PDF document
+	  * @throws    DocumentException
+	  * @throws    IOException
+	  * @throws    SQLException
+	  */
+	public static void runReport(	HttpServletRequest request,
+											HttpServletResponse response)throws IOException{
+
+		AsePool connectionPool = null;
+
+		Connection conn = null;
+
+		String reportUser = null;
+
+		boolean debug = false;
+
+		try{
+
+			AseUtil aseUtil = new AseUtil();
+
+			HttpSession session = request.getSession(true);
+
+			reportUser = Encrypter.decrypter((String)session.getAttribute("aseUserName"));
+
+			int i = 0;
+			int j = 0;
+			int pid = 0;
+			int savedSeq = 0;
+
+			String junk = "";
+
+			// step 0
+			connectionPool = AsePool.getInstance();
+			conn = connectionPool.getConnection();
+
+			WebSite website = new WebSite();
+
+			String campus = Encrypter.decrypter((String)session.getAttribute("aseCampus"));
+			String user = Encrypter.decrypter((String)session.getAttribute("aseUserName"));
+
+			String kix = website.getRequestParameter(request,"kix","");
+
+			int item = website.getRequestParameter(request,"item",0);
+			int source = website.getRequestParameter(request,"source",0);
+			int acktion = website.getRequestParameter(request,"acktion",0);
+
+			String[] info = Helper.getKixInfo(conn,kix);
+			String alpha = info[Constant.KIX_ALPHA];
+			String num = info[Constant.KIX_NUM];
+			String type = info[Constant.KIX_TYPE];
+
+			boolean isAProgram = ProgramsDB.isAProgram(conn,campus,kix);
+
+			int courseItemCounter = 0;
+
+			if (!isAProgram){
+				courseItemCounter = CourseDB.countCourseQuestions(conn,campus,"Y","",Constant.TAB_COURSE);
+			}
+
+			String campusName = CampusDB.getCampusNameOkina(conn,campus);
+
+			String reportFolder = aseUtil.getReportFolder();
+			String outputFolder = aseUtil.getReportOutputFolder(campus +"/");
+
+			String logoFile = aseUtil.getCampusLogo(campus);
+			String reportFileName = outputFolder + user + ".pdf";
+
+			String reportTitle = "reportTitle";
+
+			PdfPTable table = null;
+			Phrase phrase = null;
+			PdfPCell cell = null;
+
+			BaseColor campusColor = null;
+
+			if (campus != null && campus.length() > 0 && campusColorMap.containsKey(campus))
+				campusColor = (BaseColor)campusColorMap.get(campus);
+
+			if (campusColor == null)
+				campusColor = BaseColor.LIGHT_GRAY;
+
+			// step 1 of 5
+			Document document = new Document(PageSize.LETTER.rotate());
+
+			// step 2 of 5
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(reportFileName));
+			TableHeader event = new TableHeader();
+			writer.setPageEvent(event);
+			writer.setPageEvent(new Watermark("Curriculum Central"));
+
+			// step 3 of 5
+			document.open();
+			document.newPage();
+
+			float[] fColsWidth = new float[1];
+			fColsWidth[0] = 100f;
+
+			// create table with user column count
+			table = new PdfPTable(fColsWidth);
+			table.setWidthPercentage(100f);
+			table.setHorizontalAlignment(Element.ALIGN_LEFT);
+			table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+			table.getDefaultCell().setUseAscender(true);
+			table.getDefaultCell().setUseDescender(true);
+
+			// step 4 of 5
+			table.getDefaultCell().setBackgroundColor(campusColor);
+			table.setHeaderRows(2);
+
+			String sql = "SELECT reviewer, dte, source, comments, seq, question ";
+			sql = ReviewerDB.createSQL(sql,item,source,acktion);
+			sql = sql + "ORDER BY source, seq, dte";
+			PreparedStatement ps = conn.prepareStatement(sql);
+
+			ps.setString(++pid,kix);
+
+			if (item > 0)
+				ps.setInt(++pid,item);
+
+			if (source > 0)
+				ps.setInt(++pid,source);
+
+			if (acktion > 0)
+				ps.setInt(++pid,acktion);
+
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+
+				event.setHeader(reportTitle,campusName,user);
+
+				if (j % 2 == 0)
+					table.getDefaultCell().setBackgroundColor(ASE_ODD_ROW_COLOR);
+				else
+					table.getDefaultCell().setBackgroundColor(ASE_EVEN_ROW_COLOR);
+
+				int seq = rs.getInt("seq");
+				String src = AseUtil.nullToBlank(rs.getString("source"));
+				String qn = AseUtil.nullToBlank(rs.getString("question"));
+
+				if (seq != savedSeq){
+					savedSeq = seq;
+
+					if ("2".equals(src))
+						seq = seq + courseItemCounter;
+
+					junk = seq + ". " + qn;
+					phrase = new Phrase();
+					phrase.add(createPhrase(junk,false));
+					cell = new PdfPCell(phrase);
+					cell.setFixedHeight(20);
+					cell.setPaddingRight(10);
+					table.addCell(cell);
+				}
+
+				junk = AseUtil.nullToBlank(rs.getString("reviewer"))
+						+ " - "
+						+ aseUtil.ASE_FormatDateTime(rs.getString("dte"),Constant.DATE_DATETIME);
+				phrase = new Phrase();
+				phrase.add(createPhrase(junk,false));
+				cell = new PdfPCell(phrase);
+				cell.setFixedHeight(20);
+				cell.setPaddingRight(10);
+				table.addCell(cell);
+
+				junk = AseUtil.nullToBlank(rs.getString("comments"));
+				phrase = new Phrase();
+				phrase.add(createPhrase(junk,false));
+				cell = new PdfPCell(phrase);
+				cell.setFixedHeight(20);
+				cell.setPaddingRight(10);
+				table.addCell(cell);
+
+				++j;
+			} // while
+
+			if (j==0){
+				phrase = new Phrase();
+				phrase.add(createPhrase("no date found for requested report",false));
+				cell = new PdfPCell(phrase);
+				cell.setFixedHeight(20);
+				cell.setPaddingRight(10);
+				table.addCell(cell);
+			}
+
+			document.add(table);
+
+			// step 5 of 5
+			document.close();
+
+			// with report ready, open in browser
+			writePDF(request,response,reportFileName);
+
+
+		} catch(IllegalArgumentException iae){
+			logger.fatal("ReportComments - runReport - iae: " + iae.toString());
+		} catch(Exception ex){
+			logger.fatal("ReportComments - runReport ex: " + ex.toString());
+		} finally {
+			connectionPool.freeConnection(conn,"ReportComments",reportUser);
+		}
+	}
+
+	/*
+	 * createPhrase
+	 * <p>
+	 * @param	data		String
+	 * @param	header	boolean
+	 *	<p>
+	 *	@return Phrase
+	 */
+	private static Phrase createPhrase(String data,boolean header) throws IOException{
+
+		Phrase phrase = new Phrase();
+
+		try{
+			if (header)
+				phrase.setFont(myFont.getHeaderFont());
+			else
+				phrase.setFont(myFont.getDataFont());
+
+			phrase.add(data);
+
+		} catch(IllegalArgumentException iae){
+			logger.fatal("ReportComments - createPhrase - iae: " + iae.toString());
+			phrase.add("");
+		} catch(Exception ex){
+			logger.fatal("ReportComments - createPhrase ex: " + ex.toString());
+			phrase.add("");
+		}
+
+		return phrase;
+	}
+}

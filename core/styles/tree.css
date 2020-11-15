@@ -1,0 +1,40 @@
+ul.file-tree,
+ul.file-tree ul {
+    list-style: none;
+    font: 12px sans-serif;
+    white-space: nowrap;
+    margin: 5px 0 0 0;
+    padding: 0 0 0 15px;
+}
+ul.file-tree li {
+    padding: 4px 0;
+    position: relative;
+    text-align: left;
+}
+ul.file-tree-dir-list li:hover > div > span {
+    background: #369;
+    color: white;
+}
+div.file-tree-directory.file-tree-root {
+    background: url('../images/hard_drive.png') no-repeat left center;
+    height: 32px;
+    font-size: 12px;
+    padding: 0 0 4px 34px;
+    border: 1px solid white;
+    border-bottom: 2px solid rgb(200, 200, 200);
+}
+div.file-tree-directory.file-tree-root span {
+    display: block;
+    margin-top: 10px;
+}
+ul.file-tree div {
+    position: relative;
+    margin: -5px 0 0 -10px;
+    background: url('../images/folder.png') no-repeat left center;
+    padding-left: 20px;
+}
+img.file-has-children {
+    position: absolute;
+    top: -2px;
+    left: -25px;
+}

@@ -1,0 +1,212 @@
+
+/* The specific style rules used to suggest rendering */
+/* for the CSS table design example, starts here */
+
+DIV.ase-table-layer {
+	color: #000000;
+	margin-top: 10;
+	padding: 0;
+	text-align: left;
+	width: 98%;
+	border:1px solid #CCC;
+}
+
+DIV.ase-table-row-header {
+	border-bottom:1px solid #CCC;
+	background-color:CCC;
+	color: #000000;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	padding: 10;
+	text-align: left;
+	width: 100%;
+	font-weight:bold;
+	text-align:left;
+}
+
+DIV.ase-table-row-detail {
+	border-bottom:1px solid #CCC;
+	background-color:white;
+	color: #000000;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	padding: 10;
+	text-align: left;
+	width: 100%;
+}
+
+DIV.ase-table-row-detail-alt {
+	border-bottom:1px solid #CCC;
+	background-color:#e1e1e1;
+	color: #000000;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	padding: 10;
+	text-align: left;
+	width: 100%;
+}
+
+DIV.ase-table-row-detail:hover {
+	background-color:#FF9;
+}
+
+DIV.ase-table-row-detail-alt:hover {
+	background-color:#FF9;
+}
+
+/* Rules in detail that is used to suggest rendering for the  10 by 5 int. */
+/* product table example. I still use some of the generic rules as found   */
+/* above and below, but still..                                            */
+
+DIV.left-layer08 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 08%;
+  text-align: left;
+}
+
+DIV.left-layer10 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 10%;
+}
+
+DIV.left-layer11 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 9%;
+}
+
+DIV.left-layer20 {
+  border: none;
+  float: left;
+  margin: 0;
+  width: 20%;
+}
+
+DIV.left-layer20Edit {
+  border: none;
+  float: left;
+  margin: 0;
+  width: 20%;
+}
+
+DIV.left-layer20Edit:hover {
+	vertical-align:text-top;
+	cursor:pointer;
+}
+
+DIV.left-layer25 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  text-align: left;
+}
+
+DIV.left-layer25Edit {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  text-align: left;
+}
+
+DIV.left-layer25Edit:hover {
+	vertical-align:text-top;
+	cursor:pointer;
+}
+
+DIV.left-layer28 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 28%;
+  text-align: left;
+}
+
+DIV.left-layer35 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 35%;
+  text-align: left;
+}
+
+DIV.left-layer40 {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 40%;
+  text-align: left;
+}
+
+DIV.left-layer40Edit {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 40%;
+  text-align: left;
+}
+
+DIV.left-layer40Edit:hover {
+	vertical-align:text-top;
+	cursor:pointer;
+}
+
+DIV.left-layer50Edit {
+  border: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+  text-align: left;
+}
+
+DIV.left-layer50Edit:hover {
+	vertical-align:text-top;
+	cursor:pointer;
+}
+
+DIV.right-layer11 {
+  border: none;
+  float: right;
+  margin: 0;
+  padding: 0;
+  width: 10%;
+}
+
+/* Watch out for this DIV... rule, it appears every now and then */
+
+DIV.space-line {
+  clear: both;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+P.ase-text {
+  margin: 0; padding: 0.3em 0.3em 0 0.3em;
+  font-style: normal;
+  font-size: 1em;
+  text-align: left;
+  text-indent: 0;
+  width: auto;
+}
+
+/* End of layer specific style rule set */

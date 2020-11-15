@@ -1,0 +1,49 @@
+@import 'menus.css';
+@import 'views.css';
+@import 'tree.css';
+@import 'popup.css';
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    min-width: 500px;
+    min-height: 300px;
+}
+body {
+    padding: 0;
+    margin: 0;
+    background: url('../images/brushed_metal.png');
+    -moz-user-select: none;
+}
+div#hfinder-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 28px 10px 0 10px;
+}
+div#hfinder-tree {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: 73px 0 10px 10px;
+    width: 190px;
+    background: white;
+    overflow: auto;
+    border: 1px solid rgb(128, 128, 128);
+    z-index: 1;
+}
+div#hfinder-files {
+    margin: 73px 10px 10px 210px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid rgb(128, 128, 128);
+    background: white url('../images/stripes.png');
+    z-index: 1;
+    overflow: auto;
+}

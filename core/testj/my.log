@@ -1,0 +1,6 @@
+Sep 15, 2008 12:52:10 PM BasicLogging main
+SEVERE: my severe message
+Sep 15, 2008 12:52:10 PM BasicLogging main
+WARNING: my warning message
+Sep 15, 2008 12:52:10 PM BasicLogging main
+INFO: my info message

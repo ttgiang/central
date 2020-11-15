@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Untitled Document</title>
+
+	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"></link>
+	<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"></link>
+
+	<!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+	<link type="text/css" href="css/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/diff_match_patch_uncompressed.js"></script>
+	<script>
+		<!--
+		diff_match_patch.prototype.diff_prettierHtml = function(diffs) {
+		  var html = [];
+		  var i = 0;
+		  for (var x = 0; x < diffs.length; x++) {
+			 var op = diffs[x][0];    // Operation (insert, delete, equal)
+			 var data = diffs[x][1];  // Text of change.
+			 var text = data;
+			 switch (op) {
+				case DIFF_INSERT:
+				  html[x] = '<ins>' + text + '</ins>';
+				  break;
+				case DIFF_DELETE:
+				  html[x] = '<del>' + text + '</del>';
+				  break;
+				case DIFF_EQUAL:
+				html[x] = '<span>' + text + '</span>';
+				  break;
+			 }
+			 if (op !== DIFF_DELETE) {
+				i += data.length;
+			 }
+		  }
+		  return html.join('');
+		};
+
+		var current = null;
+
+		function calcDiffs() {
+
+			var dmp = new diff_match_patch();
+			var differences = dmp.diff_main($("#oldVersion").val(), $("#newVersion").val());
+			var ds = dmp.diff_prettierHtml(differences);
+
+			$("#viewer").html(ds);
+
+		}
+
+		function resetText() {
+			var fulltext = "";
+			$("#viewer").children().each(function() {
+				if (!$(this).is('ins')) {
+					fulltext = fulltext + $(this).html();
+				}
+			});
+			$("#oldVersion").val(fulltext)
+		}
+		function registerAcceptChange(){
+		$('#accept').click(function () {
+
+			if (current.is('del')) {
+
+				current.remove();
+
+			}
+			if (current.is('ins')) {
+				current.replaceWith('<span>' + current.html() + '</span>');
+			}
+			resetText();
+			//calcDiffs();
+			$('#contextmenu_holder').hide();
+			return false;
+		});
+		}
+		$(function() {
+				calcDiffs();
+				registerContextMenu();
+				registerAcceptChange();
+				//hide context menu when click anywhere
+				$(document).click(function() {
+					$('#contextmenu_holder').hide();
+					$(".highlight").removeClass("highlight");
+				});
+				//caculate difference when text change
+				$('textarea').change(function() {
+						 calcDiffs();
+				});
+
+		});
+
+		function registerContextMenu(){
+				$('del, ins').live('mouseover', function(event) {
+
+					current= $(this);
+					$(".highlight").removeClass("highlight");
+					current.addClass("highlight");
+				//$("#zoom").html(current.html());
+				var top= event.pageY +5;
+					$('#contextmenu_holder').css( {
+						top :top + 'px',
+						left : event.pageX + 'px'
+					}).show();
+			});
+		}
+		-->
+	</script>
+
+	<style>
+		del {
+			color:#8A1F11;
+		}
+		ins {
+			color:green;
+			text-decoration:none;
+		}
+		#contextmenu_holder {
+			display: none;
+			position: absolute;
+			padding: 5px;
+		}
+		#viewer {
+			letter-spacing: 0.3em;
+			font-size:1.em;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<hr class="space">
+		<h1>Tracking change with google-diff-match-patch and jQuery</h1>
+		<hr>
+		<div class="span-24">
+			<h3>Diff Viewer</h3>
+			<div id="viewer" class="span-20 box"> </div>
+		</div>
+
+		<div class="span-12">
+			<label>Old Version</label>
+			<br>
+			<textarea id="oldVersion" name="oldVersion" class="error">
+Hamlet: Do you see yonder cloud that's almost in shape of a camel?
+Polonius: By the mass, and 'tis like a camel, indeed.
+Hamlet: Methinks it is like a weasel.
+Polonius: It is backed like a weasel.
+Hamlet: Or like a whale?
+Polonius: Very like a whale.
+-- Shakespeare
+			</textarea>
+		</div>
+
+		<div class="span-12 last">
+			<label>New Version</label>
+			<br>
+			<textarea id="newVersion" name="newVersion" class="success">
+Hamlet: Do you see the cloud over there that's almost the shape of a camel?
+Polonius: By golly, it is like a camel, indeed.
+Hamlet: I think it looks like a weasel.
+Polonius: It is shaped like a weasel.
+Hamlet: Or like a whale?
+Polonius: It's totally like a whale.
+-- Shakespeare
+			</textarea>
+		</div>
+
+		</div>
+		<div id="contextmenu_holder" class="notice">
+		<div id="accept"><a href="#">Accept Change</a></div>
+		</div>
+		<div id="ad">
+	</div>
+</body>
+</html>

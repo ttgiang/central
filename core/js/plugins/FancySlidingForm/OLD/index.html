@@ -1,0 +1,176 @@
+
+        <div>
+        </div>
+        <div id="content">
+            <div id="wrapper">
+                <div id="steps">
+                    <form id="formElem" name="formElem" action="" method="post">
+                        <fieldset class="step">
+                        
+                            <legend>Personal Information</legend>
+                            <div id="navigation" style="display:none;">
+                    <ul>
+                        <li class="selected">
+                            <a href="#">Personal</a>
+                        </li>
+                        <li>
+                            <a href="#">Order</a>
+                        </li>
+                        <li>
+                            <a href="#">Billing</a>
+                        </li>
+                        <li>
+                            <a href="#">Mailing</a>
+                        </li>
+						<li>
+                            <a href="#">Confirm</a>
+                        </li>
+                    </ul>
+                </div>
+                            <p>
+                                <label for="first">First name</label>
+                                <input id="first" name="first" />
+                            </p>
+							<p>
+                                <label for="last">Last name</label>
+                                <input id="last" name="last" />
+                            </p>     
+							<p>
+                                <label for="last">Phone</label>
+                                <input id="area" name="area" value="808" maxlength="3" size="1"/><input id="prefix" name="prefix" maxlength="3" size="1" /><input id="suffix" name="suffix" maxlength="3" size="1" />
+                            </p>      
+                        </fieldset>
+                        
+                        <fieldset class="step">
+                            <legend>Order Details</legend>
+                                <p>
+                                <label for="updates">Store</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected></option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Pickup Time</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Day</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Time</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Turkey Package</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Whole</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Half</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Pies</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Custard</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Pumpkin</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Discount</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected></option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                        </fieldset>
+                        
+                        <fieldset class="step">
+                            <legend>Personal Details</legend>
+                            <p>
+                                <label for="name">Full Name</label>
+                                <input id="name" name="name" type="text" AUTOCOMPLETE=OFF />
+                            </p>
+                            <p>
+                                <label for="country">Country</label>
+                                <input id="country" name="country" type="text" AUTOCOMPLETE=OFF />
+                            </p>
+                            <p>
+                                <label for="phone">Phone</label>
+                                <input id="phone" name="phone" placeholder="e.g. +351215555555" type="tel" AUTOCOMPLETE=OFF />
+                            </p>
+                            <p>
+                                <label for="website">Website</label>
+                                <input id="website" name="website" placeholder="e.g. http://www.codrops.com" type="tel" AUTOCOMPLETE=OFF />
+                            </p>
+                        </fieldset>
+                        
+                        
+                        
+                        <fieldset class="step">
+                            <legend>Settings</legend>
+                            <p>
+                                <label for="newsletter">Newsletter</label>
+                                <select id="newsletter" name="newsletter">
+                                    <option value="Daily" selected>Daily</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="Never">Never</option>
+                                </select>
+                            </p>
+                            <p>
+                                <label for="updates">Updates</label>
+                                <select id="updates" name="updates">
+                                    <option value="1" selected>Package 1</option>
+                                    <option value="2">Package 2</option>
+                                    <option value="0">Don't send updates</option>
+                                </select>
+                            </p>
+							<p>
+                                <label for="tagname">Newsletter Tag</label>
+                                <input id="tagname" name="tagname" type="text" AUTOCOMPLETE=OFF />
+                            </p>
+                        </fieldset>
+						<fieldset class="step">
+                            <legend>Confirm</legend>
+							<p>
+								Everything in the form was correctly filled 
+								if all the steps have a green checkmark icon.
+								A red checkmark icon indicates that some field 
+								is missing or filled out with invalid data. In this
+								last step the user can confirm the submission of
+								the form.
+							</p>
+                            <p class="submit">
+                                <button id="registerButton" type="submit">Register</button>
+                            </p>
+                        </fieldset>
+                    </form>
+                </div>
+                
+            </div>
+        </div>

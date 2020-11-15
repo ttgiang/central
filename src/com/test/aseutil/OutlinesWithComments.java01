@@ -1,0 +1,1461 @@
+/**
+
+ * Copyright 2007 Applied Software Engineering,LLC. All rights reserved. You may
+ * not modify,use,reproduce,or distribute this software except in compliance
+ * with the terms of the License made with Applied Software Engineernig
+ *
+ * @author ttgiang
+ */
+
+package com.test.aseutil;
+
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import com.ase.aseutil.*;
+
+import java.io.*;
+import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.text.pdf.fonts.otf.TableHeader;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfTemplate;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
+
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.FontProvider;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
+import com.itextpdf.tool.xml.html.Tags;
+import com.itextpdf.tool.xml.pipeline.html.AbstractImageProvider;
+import com.itextpdf.tool.xml.pipeline.html.LinkProvider;
+import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
+import com.itextpdf.tool.xml.css.StyleAttrCSSResolver;
+import com.itextpdf.tool.xml.css.CssFile;
+import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
+import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
+import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
+import com.itextpdf.tool.xml.Pipeline;
+import com.itextpdf.tool.xml.XMLWorker;
+import com.itextpdf.tool.xml.parser.XMLParser;
+
+import java.net.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.ase.aseutil.AntiSpamy;
+
+import org.apache.log4j.Logger;
+import org.jsoup.*;
+
+/**
+ * @author tgiang
+ *
+ */
+public class OutlinesWithComments extends AseTestCase {
+
+	/**
+	 * Test method for {@link com.ase.aseutil.OutlinesWithComments#testOutlinesWithComments()}.
+	 */
+	@Test
+	public final void testOutlinesWithComments() {
+
+		boolean processed = false;
+
+		logger.info("--> OutlinesWithComments.testOutlinesWithComments.START");
+
+		try{
+			if (getConnection() != null){
+
+				boolean doHTM = false;
+				boolean doXML = false;
+				boolean doPDF = false;
+
+				String src = "outlines";
+
+				if(getParm1() != null && getParm1().equals("1"))
+					doHTM = true;
+
+				if(getParm2() != null && getParm2().equals("1"))
+					doXML = true;
+
+				if(getParm3() != null && getParm3().equals("1"))
+					doPDF = true;
+
+				if(getParm4() != null)
+					src = getParm4();
+
+				boolean showHistory = false;
+				if(getAlpha() == null || getAlpha().equals("0")){
+					showHistory = false;
+				}
+				else if(getAlpha().equals("1")){
+					showHistory = true;
+				}
+
+				processed = runMe(getConnection(),getCampus(),getKix(),doHTM,doXML,doPDF,getDebug(),getType(),src,showHistory);
+			}
+		}
+		catch(Exception e){
+			processed = false;
+		}
+
+		assertTrue(processed);
+
+		logger.info("--> OutlinesWithComments.testOutlinesWithComments.END");
+
+	}
+
+	public static boolean runMe(Connection conn,
+											String campus,
+											String kix,
+											boolean doHTM,
+											boolean doXML,
+											boolean doPDF,
+											boolean debug,
+											String type,
+											String src,
+											boolean showHistory) {
+
+		boolean processed = false;
+
+		try{
+			if (conn != null){
+				if(src.equals("outlines")){
+					createOutlineComments(conn,campus,kix,doHTM,doXML,doPDF,debug,type,showHistory);
+				}
+				else{
+					createProgramComments(conn,campus,kix,doHTM,doXML,doPDF,debug,type,showHistory);
+				}
+				processed = true;
+			}
+		}
+		catch(Exception e){
+			processed = false;
+		}
+
+		return processed;
+
+	}
+
+	/**
+	 * returns true if the String argument is empty
+	 */
+	public static String nullToValue(String val,String defalt) {
+
+		if (val==null || val.equals("null") || val.length()== 0)
+			val = defalt;
+
+		if (val.length() > 0)
+			val = val.trim();
+
+		return val;
+	}
+
+	/**
+	 * returns true if the String argument is empty
+	 */
+	public static int nullToValue(int val,int defalt) {
+
+		int temp = 0;
+
+		if (Integer.toString(val) == null)
+			temp = defalt;
+		else
+			temp = val;
+
+		return temp;
+	}
+
+	public static int createOutlineComments(Connection conn,
+														String campus,
+														String kix,
+														boolean doHTM,
+														boolean doXML,
+														boolean doPDF,
+														boolean debug,
+														String type,
+														boolean showHistory) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		int outlinesWritten = 0;
+
+		boolean methodCreatedConnection = false;
+		boolean showComments = false;
+
+		String user = "";
+
+		boolean compressed = true;
+		boolean print = true;
+		boolean detail = false;
+		String outputFolder = "ttg";
+
+		String sql = "";
+		String junk = "";
+
+		try{
+			if (conn == null){
+				conn = AsePool.createLongConnection();
+				methodCreatedConnection = true;
+			}
+
+			if (conn != null){
+
+				FileWriter fstream = null;
+				BufferedWriter output = null;
+				String server = SysDB.getSys(conn,"server");
+				com.ase.aseutil.pdf.Pdf58 makePdf = new com.ase.aseutil.pdf.Pdf58();
+
+				try {
+
+					AseUtil aseUtil = new AseUtil();
+					CourseDB courseDB = new CourseDB();
+
+					String campusName = CampusDB.getCampusName(conn,campus);
+
+					String currentDrive = AseUtil.getCurrentDrive();
+					String documents = SysDB.getSys(conn,"documents");
+					String fileName = currentDrive
+												+ ":"
+												+ documents
+												+ "outlines\\"
+												+ outputFolder
+												+ "\\";
+
+					String htmlHeader = Util.getResourceString("header.ase");
+					String htmlFooter = Util.getResourceString("footer.ase");
+
+					String table = "tblCourse";
+					if(type.equals("ARC")){
+						table = "tblCourseARC";
+					}
+					sql = "select * from vw_archived_outlines where campus=? and coursetype=? and not coursedate is null  ";
+					if(!kix.equals("")){
+						sql += " and historyid='"+kix+"'";
+					}
+					sql += " order by coursealpha,coursenum";
+
+					if(debug){
+						logger.info("fileName: " + fileName);
+						logger.info("campus: " + campus);
+						logger.info("kix: " + kix);
+						logger.info("htm: " + doHTM);
+						logger.info("xml: " + doXML);
+						logger.info("pdf: " + doPDF);
+						logger.info("type: " + type);
+						logger.info("sql: " + sql);
+					}
+
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setString(1,campus);
+					ps.setString(2,type);
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+						kix = AseUtil.nullToBlank(rs.getString("historyid"));
+						String alpha = AseUtil.nullToBlank(rs.getString("coursealpha"));
+						String num = AseUtil.nullToBlank(rs.getString("coursenum"));
+
+						String title = AseUtil.nullToBlank(rs.getString("coursetitle"));
+						String proposer = AseUtil.nullToBlank(rs.getString("proposer"));
+						String coursedate = AseUtil.nullToBlank(rs.getString("coursedate"));
+						if(coursedate != null && !coursedate.equals("")){
+							coursedate = aseUtil.ASE_FormatDateTime(coursedate, 6);
+						}
+						else{
+							coursedate = "";
+						}
+
+						String filecode = campus + "_" + alpha + "_" + num + "_" + kix;
+						String htmlfile = fileName + "htm\\" + type + "\\" + filecode + ".html";
+						String xmllfile = fileName + "xml\\" + type + "\\" + filecode + ".xml";
+
+						String checkedName = "";
+						String aphist = "";
+
+						if(doHTM)
+							checkedName = fileName + "htm\\" + type + "\\" + filecode + ".html";
+						else if(doPDF)
+							checkedName = fileName + "pdf\\" + type + "\\" + filecode + ".pdf";
+						else if(doXML)
+							checkedName = fileName + "xml\\" + type + "\\" + filecode + ".xml";
+
+						File file = new File(checkedName);
+						if(!file.exists()){
+
+							if(debug){
+								logger.info("filecode: " + filecode);
+								logger.info("coursedate: " + coursedate);
+							}
+
+							try{
+
+								if(doHTM){
+									fstream = new FileWriter(htmlfile);
+									output = new BufferedWriter(fstream);
+
+									output.write(htmlHeader);
+
+									output.write("<p align=\"center\" class=\"outputTitleCenter\">" + com.ase.aseutil.CampusDB.getCampusName(conn,campus) + "<BR>");
+									output.write(courseDB.getCourseDescriptionByTypePlus(conn,campus,alpha,num,type) + "</p>");
+									com.ase.aseutil.Msg msg = com.ase.aseutil.Outlines.viewOutline(conn,kix,user,compressed,print,false,detail);
+									junk = msg.getErrorLog();
+									junk = AntiSpamy.spamy(kix,filecode,junk);
+									junk = Jsoup.parse(junk).text();
+									output.write(junk);
+
+									if(showHistory){
+										// approval history (source for page is from crsinfy)
+										aphist = "<br/>"
+											+"<table border=\"0\" width=\"660\" class=\"tableCaption\">"
+											+"<tr>"
+											+"<td align=\"left\"><hr size=1><a style=\"text-decoration:none\" name=\"approval_history\"  class=\"goldhighlights\">Approval History</a></td>"
+											+"</tr>";
+										output.write(aphist);
+
+										ArrayList list = HistoryDB.getHistories(conn,kix,type);
+										if (list != null){
+											History history;
+											aphist = "";
+											for (int i=0; i<list.size(); i++){
+												history = (History)list.get(i);
+												aphist += "<tr class=\"textblackTH\"><td valign=top>" + history.getDte() + " - " + history.getApprover() + "</td></tr>"
+													+ "<tr><td class=\"datacolumn\" valign=top>" + history.getComments() + "</td></tr>";
+											}
+
+											if(!aphist.equals("")){
+												aphist = "<tr bgcolor=\"#ffffff\">"
+													+"<td>"
+													+"<table border=\"0\" cellpadding=\"2\" width=\"100%\">"
+													+ aphist
+													+ "</table>"
+													+"</td>"
+													+"</tr>";
+												output.write(aphist);
+											}
+										}
+										aphist = "</table>";
+										output.write(aphist);
+
+										aphist =  "<br>";
+										aphist += ""
+											+ "<TABLE cellSpacing=0 cellPadding=5 width=\"680\" border=1>"
+											+ "<TBODY>"
+											+ "<TR>"
+											+ "<TD class=\"textblackTH\" width=\"25%\">Proposer:</TD>"
+											+ "<TD class=\"dataColumn\" width=\"75%\">"+proposer+"</TD>"
+											+ "</TR>"
+											+ "<TR>"
+											+ "<TD class=\"textblackTH\" width=\"25%\">Approved Date:</TD>"
+											+ "<TD class=\"dataColumn\">"+coursedate+"</TD>"
+											+ "</TR>"
+											+ "</TBODY>"
+											+ "</TABLE>"
+											+ "<br><br>";
+										output.write(aphist);
+
+									} // showHistory
+
+									// approver comments
+									if(showComments){
+										aphist = "";
+										int fid = ForumDB.getForumID(conn,campus,kix);
+										if (fid == 0){
+											aphist = "<table width=\"680\" cellspacing=\"1\" cellpadding=\"4\"><tr><td>";
+											aphist += "<br><hr size=1>" + ReviewerDB.getReviewHistory2(conn,kix,0,campus,0,Constant.APPROVAL,"h1","c1");
+											aphist += "</td></tr></table><br><br>";
+											if(aphist != null){
+												aphist = aphist.replace("display: none;","display: nn;");
+											}
+										}
+										else{
+											if (fid > 0){
+												aphist = "<table width=\"100%\" cellspacing=\"1\" cellpadding=\"4\"><tbody>";
+												int k = 0;
+												String clss = "";
+												for(com.ase.aseutil.Generic u: com.ase.aseutil.ForumDB.getUserPosts(conn,fid,0)){
+													++k;
+													int mid = Integer.parseInt(u.getString6());
+													int item = Integer.parseInt(u.getString9());
+													aphist += "<tr class=\""+clss+"\"><td style=\"text-align:left;\">";
+													aphist += Board.printChildren(conn,fid,item,0,0,mid,user);
+													aphist += "</td></tr>";
+												} // for
+
+												aphist += "</tbody></table><br><br>";
+											} // if fid
+										} // if enableMessageBoard
+
+										if(!aphist.equals("")){
+											output.write(aphist);
+										}
+									}
+
+									output.write(htmlFooter);
+								} // doHTM
+
+								if(doXML){
+									createXML(conn,outputFolder,campus,alpha,num,kix,type);
+								}
+
+								if(doPDF){
+									createPDF(filecode,type,"outlines");
+								} // doPDF
+
+							}
+							catch(Exception e){
+								logger.info("failed to create outline");
+							}
+							finally{
+								if(doHTM){
+									output.close();
+								}
+							}
+
+							++outlinesWritten;
+
+						}
+						else{
+							deleteXML(xmllfile);
+						} // file exist
+
+					} // while
+					rs.close();
+					ps.close();
+
+					makePdf = null;
+				}
+				catch(Exception e){
+					logger.info("fail to process data");
+				}
+
+				// release connection
+				try{
+					if (conn != null){
+						conn.close();
+						conn = null;
+					}
+				}
+				catch(Exception e){
+					logger.fatal("createOutlineComments: " + e.toString());
+				}
+
+			} // conm
+
+			// only if the connection was created here
+			if (methodCreatedConnection){
+				try{
+					conn.close();
+					conn = null;
+				}
+				catch(Exception e){
+					logger.fatal("createOutlineComments: " + e.toString());
+				}
+
+			} // methodCreatedConnection
+
+		}
+		catch(Exception e){
+			logger.fatal("createOutlineComments: " + e.toString());
+		}
+
+		return outlinesWritten;
+
+	} // createOutlineComments
+
+	public static int createProgramComments(Connection conn,
+														String campus,
+														String kix,
+														boolean doHTM,
+														boolean doXML,
+														boolean doPDF,
+														boolean debug,
+														String type,
+														boolean showHistory) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		int programsWritten = 0;
+
+		boolean methodCreatedConnection = false;
+		boolean showComments = false;
+
+		String user = "";
+
+		boolean compressed = true;
+		boolean print = true;
+		boolean detail = false;
+		String outputFolder = "ttg";
+
+		String sql = "";
+
+		try{
+			if (conn == null){
+				conn = AsePool.createLongConnection();
+				methodCreatedConnection = true;
+			}
+
+			if (conn != null){
+
+				FileWriter fstream = null;
+				BufferedWriter output = null;
+				String server = SysDB.getSys(conn,"server");
+				com.ase.aseutil.pdf.Pdf58 makePdf = new com.ase.aseutil.pdf.Pdf58();
+
+				try {
+
+					AseUtil aseUtil = new AseUtil();
+					CourseDB courseDB = new CourseDB();
+
+					String campusName = CampusDB.getCampusName(conn,campus);
+
+					String currentDrive = AseUtil.getCurrentDrive();
+					String documents = SysDB.getSys(conn,"documents");
+					String fileName = currentDrive
+												+ ":"
+												+ documents
+												+ "programs\\"
+												+ outputFolder
+												+ "\\";
+
+					String htmlHeader = Util.getResourceString("header.ase");
+					String htmlFooter = Util.getResourceString("footer.ase");
+
+					sql = "select * from vw_archived_programs where campus=? and type=? and not dateapproved is null  ";
+					if(!kix.equals("")){
+						sql += " and historyid='"+kix+"'";
+					}
+					sql += " order by title";
+
+					if(debug){
+						logger.info("fileName: " + fileName);
+						logger.info("campus: " + campus);
+						logger.info("kix: " + kix);
+						logger.info("htm: " + doHTM);
+						logger.info("xml: " + doXML);
+						logger.info("pdf: " + doPDF);
+						logger.info("type: " + type);
+						logger.info("sql: " + sql);
+					}
+
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setString(1,campus);
+					ps.setString(2,type);
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+						kix = AseUtil.nullToBlank(rs.getString("historyid"));
+
+						String title = AseUtil.nullToBlank(rs.getString("title"));
+						String proposer = AseUtil.nullToBlank(rs.getString("proposer"));
+						String dateapproved = AseUtil.nullToBlank(rs.getString("dateapproved"));
+						if(dateapproved != null && !dateapproved.equals("")){
+							dateapproved = aseUtil.ASE_FormatDateTime(dateapproved, 6);
+						}
+						else{
+							dateapproved = "";
+						}
+
+						String filecode = campus + "_" + kix;
+						String htmlfile = fileName + "htm\\" + type + "\\" + filecode + ".html";
+						String xmlfile = fileName + "xml\\" + type + "\\" + filecode + ".xml";
+
+						String checkedName = "";
+						String aphist = "";
+
+						if(doHTM)
+							checkedName = fileName + "htm\\" + type + "\\" + filecode + ".html";
+						else if(doPDF)
+							checkedName = fileName + "pdf\\" + type + "\\" + filecode + ".pdf";
+						else if(doXML)
+							checkedName = fileName + "xml\\" + type + "\\" + filecode + ".xml";
+
+						if(debug){
+							logger.info("title: " + title);
+							logger.info("proposer: " + proposer);
+							logger.info("dateapproved: " + dateapproved);
+							logger.info("filecode: " + filecode);
+							logger.info("dateapproved: " + dateapproved);
+							logger.info("checkedName: " + checkedName);
+						}
+
+						File file = new File(checkedName);
+						if(!file.exists()){
+
+							try{
+
+								if(doHTM){
+									fstream = new FileWriter(htmlfile);
+									output = new BufferedWriter(fstream);
+									output.write(htmlHeader);
+									output.write("<p align=\"center\" class=\"outputTitleCenter\">" + com.ase.aseutil.CampusDB.getCampusName(conn,campus) + "<BR>");
+									output.write(title + "</p>");
+									String junk = viewProgram(conn,campus,kix,type);
+									//junk = Jsoup.parse(junk).text();
+									output.write(junk);
+
+									if(showHistory){
+										// approval history (source for page is from crsinfy)
+										aphist = "<br/>"
+											+"<table border=\"0\" width=\"660\" class=\"tableCaption\">"
+											+"<tr>"
+											+"<td align=\"left\"><hr size=1><a style=\"text-decoration:none\" name=\"approval_history\"  class=\"goldhighlights\">Approval History</a></td>"
+											+"</tr>";
+										output.write(aphist);
+
+										ArrayList list = HistoryDB.getHistories(conn,kix,type);
+										if (list != null){
+											History history;
+											aphist = "";
+											for (int i=0; i<list.size(); i++){
+												history = (History)list.get(i);
+												aphist += "<tr class=\"textblackTH\"><td valign=top>" + history.getDte() + " - " + history.getApprover() + "</td></tr>"
+													+ "<tr><td class=\"datacolumn\" valign=top>" + history.getComments() + "</td></tr>";
+											}
+
+											if(!aphist.equals("")){
+												aphist = "<tr bgcolor=\"#ffffff\">"
+													+"<td>"
+													+"<table border=\"0\" cellpadding=\"2\" width=\"100%\">"
+													+ aphist
+													+ "</table>"
+													+"</td>"
+													+"</tr>";
+												output.write(aphist);
+											}
+										}
+										aphist = "</table>";
+										output.write(aphist);
+
+										aphist =  "<br>";
+										aphist += ""
+											+ "<TABLE cellSpacing=0 cellPadding=5 width=\"680\" border=1>"
+											+ "<TBODY>"
+											+ "<TR>"
+											+ "<TD class=\"textblackTH\" width=\"25%\">Proposer:</TD>"
+											+ "<TD class=\"dataColumn\" width=\"75%\">"+proposer+"</TD>"
+											+ "</TR>"
+											+ "<TR>"
+											+ "<TD class=\"textblackTH\" width=\"25%\">Approved Date:</TD>"
+											+ "<TD class=\"dataColumn\">"+dateapproved+"</TD>"
+											+ "</TR>"
+											+ "</TBODY>"
+											+ "</TABLE>"
+											+ "<br><br>";
+										output.write(aphist);
+									} // showHistory
+
+									output.write(htmlFooter);
+								} // doHTM
+
+								if(doXML){
+									createXML(conn,outputFolder,campus,"","",kix,type);
+								}
+
+								if(doPDF){
+									createPDF(filecode,type,"programs");
+								} // doPDF
+
+							}
+							catch(Exception e){
+								logger.info("failed to create outline");
+							}
+							finally{
+								if(doHTM){
+									output.close();
+								}
+							}
+
+							++programsWritten;
+
+						}
+						else{
+							deleteXML(xmlfile);
+						}
+						// file exist
+
+					} // while
+					rs.close();
+					ps.close();
+
+					makePdf = null;
+				}
+				catch(Exception e){
+					logger.info("fail to process data\n" + e.toString());
+				}
+
+				// release connection
+				try{
+					if (conn != null){
+						conn.close();
+						conn = null;
+					}
+				}
+				catch(Exception e){
+					logger.fatal("createProgramComments: " + e.toString());
+				}
+
+			} // conm
+
+			// only if the connection was created here
+			if (methodCreatedConnection){
+				try{
+					conn.close();
+					conn = null;
+				}
+				catch(Exception e){
+					logger.fatal("createProgramComments: " + e.toString());
+				}
+
+			} // methodCreatedConnection
+
+		}
+		catch(Exception e){
+			logger.fatal("createProgramComments: " + e.toString());
+		}
+
+		return programsWritten;
+
+	} // createProgramComments
+
+	public static int createXML(Connection conn,String outputFolder,String campus,String alpha,String num,String kix,String type) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		org.htmlcleaner.HtmlCleaner cleaner = null;
+		org.htmlcleaner.CleanerProperties props = null;
+		org.htmlcleaner.TagNode node = null;
+
+		String documentFolder = "";
+
+		boolean foundation = false;
+
+		boolean isAProgram = isAProgram(conn,kix);
+
+		if(!isAProgram){
+			foundation = com.ase.aseutil.fnd.FndDB.isFoundation(conn,kix);
+		}
+
+		if(foundation){
+			documentFolder = "fnd";
+		}
+		else{
+			if (isAProgram){
+				documentFolder = "programs";
+			}
+			else{
+				documentFolder = "outlines";
+			}
+		}
+
+		String outlineName = AseUtil.getCurrentDrive()
+							+ ":"
+							+ SysDB.getSys(conn,"documents")
+							+ documentFolder
+							+ "\\"
+							+ outputFolder
+							+ "\\";
+
+		String htmFile = outlineName + "htm\\" + type + "\\" + campus + "_" + alpha + "_" + num + "_" + kix + ".html";
+		String xmlFile = outlineName + "xml\\" + type + "\\" + campus + "_" + alpha + "_" + num + "_" + kix + ".xml";
+
+		if (isAProgram){
+			htmFile = outlineName + "htm\\" + type + "\\" + campus + "_" + kix + ".html";
+			xmlFile = outlineName + "xml\\" + type + "\\" + campus + "_" + kix + ".xml";
+		}
+
+		try{
+			cleaner = new org.htmlcleaner.HtmlCleaner();
+
+			props = cleaner.getProperties();
+
+			props.setUseCdataForScriptAndStyle(true);
+			props.setRecognizeUnicodeChars(true);
+			props.setUseEmptyElementTags(true);
+			props.setAdvancedXmlEscape(false);
+			props.setTranslateSpecialEntities(true);
+			props.setBooleanAttributeValues("empty");
+
+			node = cleaner.clean(new File(htmFile));
+			new org.htmlcleaner.PrettyXmlSerializer(props).writeXmlToFile(node, xmlFile);
+
+			cleaner = null;
+			props = null;
+			node = null;
+		}
+		catch(Exception e){
+			logger.info("createXML: " + e.toString());
+		}
+
+		return 0;
+
+	}
+
+	public static int createPDF(String filecode,String type,String src) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		int pdfCreated = 0;
+
+		String XML = "C:/tomcat/webapps/centraldocs/docs/"+src+"/ttg/xml/"+type+"/"+filecode+".xml";
+		String PDF = "C:/tomcat/webapps/centraldocs/docs/"+src+"/ttg/pdf/"+type+"/"+filecode+".pdf";
+		String CSS = "C:/tomcat/webapps/central/inc/style.css";
+
+		try{
+
+			File file = new File(XML);
+			if(file.exists()){
+				// step 1
+				Document document = new Document();
+				// step 2
+				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(PDF));
+				writer.setInitialLeading(12.5f);
+
+				// step 3
+				document.open();
+
+				// CSS
+				CSSResolver cssResolver = new StyleAttrCSSResolver();
+				CssFile cssFile = XMLWorkerHelper.getCSS(new FileInputStream(CSS));
+				cssResolver.addCss(cssFile);
+
+				HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
+				htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
+
+				// Pipelines
+				PdfWriterPipeline pdf = new PdfWriterPipeline(document, writer);
+				HtmlPipeline html = new HtmlPipeline(htmlContext, pdf);
+				CssResolverPipeline css = new CssResolverPipeline(cssResolver, html);
+
+				// XML Worker
+				XMLWorker worker = new XMLWorker(css, true);
+				XMLParser p = new XMLParser(worker);
+				p.parse(new FileInputStream(XML));
+
+				// step 5
+				document.close();
+
+				writer.close();
+
+				try{
+					file.delete();
+				}
+				catch(Exception e){
+					logger.fatal("Unable to delete " + XML + "\n" + e.toString());
+				}
+
+				pdfCreated = 1;
+			} // if
+			file = null;
+		}
+		catch(Exception e){
+			logger.info("createPDF: " + XML);
+			logger.info("createPDF: " + PDF);
+			logger.info("createPDF: " + e.toString());
+		}
+		finally{
+		}
+
+		return pdfCreated;
+
+	}
+
+	// deleteXML
+	public static boolean deleteXML(String xmllfile) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		boolean deleted = false;
+
+		try{
+			File file = new File(xmllfile);
+			if(file.exists()){
+				deleted = file.delete();
+			} // if
+			file = null;
+		}
+		catch(Exception e){
+			logger.info("deleteXML: " + xmllfile);
+		}
+		finally{
+			//
+		}
+
+		return deleted;
+
+	}
+
+	/*
+	 * hasScriptTag
+	 *	<p>
+	 *	@return	boolean
+	 *	<p>
+	 */
+	public static boolean hasScriptTag(String content) throws Exception {
+
+		content = content.replace("<SCRIPT","<script").replace("</SCRIPT","</script");
+
+		boolean found = false;
+
+		found = false;
+
+		Pattern script = Pattern.compile("<script.*?>.*?</script>");
+
+		Matcher mscript = script.matcher(content);
+
+		while (mscript.find() && !found){
+			found = true;
+		}
+
+		return found;
+
+	}
+
+	/*
+	 * removeJavaScriptTags - remove script tags from content
+	 *	<p>
+	 * @param	content	String
+	 *	<p>
+	 * @return String
+	 */
+	public static String removeJavaScriptTags(String content) throws Exception {
+
+		//Logger logger = Logger.getLogger("test");
+
+		int start = 0;
+		int end = 0;
+		String left = null;
+		String right = null;
+
+		try{
+			// script tags come following format:
+			// &lt;SCRIPT src="some-crappy-site"&gt;&lt;/SCRIPT&gt;
+
+			// remove the start and up to the first &gt; symbol.
+			// repeat until all gone the do the same for the end tag
+
+			if (content==null || content.length() == 0)
+				content = "";
+
+			start = content.toLowerCase().indexOf("<script");
+			while (start != - 1){
+				end = content.toLowerCase().indexOf(">",start)+1;
+				left = content.substring(0,start-1);
+				right = content.substring(end,content.length());
+				content = left + right;
+				start = content.toLowerCase().indexOf("<script");
+			}
+
+			start = content.toLowerCase().indexOf("</script");
+			while (start != - 1){
+				end = content.toLowerCase().indexOf(">",start)+1;
+				left = content.substring(0,start-1);
+				right = content.substring(end,content.length());
+				content = left + right;
+				start = content.toLowerCase().indexOf("</script");
+			}
+		} catch (Exception e) {
+			logger.fatal("SQLUtil: removeJavaScriptTags - " + e.toString());
+		}
+
+		return content;
+	}
+
+	/**
+	 * viewProgram
+	 * <p>
+	 * @param	conn
+	 * @param	campus
+	 * @param	kix
+	 * @param	type
+	 * <p>
+	 * @return	String
+	 */
+	public static String viewProgram(Connection conn,String campus,String kix,String type) {
+
+		//Logger logger = Logger.getLogger("test");
+
+		StringBuffer output = new StringBuffer();
+		String t1 = "";
+		String t2 = "";
+		String t3 = "";
+		String temp = "";
+
+		String question = null;
+
+		int i = 0;
+
+		String row1 = "<tr>"
+			+"<td height=\"20\" class=textblackTH width=\"02%\" align=\"right\" valign=\"top\"><| counter |>.&nbsp;</td>"
+			+"<td class=\"textblackTH\" width=\"98%\" valign=\"top\"><| question |></td>"
+			+"</tr>";
+
+		String row2 = "<tr>"
+			+"<td height=\"20\" class=\"textblackTH\" width=\"02%\" align=\"right\" valign=\"top\">&nbsp;</td>"
+			+"<td class=\"datacolumn\" width=\"98%\" valign=\"top\"><| answer |></td>"
+			+"</tr>";
+
+		String extra = "<tr>"
+			+"<td height=\"20\" colspan=\"2\" valign=\"top\">"
+			+ "<fieldset class=\"FIELDSET100\"><legend>Other Departments</legend><| extra |></fieldset><br/>"
+			+ "</td>"
+			+"</tr>";
+
+		try{
+			String auditby = "";
+			String auditdate = "";
+			String title = "";
+			String effectiveDate = "";
+			String description = "";
+			String degreeDescr = "";
+			String divisionDescr = "";
+			int degree = 0;
+			int division = 0;
+
+			// make sure we have and id to work with. if one exists,
+			// it has to be greater than 0
+			if (!"".equals(kix)){
+				Programs program = getProgram(conn,campus,kix);
+				if ( program != null ){
+					title = program.getTitle();
+					effectiveDate  = program.getEffectiveDate();
+					description = program.getDescription();
+					degreeDescr = program.getDegreeDescr();
+					divisionDescr = program.getDivisionDescr();
+					auditby = program.getAuditBy();
+					auditdate = program.getAuditDate();
+					degree = program.getDegree();
+					division = program.getDivision();
+
+					output.append("<table width=\"100%\" summary=\"ase1\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" width=\"25%\" valign=\"top\">Degree:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + degreeDescr + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" width=\"25%\" valign=\"top\">Division:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + divisionDescr + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" valign=\"top\">Title:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + title + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" valign=\"top\">Description:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + description + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" valign=\"top\">Effective Date:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + effectiveDate + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td colspan=\"2\"><br/><hr size=\"1\"></td>"
+						+ "</tr>"
+						+ "</table>");
+
+					ArrayList answers = getProgramAnswers(conn,campus,kix,type);
+					ArrayList columns = getColumnNames(conn,campus);
+
+					String column = "";
+
+					if (answers != null){
+
+						i = 0;
+
+						output.append("<table summary=\"ase2\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">");
+
+						// in create mode, LEE only prints 7
+						boolean isNewProgram = false;
+						isNewProgram = isNewProgram(conn,campus,title,degree,division);
+						int itemsToPrint = answers.size();
+
+						if (isNewProgram && "LEE".equals(campus))
+							itemsToPrint = Constant.PROGRAM_ITEMS_TO_PRINT_ON_CREATE;
+
+						String sql = "SELECT questionseq,question FROM tblProgramQuestions "
+										+ "WHERE campus=? AND include='Y' ORDER BY questionseq";
+						PreparedStatement ps = conn.prepareStatement(sql);
+						ps.setString(1,campus);
+						ResultSet rs = ps.executeQuery();
+						while(rs.next() && i < itemsToPrint){
+							t1 = row1;
+							t1 = t1.replace("<| counter |>",AseUtil.nullToBlank(rs.getString("questionseq")));
+							t1 = t1.replace("<| question |>",AseUtil.nullToBlank(rs.getString("question")));
+							output.append(t1);
+
+							t2 = row2;
+							t2 = t2.replace("<| answer |>",(String)answers.get(i));
+
+							output.append(t2);
+
+							column = (String)columns.get(i);
+
+							String enableOtherDepartmentLink = IniDB.getIniByCampusCategoryKidKey1(conn,campus,"System","EnableOtherDepartmentLink");
+							if ((Constant.ON).equals(enableOtherDepartmentLink)){
+								if (column != null && column.indexOf(Constant.PROGRAM_RATIONALE) > -1){
+									temp = ExtraDB.getOtherDepartments(conn,
+																					Constant.PROGRAM_RATIONALE,
+																					campus,
+																					kix,
+																					false,
+																					true);
+
+									if (temp != null && temp.length() > 0){
+										t3 = extra;
+										t3 = t3.replace("<| extra |>",temp);
+										output.append(t3);
+									} // temp
+								} // PROGRAM_RATIONALE
+							} // enableOtherDepartmentLink
+
+							++i;
+						}
+						rs.close();
+						ps.close();
+
+						output.append("</table>");
+
+					} // answers != null
+
+					String attachments = ProgramsDB.listProgramAttachments(conn,campus,kix);
+					if (attachments != null && attachments.length() > 0){
+						output.append("<table summary=\"ase3\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\"><tr><td>");
+						output.append("<fieldset class=\"FIELDSET100\">"
+							+ "<legend>Attachments</legend>"
+							+ Html.BR()
+							+ attachments
+							+ "</fieldset>" );
+							output.append("</td></tr></table>");
+					}
+
+					String outineSubmissionWithProgram = IniDB.getIniByCampusCategoryKidKey1(conn,campus,"System","OutineSubmissionWithProgram");
+					int counter = ProgramsDB.countPendingOutlinesForApproval(conn,campus,division);
+					if (outineSubmissionWithProgram.equals(Constant.ON) && counter > 0){
+						output.append("<table summary=\"ase4\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\"><tr><td>");
+						output.append("<fieldset class=\"FIELDSET100\">"
+							+ "<legend>Outlines Associated with this Program</legend>"
+							+ Html.BR()
+							+ Helper.listOutlinesForSubmissionWithProgram(conn,campus,division)
+							+ "</fieldset>" );
+							output.append("</td></tr></table>");
+					}
+
+					output.append("<table summary=\"ase5\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">"
+						+ "<tr>"
+						+ "<td colspan=\"2\"><br/><hr size=\"1\"></td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" width=\"25%\" valign=\"top\">Campus:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + campus + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" width=\"25%\" valign=\"top\">Updated By:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + auditby + "</td>"
+						+ "</tr>"
+						+ "<tr>"
+						+ "<td class=\"textblackth\" width=\"25%\" valign=\"top\">Updated Date:&nbsp;</td>"
+						+ "<td class=\"datacolumn\" valign=\"top\">" + auditdate + "</td>"
+						+ "</tr>"
+						+ "</table>");
+
+					temp = "<table summary=\"ase6\" border=\"0\" width=\"100%\" id=\"table1\" cellspacing=2 cellpadding=8>"
+							+ "<tr><td>"
+							+ output.toString()
+							+ "</td></tr>"
+							+ "</table>";
+				} // program != null
+			} // kix != null
+
+		} catch (SQLException e) {
+			logger.fatal("OutlinesWithComments: viewProgram - " + e.toString());
+		} catch (Exception ex) {
+			logger.fatal("OutlinesWithComments: viewProgram - " + ex.toString());
+		}
+
+		return temp;
+	}
+
+	/*
+	 * Returns true if the kix is a program
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	kix		String
+	 * <p>
+	 */
+	public static boolean isAProgram(Connection conn,String kix) throws SQLException {
+
+		//Logger logger = Logger.getLogger("test");
+
+		boolean isPogram = false;
+
+		try {
+			String sql = "SELECT degreeid FROM tblPrograms WHERE historyid=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,kix);
+			ResultSet rs = ps.executeQuery();
+			isPogram = rs.next();
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			logger.fatal("OutlinesWithComments: isAProgram - " + e.toString());
+		} catch (Exception e) {
+			logger.fatal("OutlinesWithComments: isAProgram - " + e.toString());
+		}
+
+		return isPogram;
+	}
+
+	/**
+	 * getProgram
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * @param	kix		String
+	 * <p>
+	 * @return	Programs
+	 */
+	public static Programs getProgram(Connection conn,String campus,String kix) {
+
+		String sql = "SELECT * "
+					+ "FROM vw_ProgramForViewing "
+					+ "WHERE campus=? "
+					+ "AND historyid=?";
+
+		Programs program = null;
+
+		try{
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			ps.setString(2,kix);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				program = new Programs();
+				program.setAuditBy(AseUtil.nullToBlank(rs.getString("Updated By")));
+
+				AseUtil aseUtil = new AseUtil();
+				program.setAuditDate(aseUtil.ASE_FormatDateTime(rs.getString("Updated Date"),Constant.DATE_DATETIME));
+
+				program.setCampus(AseUtil.nullToBlank(rs.getString("campus")));
+				program.setDegree(rs.getInt("degreeid"));
+				program.setDegreeDescr(AseUtil.nullToBlank(rs.getString("degreeTitle")));
+				program.setDegreeTitle(AseUtil.nullToBlank(rs.getString("degreeTitle")));
+				program.setDescription(AseUtil.nullToBlank(rs.getString("descr")));
+				program.setDivision(rs.getInt("divisionid"));
+				program.setDivisionDescr(AseUtil.nullToBlank(rs.getString("divisionname")));
+				program.setDivisionName(AseUtil.nullToBlank(rs.getString("divisionname")));
+				program.setEffectiveDate(AseUtil.nullToBlank(rs.getString("Effective Date")));
+				program.setDescription(AseUtil.nullToBlank(rs.getString("descr")));
+				program.setHistoryId(AseUtil.nullToBlank(rs.getString("historyid")));
+				program.setProgram(AseUtil.nullToBlank(rs.getString("program")));
+				program.setProgress(AseUtil.nullToBlank(rs.getString("progress")));
+				program.setProposer(AseUtil.nullToBlank(rs.getString("proposer")));
+				program.setRoute(rs.getInt("route"));
+				program.setSubProgress(AseUtil.nullToBlank(rs.getString("subprogress")));
+				program.setTitle(AseUtil.nullToBlank(rs.getString("title")));
+				program.setType(AseUtil.nullToBlank(rs.getString("type")));
+
+				aseUtil = null;
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			logger.fatal("OutlinesWithComments: getProgram - " + e.toString());
+		} catch (Exception ex) {
+			logger.fatal("OutlinesWithComments: getProgram - " + ex.toString());
+		}
+
+		return program;
+	}
+
+	/*
+	 * Returns true if the program exists in a particular title and campus
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * @param	title		String
+	 * @param	degree	int
+	 * @param	division	int
+	 * <p>
+	 */
+	public static boolean isNewProgram(Connection conn,String campus,String title,int degree,int division) throws SQLException {
+
+		//Logger logger = Logger.getLogger("test");
+
+		boolean newProgram = false;
+
+		try {
+			String sql = "SELECT COUNT(degreeid) AS counter "
+							+ "FROM tblPrograms "
+							+ "WHERE campus=? "
+							+ "AND title=? "
+							+ "AND degreeid=? "
+							+ "AND divisionid=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			ps.setString(2,title);
+			ps.setInt(3,degree);
+			ps.setInt(4,division);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()){
+				int count = rs.getInt("counter");
+
+				// there should only be 1 returned record to be new
+				if (count == 1)
+					newProgram = true;
+			}
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			logger.fatal("OutlinesWithComments: isNewProgram - " + e.toString());
+		} catch (Exception e) {
+			logger.fatal("OutlinesWithComments: isNewProgram - " + e.toString());
+		}
+
+		return newProgram;
+	}
+
+	/**
+	 * getColumnNames
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * <p>
+	 * @return	ArrayList
+	 */
+	public static ArrayList getColumnNames(Connection conn,String campus) {
+
+		ArrayList<String> columns = new ArrayList<String>();
+
+		String sql = "SELECT Field_Name "
+					+ "FROM vw_programitems "
+					+ "WHERE campus=? "
+					+ "AND include='Y' "
+					+ "AND seq>0 "
+					+ "ORDER BY Seq";
+
+		try{
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				columns.add(AseUtil.nullToBlank(rs.getString("Field_Name")));
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			logger.fatal("OutlinesWithComments: getColumnNames - " + e.toString());
+		} catch (Exception ex) {
+			logger.fatal("OutlinesWithComments: getColumnNames - " + ex.toString());
+		}
+
+		return columns;
+	}
+
+	/**
+	 * getProgramAnswers
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * @param	kix		String
+	 * @param	type		String
+	 * <p>
+	 * @return	ArrayList
+	 */
+	public static ArrayList getProgramAnswers(Connection conn,String campus,String kix,String type) {
+
+		//Logger logger = Logger.getLogger("test");
+
+		ArrayList<String> answers = null;
+
+		int numberOfAnswers = 0;
+		String questions = "";
+
+		try{
+			questions = QuestionDB.getProgramColumns(conn,campus);
+
+			if (questions != null){
+				String sql = "SELECT " + questions + " FROM tblPrograms WHERE campus=? AND historyid=? AND type=?";
+				numberOfAnswers = ProgramsDB.countProgramQuestions(conn,campus);
+				if (numberOfAnswers > 0){
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setString(1,campus);
+					ps.setString(2,kix);
+					ps.setString(3,type);
+					ResultSet rs = ps.executeQuery();
+					if(rs.next()){
+						answers = new ArrayList<String>();
+						String[] aQuestions = questions.split(",");
+						for(int i=0; i<numberOfAnswers; i++){
+							String html = AseUtil.nullToBlank(rs.getString(aQuestions[i]));
+							html = takeAwayHTML(html);
+							html = Jsoup.parse(html).text();
+							html = putBackHTML(html);
+							answers.add(html);
+						}
+					}
+					rs.close();
+					ps.close();
+				}
+			} // questions != null
+
+		} catch (SQLException e) {
+			logger.fatal("ProgramsDB.getProgramAnswers\n" + questions + "\n" + e.toString());
+		} catch (Exception e) {
+			logger.fatal("ProgramsDB.getProgramAnswers\n" + questions + "\n" + e.toString());
+		}
+
+		return answers;
+	}
+
+	public static String takeAwayHTML(String html){
+
+		return html.replace("</p>","\n")
+			.replace("<ol>","$ol$")
+			.replace("</ol>","$lo$")
+			.replace("<ul>","$ul$")
+			.replace("</ul>","$lu$")
+			.replace("<li>","$li$")
+			.replace("</li>","$il$")
+			;
+	}
+
+	public static String putBackHTML(String html){
+
+		return html.replace("</p>","$p$")
+			.replace("$ol$","<ol>")
+			.replace("$lo$","</ol>")
+			.replace("$ul$","<ul>")
+			.replace("$lu$","</ul>")
+			.replace("$li$","<li>")
+			.replace("$il$","</li>")
+			;
+
+	}
+
+}

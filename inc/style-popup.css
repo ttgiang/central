@@ -1,0 +1,54 @@
+BODY {
+	PADDING-BOTTOM: 0px; 
+	MARGIN: 0px; 
+	PADDING-LEFT: 0px; 
+	PADDING-RIGHT: 0px; 
+	BACKGROUND: #e1e1e1; 
+	PADDING-TOP: 0px
+}
+
+#wrap {
+	MARGIN: 0px auto; 
+	WIDTH: 1075px
+}
+
+#container {
+	WIDTH: 969px; 
+	FLOAT: left
+}
+
+#container_construction {
+	PADDING-BOTTOM: 20px; 
+	PADDING-LEFT: 10px; 
+	WIDTH: 1075px; 
+	PADDING-RIGHT: 0px; 
+	BACKGROUND: url(../images/cont_repeat1_new.gif) repeat-y 0px 0px; 
+	FLOAT: left; 
+	HEIGHT: auto; 
+	PADDING-TOP: 20px
+}
+
+#box_bgg2 {
+	WIDTH: 580; 
+	BACKGROUND: url(../images/bg_box2.jpg) repeat-y 0px 0px; 
+	FLOAT: left; 
+	HEIGHT: 100%;
+}
+
+#box_bgg2 H3 {
+	MARGIN-TOP: 10px; 
+	COLOR: #dc7803; 
+	FONT-SIZE: 20px; 
+	FONT-WEIGHT: normal;  
+	TEXT-ALIGN: center;
+}
+
+#box_bgg2 P {
+	MARGIN-TOP: 10px; 	
+	MARGIN-BOTTOM: 15px; 
+	COLOR: #313b3e; 
+	MARGIN-LEFT: 20px; 
+	FONT-SIZE: 13px; 
+	FONT-WEIGHT: normal
+}
+

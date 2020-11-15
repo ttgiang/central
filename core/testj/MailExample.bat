@@ -1,0 +1,1 @@
+java MailExample mail.ficoh.net thanh.giang@ficoh.com thanh.giang@ficoh.com

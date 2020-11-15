@@ -1,0 +1,40 @@
+.popShow {
+	DISPLAY: block
+}
+.popHide {
+	DISPLAY: none
+}
+.help {
+	RIGHT: 5px; POSITION: absolute; TOP: 5px
+}
+
+#help_container {
+	BORDER-RIGHT: #666 2px solid; 
+	PADDING-RIGHT: 10px; 
+	BORDER-TOP: #666 2px solid; 
+	PADDING-LEFT: 10px; Z-INDEX: 100; 
+	BACKGROUND: #fff; LEFT: 50%; 
+	PADDING-BOTTOM: 10px; 
+	MARGIN: 0px 0px 0px -400px; 
+	OVERFLOW: auto; 
+	BORDER-LEFT: #666 2px solid; 
+	WIDTH: 800px; 
+	PADDING-TOP: 10px; 
+	BORDER-BOTTOM: #666 2px solid; 
+	POSITION: absolute; 
+	TOP: 100px; 
+	HEIGHT: 400px; 
+	TEXT-ALIGN: left
+}
+#help_container .help_close {
+	DISPLAY: block; TEXT-ALIGN: center
+}
+#help_container H2 {
+	MARGIN: 0.5em 0px 0px
+}
+#help_container UL LI {
+	MARGIN-BOTTOM: 1.5em; MARGIN-LEFT: -0.5em
+}
+#help_container UL LI UL LI {
+	MARGIN-BOTTOM: 0.5em; MARGIN-LEFT: -0.5em
+}

@@ -1,0 +1,18 @@
+crsedt
+	totalTabs should be increase/decrease
+	add new tab as final int
+	sTabs = "taboff,taboff,taboff,taboff,taboff".split(",");
+	sTabBg = "bgtaboff,bgtaboff,bgtaboff,bgtaboff,bgtaboff".split(",");
+	ini = "Banner,Course,Campus,Status,Forms".split(",");
+	
+crsedt2
+	logic for display of data
+	
+crsedt3
+	read and prep data for display
+
+crsedt7
+	add tab name
+
+constant
+	add new constant

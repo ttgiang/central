@@ -1,0 +1,85 @@
+<STYLE type="text/css">
+
+ /* Set the special link colors */
+
+  a {
+    FONT: 9px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #29166F;
+	background-color: transparent;
+	text-decoration: none;
+  }
+
+  a:link {
+    FONT: 9px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #29166F;
+	background-color: transparent;
+	text-decoration: none;
+  }
+
+  a:visited {
+    FONT: 9px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #29166F;
+	background-color: transparent;
+	text-decoration: none;
+  }
+
+  a:hover {
+	color: #75C5F0;
+	background-color: transparent;
+	text-decoration: none;
+  }
+
+  a:active {
+	color: #75C5F0;
+	background-color: transparent;
+	text-decoration: none;
+   }
+
+  a.selected {
+    FONT: 9px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+    color: #75C5F0;
+	background-color: transparent;
+	text-decoration: none;
+  }
+
+  a.header {
+     FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+     font-weight: bold;
+     color: #fff;
+     background-color: transparent;
+  }
+
+  a.header:link {
+     FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+     font-weight: bold;
+     color: #fff;
+     background-color: transparent;
+  }
+
+  a.header:visited {
+     FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+     font-weight: bold;
+     color: #fff;
+     background-color: transparent;
+  }
+
+  a.header:hover {
+     color: #fff;
+     background-color: #75C5F0;
+     text-decoration: none;
+  }
+
+  a.header:active {
+     color: #fff;
+     background-color: transparent;
+  }
+
+
+  .mail a:link {
+   }
+
+</STYLE>

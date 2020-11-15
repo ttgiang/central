@@ -1,0 +1,49 @@
+emailApproveOutline.properties,com\ase\aseutil\CourseApproval.java(334): mailer.setSubject("emailApproveOutline");
+emailApproveProgram.properties,com\ase\aseutil\ProgramApproval.java(300): mailer.setSubject("emailApproveProgram");
+--emailCancelOutlineApproval.properties
+emailCoreqAdded.properties,com\ase\aseutil\RequisiteDB.java(324): properties = "emailCoreqAdded";
+emailCrossListAdded.properties,com\ase\aseutil\XRefDB.java(313): "emailCrossListAdded",
+emailCrossListingApproval.properties,com\ase\aseutil\XRefDB.java(299): "emailCrossListingApproval",
+emailCrossListingApproved.properties,com\ase\aseutil\OutlineServlet.java(272): property = "emailCrossListingApproved";
+emailMessagePosted.properties,com\ase\aseutil\ForumDB.java(950): "emailMessagePosted",
+emailNotifiedWhenApproved.properties,com\ase\aseutil\CourseApproval.java(851): DistributionDB.notifyDistribution(conn,campus,alpha,num,"",mailer.getFrom(),"","","emailNotifiedWhenApproved","NotifiedWhenApproved",user);
+emailNotifiedWhenCopy.properties,com\ase\aseutil\CourseCopy.java(119): "emailNotifiedWhenCopy",
+emailNotifiedWhenDelete.properties
+emailNotifiedWhenProgramApproved.properties
+emailNotifiedWhenRename.properties
+emailOutlineApprovalPacketRequest.properties
+emailOutlineApprovalRequest.properties
+emailOutlineCancelApproval.properties
+emailOutlineCancelReview.properties
+emailOutlineReassigned.properties
+emailOutlineRecalledApproval.properties
+emailOutlineReject.properties
+emailOutlineReviewCompleted.properties
+emailOutlineTerminationNotice.properties
+emailPrereqAdded.properties
+emailProgramAdded.properties
+emailProgramApproval.properties
+emailProgramApprovalRequest.properties
+emailProgramApproved.properties
+emailProgramReject.properties
+emailProgramReviewCompleted.properties
+emailProperties.properties
+emailRejectOutline.properties
+emailRequiredElectiveAdded.properties
+emailRequiredOrElectiveApproval.properties
+emailRequisiteApproval.properties
+emailRequisiteApproved.properties
+emailRequisiteNotApproved.properties
+emailReviewerComment.properties
+emailReviewerInvite.properties
+emailSendOnce.properties
+emailSLOApprovalCancelled.properties
+emailSLOApprovalCompleted.properties
+emailSLOApprovalRequest.properties
+emailSLOReviewCancelled.properties
+emailSLOReviewCompleted.properties
+emailSLOReviewRequest.properties
+emailTest.properties
+
+
+emailApproveOutlineToApprovers

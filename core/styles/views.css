@@ -1,0 +1,103 @@
+div.file-thumbnail,
+div.file-icon,
+div.file-tile,
+div.file-list,
+div.file-details.file-directory {
+    float: left;
+    position: relative;
+    overflow: hidden;
+    font: 13px sans-serif;
+    margin: 3px;
+    padding: 4px;
+    border: none;
+    cursor: pointer;
+}
+div.file-thumbnail img {
+    padding: 35px;
+    border: 1px solid rgb(232, 232, 232);
+}
+div.file-thumbnail div.file-image-thumb-wrapper {
+    width:  118px;
+    height: 118px;
+    border: 1px solid rgb(232, 232, 232);
+    padding-top: 4px;
+}
+div.file-thumbnail img.file-image-thumb {
+    padding: 0;
+    border: none;
+}
+div.file-list {
+    width: 250px;
+    height: 20px;
+}
+div.file-details {
+    margin: 3px;
+    padding: 4px;
+    font: 12px sans-serif;
+    cursor: pointer;
+}
+div.file-thumbnail {
+    width: 120px;
+    height: 155px;
+}
+div.file-thumbnail > div {
+    text-align: center;
+}
+div.file-thumbnail span.file-name {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 120px;
+    text-align: center;
+}
+div.file-icon {
+    width: 100px;
+    height: 60px;
+    text-align: center;
+}
+div.file-details.file-directory,
+div.file-tile {
+    width: 200px;
+    height: 40px;
+}
+div.file-details.file-registry-doc {
+    clear: both;
+    float: none;
+}
+div.file-tile > div > div.file-caption-wrapper,
+div.file-details.file-directory > div > div.file-caption-wrapper,
+div.file-list > div > div.file-caption-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 42px;
+}
+div.file-list > div > div.file-caption-wrapper {
+    top: 3px;
+    left: 25px;
+}
+div.file-details.file-registry-doc > div > div.file-caption-wrapper > span {
+    float: right;
+}
+div.file-details.file-registry-doc h4 {
+    margin: 0 0 0 40px;
+    border-bottom: 1px dotted black;
+}
+div.file-details.file-registry-doc p {
+    margin: 3px 0 0 40px;
+}
+div.file-details div.file-icon-wrapper,
+div.file-tile div.file-icon-wrapper,
+div.file-list div.file-icon-wrapper {
+    float: left;
+}
+div.file-highlight-on,
+div.file-details.file-highlight-on {
+    background: url('images/stripes_darker.png');
+    padding: 4px;
+}
+div.file-highlight-off,
+div.file-details.file-highlight-off {
+    background: transparent;
+    padding: 4px;
+    border: none;
+}

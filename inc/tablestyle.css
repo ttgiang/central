@@ -1,0 +1,17 @@
+<STYLE>
+	A.TopMenuLink:link {
+		FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: none
+	}
+	A.TopMenuLink:visited {
+		FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: none
+	}
+	A.TopMenuLink:hover {
+		FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: underline
+	}
+	A.TopMenuLink:active {
+		FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: underline
+	}
+	TD.HeaderRow {
+		FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; BACKGROUND-COLOR: #3d84cc; TEXT-DECORATION: none
+	}
+</STYLE>

@@ -1,0 +1,5 @@
+		.upload_field { width: 90%; display: block; }
+		em.alt { color: #999; }
+		#upload_files fieldset { border: 1px solid #ccc; -moz-border-radius: 7px; -webkit-border-radius: 7px; }
+		#upload_files legend { font-size: 1.2em; }
+		fieldset.alt { background-color: #f7f7ff; }

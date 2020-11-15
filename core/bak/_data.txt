@@ -1,0 +1,33 @@
+// retrieve values saved to db
+if ((Constant.COURSE_OBJECTIVES).equals(dst)){
+	if ((Constant.COURSE_COMPETENCIES).equals(src))
+		selected = CompetencyDB.getSelectedSLOs(conn,kix,xiAxis[i]);
+	else if ((Constant.COURSE_CONTENT).equals(src))
+		selected = ContentDB.getSelectedSLOs(conn,kix,xiAxis[i]);
+	else
+		selected = LinkerDB.getSelectedLinkedItem(conn,kix,src,dstFullName,ix);
+}
+else
+	selected = LinkerDB.getSelectedLinkedItem(conn,kix,src,dstFullName,ix);
+
+// saving data
+if ((Constant.COURSE_CONTENT).equals(src) && "SLO".equals(dstFullName))
+	rowsAffected = SLODB.saveLinkedData2(conn,
+												campus,
+												src,
+												kix,
+												user,
+												message,
+												Integer.parseInt(xiAxis[i]));
+else
+	rowsAffected = LinkedUtil.saveLinkedData2(conn,
+															campus,
+															src,
+															dstFullName,
+															kix,
+															user,
+															message,
+															Integer.parseInt(xiAxis[i]));
+
+
+X18 - X43 - LinkedUtil.saveLinkedData2

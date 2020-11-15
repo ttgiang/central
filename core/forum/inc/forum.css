@@ -1,0 +1,314 @@
+	<style type="text/css">
+
+		/* The specific style rules used to suggest rendering */
+		/* for the CSS table design example, starts here */
+
+		DIV.ase-table-row-header {
+			border-bottom:1px solid #CCC;
+			background-color:CCC;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+			font-weight:bold;
+			text-align:left;
+		}
+
+		DIV.ase-table-row-headerX {
+			border-bottom:1px solid #CCC;
+			background-color:FFF8C7;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+			font-weight:bold;
+			text-align:left;
+		}
+
+		DIV.ase-table-row-detail {
+			border-bottom:1px solid #CCC;
+			background-color:white;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+		}
+
+		DIV.ase-table-row-detail-alt {
+			border-bottom:1px solid #CCC;
+			background-color:#e1e1e1;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+		}
+
+		DIV.ase-table-row-detail:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-alt:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-highlight {
+			border-bottom:1px solid #CCC;
+			background-color:#FFF8C7;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+		}
+
+		DIV.ase-table-row-detail-highlight:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-highlight-alt:hover {
+			background-color:#FF9;
+		}
+
+
+		DIV.ase-table-row-detail-no-border {
+			background-color:white;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+		}
+
+		DIV.ase-table-row-detail-no-border:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-no-border-alt:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-highlight-no-border {
+			background-color:#FFF8C7;
+			color: #000000;
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: auto;
+			padding: 2;
+			text-align: left;
+			width: 100%;
+		}
+
+		DIV.ase-table-row-detail-highlight-no-border:hover {
+			background-color:#FF9;
+		}
+
+		DIV.ase-table-row-detail-highlight-no-border-alt:hover {
+			background-color:#FF9;
+		}
+
+		.outlineitem {
+			width:100%;
+			float:left;
+		}
+
+		.questionnumber {
+			width:03%;
+			float:left;
+			text-align:left;
+			font-weight:bold;
+			color: #525252;
+			margin-bottom:5px;
+		}
+
+		.question {
+			width:97%;
+			float:left;
+			text-align:left;
+			color: #525252;
+			margin-bottom:5px;
+		}
+
+		.response {
+			width:97%px;
+			float:left;
+			text-align:left;
+			color: #083772;
+			margin-bottom:5px;
+		}
+
+		#proposerResponse {
+			width:100%;
+			text-align:left;
+			border-color: #fff;
+			background-color: #fdedc1;
+			color: #083772;
+			border:0px;
+		}
+
+		DIV.ase-table-layer {
+			color: #000000;
+			margin-top: 10;
+			padding: 0;
+			text-align: left;
+			width: 98%;
+			border:1px solid #CCC;
+		}
+
+		/* Rules in detail that is used to suggest rendering for the  10 by 5 int. */
+		/* product table example. I still use some of the generic rules as found   */
+		/* above and below, but still..                                            */
+
+		DIV.col1 {border: none; float: left; margin: 0; padding: 0; width: 01%; text-align: left;}
+		DIV.col2 {border: none; float: left; margin: 0; padding: 0; width: 02%; text-align: left;}
+		DIV.col3 {border: none; float: left; margin: 0; padding: 0; width: 03%; text-align: left;}
+		DIV.col4 {border: none; float: left; margin: 0; padding: 0; width: 04%; text-align: left;}
+		DIV.col5 {border: none; float: left; margin: 0; padding: 0; width: 05%; text-align: left;}
+		DIV.col6 {border: none; float: left; margin: 0; padding: 0; width: 06%; text-align: left;}
+		DIV.col7 {border: none; float: left; margin: 0; padding: 0; width: 07%; text-align: left;}
+		DIV.col8 {border: none; float: left; margin: 0; padding: 0; width: 08%; text-align: left;}
+		DIV.col9 {border: none; float: left; margin: 0; padding: 0; width: 09%; text-align: left;}
+		DIV.col10 {border: none; float: left; margin: 0; padding: 0; width: 10%; text-align: left;}
+		DIV.col11 {border: none; float: left; margin: 0; padding: 0; width: 11%; text-align: left;}
+		DIV.col12 {border: none; float: left; margin: 0; padding: 0; width: 12%; text-align: left;}
+		DIV.col13 {border: none; float: left; margin: 0; padding: 0; width: 13%; text-align: left;}
+		DIV.col14 {border: none; float: left; margin: 0; padding: 0; width: 14%; text-align: left;}
+		DIV.col15 {border: none; float: left; margin: 0; padding: 0; width: 15%; text-align: left;}
+		DIV.col16 {border: none; float: left; margin: 0; padding: 0; width: 16%; text-align: left;}
+		DIV.col17 {border: none; float: left; margin: 0; padding: 0; width: 17%; text-align: left;}
+		DIV.col18 {border: none; float: left; margin: 0; padding: 0; width: 18%; text-align: left;}
+		DIV.col19 {border: none; float: left; margin: 0; padding: 0; width: 19%; text-align: left;}
+		DIV.col20 {border: none; float: left; margin: 0; padding: 0; width: 20%; text-align: left;}
+
+		DIV.col80 {border: none; float: left; margin: 0; padding: 0; width: 80%; text-align: left;}
+		DIV.col81 {border: none; float: left; margin: 0; padding: 0; width: 81%; text-align: left;}
+		DIV.col82 {border: none; float: left; margin: 0; padding: 0; width: 82%; text-align: left;}
+		DIV.col83 {border: none; float: left; margin: 0; padding: 0; width: 83%; text-align: left;}
+		DIV.col84 {border: none; float: left; margin: 0; padding: 0; width: 84%; text-align: left;}
+		DIV.col85 {border: none; float: left; margin: 0; padding: 0; width: 85%; text-align: left;}
+		DIV.col86 {border: none; float: left; margin: 0; padding: 0; width: 86%; text-align: left;}
+		DIV.col87 {border: none; float: left; margin: 0; padding: 0; width: 87%; text-align: left;}
+		DIV.col88 {border: none; float: left; margin: 0; padding: 0; width: 88%; text-align: left;}
+		DIV.col89 {border: none; float: left; margin: 0; padding: 0; width: 89%; text-align: left;}
+		DIV.col90 {border: none; float: left; margin: 0; padding: 0; width: 90%; text-align: left;}
+		DIV.col91 {border: none; float: left; margin: 0; padding: 0; width: 91%; text-align: left;}
+		DIV.col92 {border: none; float: left; margin: 0; padding: 0; width: 92%; text-align: left;}
+		DIV.col93 {border: none; float: left; margin: 0; padding: 0; width: 93%; text-align: left;}
+		DIV.col94 {border: none; float: left; margin: 0; padding: 0; width: 94%; text-align: left;}
+		DIV.col95 {border: none; float: left; margin: 0; padding: 0; width: 95%; text-align: left;}
+		DIV.col96 {border: none; float: left; margin: 0; padding: 0; width: 96%; text-align: left;}
+		DIV.col97 {border: none; float: left; margin: 0; padding: 0; width: 97%; text-align: left;}
+		DIV.col98 {border: none; float: left; margin: 0; padding: 0; width: 98%; text-align: left;}
+		DIV.col99 {border: none; float: left; margin: 0; padding: 0; width: 99%; text-align: left;}
+
+		/* Watch out for this DIV... rule, it appears every now and then */
+
+		DIV.space-line {
+		  clear: both;
+		  margin: 0;
+		  padding: 0;
+		  width: auto;
+		}
+
+		P.ase-text {
+		  margin: 0; padding: 0.3em 0.3em 0 0.3em;
+		  font-style: normal;
+		  font-size: 1em;
+		  text-align: left;
+		  text-indent: 0;
+		  width: auto;
+		}
+
+		#warnmessage {
+			 border-color: #fad163;
+			 background-color: #fdedc1;
+		}
+
+		/* End of layer specific style rule set */
+
+		a {
+			color: #1982d1;
+			text-decoration: none;
+		}
+		a:focus,
+		a:active,
+		a:hover {
+			text-decoration: underline;
+		}
+
+		ol.commentlist { list-style:none; margin:0 0 1em; padding:0; text-indent:0; }
+		ol.commentlist li { text-align: left; }
+		ol.commentlist li.alt { }
+		ol.commentlist li.bypostauthor {}
+		ol.commentlist li.byuser {}
+		ol.commentlist li.comment-author-admin {}
+		ol.commentlist li.comment { border-bottom:1px dotted #666; padding:1em; }
+		ol.commentlist li.comment div.comment-author {}
+		ol.commentlist li.comment div.vcard { font:normal 16px georgia,times,serif; }
+		ol.commentlist li.comment div.vcard cite.fn { font-style:normal;}
+		ol.commentlist li.comment div.vcard cite.fn a.url {}
+		ol.commentlist li.comment div.vcard img.avatar { border:2px solid #ccc; float:right; margin:0 0 1em 1em; }
+		ol.commentlist li.comment div.vcard img.avatar-32 {}
+		ol.commentlist li.comment div.vcard img.photo {}
+		ol.commentlist li.comment div.vcard span.says {}
+		ol.commentlist li.comment div.vcard span.fn {color: #1982d1;}
+		ol.commentlist li.comment div.vcard span.fnx {float: left; color: #1982d1;}
+		ol.commentlist li.comment div.commentmetadata {}
+		ol.commentlist li.comment div.comment-meta { font-size:9px; }
+		ol.commentlist li.comment div.comment-meta a { color:#ccc; }
+		ol.commentlist li.comment p { font-size:11px; margin:0 0 1em; }
+		ol.commentlist li.comment ul { font-size:11px; list-style:square; margin:0 0 1em 2em; }
+		ol.commentlist li.comment div.reply { font-size:11px; }
+		ol.commentlist li.comment div.reply a { font-weight:bold; }
+		ol.commentlist li.comment ul.children { list-style:none; margin:1em 0 0; text-indent:0; }
+		ol.commentlist li.comment ul.children li {}
+		ol.commentlist li.comment ul.children li.alt {}
+		ol.commentlist li.comment ul.children li.bypostauthor {}
+		ol.commentlist li.comment ul.children li.byuser {}
+		ol.commentlist li.comment ul.children li.comment {}
+		ol.commentlist li.comment ul.children li.comment-author-admin {}
+		ol.commentlist li.comment ul.children li.depth-1 { border-left:2px solid #555; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-2 { border-left:2px solid #999; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-3 { border-left:2px solid #ccc; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-4 { border-left:2px solid #198; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-5 { border-left:2px solid #f6f; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-6 { border-left:2px solid #6f6; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-7 { border-left:2px solid #2d1; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-8 { border-left:2px solid #666; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-9 { border-left:2px solid #fad; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-10 { border-left:2px solid #999; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-11 { border-left:2px solid #ccc; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-12 { border-left:2px solid #198; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-13 { border-left:2px solid #f6f; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-14 { border-left:2px solid #6f6; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-15 { border-left:2px solid #2d1; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-16 { border-left:2px solid #666; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-17 { border-left:2px solid #2d1; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-18 { border-left:2px solid #666; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-19 { border-left:2px solid #fad; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.depth-20 { border-left:2px solid #999; margin:0 0 .10em .10em; }
+		ol.commentlist li.comment ul.children li.odd {}
+		ol.commentlist li.even { background:#fff; }
+		ol.commentlist li.odd { background:#f6f6f6; }
+		ol.commentlist li.highlight {color: #1982d1;}
+		ol.commentlist li.parent { border-left:2px solid #111; }
+		ol.commentlist li.thread-alt { border: 1px solid #ccc; }
+		ol.commentlist li.thread-even {}
+		ol.commentlist li.thread-odd {}
+
+	  </style>

@@ -1,0 +1,27 @@
+copyright=Copyright ©1999-2007 All rights reserved.
+databaseDriver=SQL
+debugMode=NO
+domain=hawaii.edu
+#
+href=http://cctest.its.hawaii.edu:8080/central/core/cas.jsp
+logFile=/tomcat/webapps/central/logs/ase.log
+traceFile=/tomcat/webapps/central/logs/trace.log
+logger=/tomcat/webapps/central/core/logger/
+root=/tomcat/webapps
+#
+aseUploadFolder=/centraldocs/docs/campus/
+aseUploadTempFolder=/central/docs/temp/
+aseWhiteList=.doc,.xls,.pdf,.mpg
+aseBlackList=.exe,.com,.bat,.vbs
+#
+OS=Windows
+sendMail=YES
+sendMailDebug=NO
+#smtp=mail.leeward.hawaii.edu
+smtp=mail.hawaii.edu
+mailName=itguser
+mailAccess=itsworking2
+#
+server=cctest.its.hawaii.edu
+testSystem=cctest.its.hawaii.edu:8080
+xmlSchemas=/tomcat/webapps/central/core/xml/

@@ -1,0 +1,329 @@
+/**
+ * Copyright 2007 Applied Software Engineering, LLC. All rights reserved. You
+ * may not modify, use, reproduce, or distribute this software except in
+ * compliance with the terms of the License made with Applied Software
+ * Engineering
+ *
+ * @author ttgiang
+ */
+
+//
+// HTMLParser.java
+//
+package com.ase.aseutil.parser;
+
+import java.net.MalformedURLException;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.itextpdf.text.html.HtmlTags;
+import com.itextpdf.text.html.Markup;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.DocListener;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.ElementTags;
+import com.itextpdf.text.ExceptionConverter;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.TextElementArray;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.FontProvider;
+import com.itextpdf.text.xml.simpleparser.SimpleXMLDocHandler;
+import com.itextpdf.text.xml.simpleparser.SimpleXMLParser;
+
+public class HTMLParser implements SimpleXMLDocHandler, DocListener {
+
+	protected ArrayList objectList;
+
+	protected DocListener document;
+
+	private Paragraph currentParagraph;
+
+	private Stack stack = new Stack();
+
+	private StyleSheet style = new StyleSheet();
+
+	private HashMap interfaceProps;
+
+	/** Creates a new instance of HTMLParser
+	 * @param document A class that implements <CODE>DocListener</CODE>
+	 * */
+	public HTMLParser(DocListener document) {
+		this.document = document;
+	}
+
+	/**
+	 * setStyleSheet.
+	 *
+	 * @param style
+	 */
+	public void setStyleSheet(StyleSheet style) {
+		this.style = style;
+	}
+
+	/**
+	 * getStyleSheet.
+	 */
+	public StyleSheet getStyleSheet() {
+		return style;
+	}
+
+	/**
+	 * setInterfaceProps.
+	 *
+	 * @param interfaceProps
+	 */
+	public void setInterfaceProps(HashMap interfaceProps) {
+		this.interfaceProps = interfaceProps;
+	}
+
+	/**
+	 * getInterfaceProps.
+	 */
+	public HashMap getInterfaceProps() {
+		return interfaceProps;
+	}
+
+	/**
+	 * parse.
+	 *
+	 * @param reader
+	 * @throws IOException
+	 */
+	public void parse(Reader reader) throws IOException {
+		SimpleXMLParser.parse(this, null, reader, true);
+	}
+
+	/**
+	 * parseToList.
+	 *
+	 * @param reader
+	 * @param style
+	 * @throws IOException
+	 */
+	public static ArrayList parseToList(Reader reader, StyleSheet style) throws IOException {
+		return parseToList(reader, style, null);
+	}
+
+	/**
+	 * parseToList.
+	 *
+	 * @param reader
+	 * @param style
+	 * @param interfaceProps
+	 * @throws IOException
+	 */
+	public static ArrayList parseToList(Reader reader, StyleSheet style, HashMap interfaceProps) throws IOException {
+
+		HTMLParser worker = new HTMLParser(null);
+
+		if (style != null)
+			worker.style = style;
+
+		worker.document = worker;
+		worker.setInterfaceProps(interfaceProps);
+		worker.objectList = new ArrayList();
+		worker.parse(reader);
+
+		return worker.objectList;
+	}
+
+	/**
+	 * endDocument.
+	 *
+	 */
+	public void endDocument() {
+		try {
+		} catch (Exception e) {
+			throw new ExceptionConverter(e);
+		}
+	}
+
+	/**
+	 * startDocument.
+	 *
+	 */
+	public void startDocument() {
+		HashMap h = new HashMap();
+		style.applyStyle("body", h);
+	}
+
+	/**
+	 * startElement.
+	 *
+	 * @param tag
+	 * @param h
+	 */
+	public void startElement(String tag, HashMap h) {
+		if (!tagsSupported.containsKey(tag))
+			return;
+
+		try {
+			style.applyStyle(tag, h);
+		} catch (Exception e) {
+			throw new ExceptionConverter(e);
+		}
+	}
+
+	/**
+	 * endElement
+	 *
+	 * @param tag
+	 */
+	public void endElement(String tag) {
+		if (!tagsSupported.containsKey(tag))
+			return;
+	}
+
+	/**
+	 * handleImage
+	 *
+	 * @param attributes
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 * @throws DocumentException
+	 */
+	private void handleImage(Attributes attributes) throws MalformedURLException, IOException, DocumentException {
+		// do nothing for the moment
+	}
+
+	/**
+	 * text
+	 *
+	 * @param str
+	 */
+	public void text(String str) {
+		return;
+	}
+
+	/**
+	 * @see org.xml.sax.ContentHandler#characters(char[], int, int)
+	 */
+	public void characters(char[] ch, int start, int length) throws SAXException {
+
+		return;
+	}
+
+	/**
+	 * add
+	 *
+	 * @param element
+	 * @throws DocumentException
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean add(Element element) throws DocumentException {
+		objectList.add(element);
+		return true;
+	}
+
+	/**
+	 * clearTextWrap
+	 *
+	 * @throws DocumentException
+	 */
+	public void clearTextWrap() throws DocumentException {}
+
+	/**
+	 * close
+	 */
+	public void close() {}
+
+	/**
+	 * newPage
+	 *
+	 * @return boolean
+	 */
+	public boolean newPage() {
+		return true;
+	}
+
+	/**
+	 * open.
+	 *
+	 */
+	public void open() {}
+
+	/**
+	 * resetPageCount
+	 *
+	 */
+	public void resetPageCount() {}
+
+	/**
+	 * setMarginMirroring.
+	 *
+	 * @param marginMirroring
+	 */
+	public boolean setMarginMirroring(boolean marginMirroring) {
+		return false;
+	}
+
+	/**
+     * @see com.itextpdf.text.DocListener#setMarginMirroring(boolean)
+	 * @since	2.1.6
+	 */
+	public boolean setMarginMirroringTopBottom(boolean marginMirroring) {
+		return false;
+	}
+
+	/**
+	 * setMargins.
+	 *
+	 * @param marginLeft
+	 * @param marginRight
+	 * @param marginTop
+	 * @param marginBottom
+	 */
+	public boolean setMargins(float marginLeft, float marginRight, float marginTop, float marginBottom) {
+		return true;
+	}
+
+	/**
+	 * setPageCount
+	 *
+	 * @param pageN
+	 */
+	public void setPageCount(int pageN) {}
+
+	/**
+	 * setPageSize
+	 *
+	 * @param pageSize
+	 */
+	public boolean setPageSize(Rectangle pageSize) {
+		return true;
+	}
+
+	public static final String tagsSupportedString = "ol ul li a pre font span br p div body table td th tr i b u sub sup em strong s strike"
+			+ " h1 h2 h3 h4 h5 h6 img hr";
+
+	public static final HashMap tagsSupported = new HashMap();
+
+	static {
+		StringTokenizer tok = new StringTokenizer(tagsSupportedString);
+		while (tok.hasMoreTokens())
+			tagsSupported.put(tok.nextToken(), null);
+	}
+
+}

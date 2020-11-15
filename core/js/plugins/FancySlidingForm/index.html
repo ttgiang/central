@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Fancy Sliding Form with jQuery</title>
+        <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="sliding.form.js"></script>
+        <SCRIPT LANGUAGE="JavaScript">
+
+		<!-- This script and many more are available free online at -->
+		<!-- The JavaScript Source!! http://javascript.internet.com -->
+		
+		<!-- Begin
+		var BillFirst = "";
+		var BillLast = "";
+		var BillAddress = "";
+		var BillCity = "";
+		var BillState = "";
+		var BillZip = "";
+		
+		function InitSaveVariables(form) {
+			BillFirst = form.BillFirst.value;
+			BillLast = form.BillLast.value;
+			BillAddress = form.BillAddress.value;
+			BillCity = form.BillCity.value;
+			BillZip = form.BillZip.value;
+			BillState = form.BillState.value;
+		}
+		
+		function MailToBillPerson(form) {
+		if (form.copy.checked) {
+			InitSaveVariables(form);
+			form.BillFirst.value = form.MailFirst.value;
+			form.BillLast.value = form.MailLast.value;
+			form.BillAddress.value = form.MailAddress.value;
+			form.BillCity.value = form.MailCity.value;
+			form.BillZip.value = form.MailZip.value;
+			form.BillState.value = form.MailState.value;
+		}
+		else {
+			form.BillFirst.value = BillFirst;
+			form.BillLast.value = BillLast;
+			form.BillAddress.value = BillAddress;
+			form.BillCity.value = BillCity;
+			form.BillZip.value = BillZip;       
+			form.BillState.value = BillState;
+		   }
+		}
+	function ReviewThis(id)
+    {
+		
+		document.getElementById('r'+ id).value=document.getElementById(id).value;
+    }		
+		
+		
+		
+		//  End -->
+		</script>
+    </head>
+    <body>
+        <div id="content">
+                        <div id="wrapper">
+                        <div id="navigation" style="display:none;">
+                    <ul>
+                        <li class="selected">
+                            <a href="#">Personal</a>
+                        </li>
+                        <li>
+                            <a href="#">Order</a>
+                        </li>
+                        <li>
+                            <a href="#">Payment</a>
+                        </li>
+                        <li>
+                            <a href="#">Mailing</a>
+                        </li>
+						<li>
+                            <a href="#">Review</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="steps">
+                    <form id="formElem" name="formElem" action="" method="post">
+                        <fieldset class="step">
+                            <legend>Personal Information</legend>
+                            
+                            <p>
+                                <label for="first">First name</label>
+                                <input id="first" name="first" class="test"  onblur="ReviewThis(this.id);" />
+                            </p>
+							<p>
+                                <label for="last">Last name</label>
+                                <input id="last" name="last" class="test"  onblur="ReviewThis(this.id);" />
+                            </p>     
+							<p>
+                                <label for="last">Phone</label>
+                                <input id="area" name="area" value="808" maxlength="3" size="1"   onblur="ReviewThis(this.id);"/>
+                                <input id="prefix" name="prefix" maxlength="3" size="1" />
+                                <input id="suffix" name="suffix" maxlength="3" size="1" />
+                            </p>      
+                        </fieldset>
+                        <fieldset class="step">
+                            <legend>Order Details</legend>
+                            <p>
+                                <label for="updates">Store</label>
+                                <select id="updates" name="updates" class="test">
+                                	<option value="0" selected></option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Pickup Time</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Day</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Time</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Turkey Package</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Whole</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Half</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Pies</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Custard</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                                
+                                <select id="updates" name="updates">
+                                	<option value="0" selected>Pumpkin</option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                                <p>
+                                <label for="updates">Discount</label>
+                                <select id="updates" name="updates">
+                                	<option value="0" selected></option>
+                                    <option value="1">Mccully</option>
+                                    <option value="2">Kaimuki</option>
+                                    <option value="3">Waipahu</option>
+                                </select>
+                            	</p>
+                        </fieldset>
+                        <fieldset class="step">
+                            <legend>Payment</legend>
+                            <p>
+                                <label for="cardtype">Card</label>
+                                <select id="cardtype" name="cardtype">
+                                    <option>Visa</option>
+                                    <option>Mastercard</option>
+                                    <option>American Express</option>
+                                </select>
+                            </p>
+                            <p>
+                                <label for="cardnumber">Card number</label>
+                                <input id="cardnumber" name="cardnumber" type="number" AUTOCOMPLETE=OFF />
+                            </p>
+                            <p>
+                                <label for="secure">Security code</label>
+                                <input id="secure" name="secure" type="number" AUTOCOMPLETE=OFF />
+                            </p>
+                            <p>
+                                <label for="namecard">Name on Card</label>
+                                <input id="namecard" name="namecard" type="text" AUTOCOMPLETE=OFF />
+                            </p>
+                        </fieldset>
+                        <fieldset class="step">
+                            <legend>Mailing Information</legend>
+                            <p>
+                                <label for="first">First name</label>
+                                <input id="MailFirst" name="MailFirst" />
+                            </p>
+                            <p>
+                                <label for="first">Last name</label>
+                                <input id="MailLast" name="MailLast" />
+                            </p>
+                            <p>
+                                <label for="first">Address</label>
+                                <input id="MailAddress" name="MailAddress" />
+                            </p>
+                            <p>
+                                <label for="first">City</label>
+                                <input id="MailCity" name="MailCity" />
+                            </p>
+                            <p>
+                                <label for="first">State</label>
+                                <input id="MailState" name="MailState" />
+                            </p>
+                            <p>
+                                <label for="first">Zipcode</label>
+                                <input id="MailZip" name="MailZip" />
+                            </p>
+                            Check to use Billing Information: <input type="checkbox" name="copy"
+OnClick="javascript:MailToBillPerson(this.form);" value="checkbox"> 
+							<legend>Billing Information</legend>
+ 							<p>
+                                <label for="first">First name</label>
+                                <input id="BillFirst" name="BillFirst" />
+                            </p>
+                            <p>
+                                <label for="first">Last name</label>
+                                <input id="BillLast" name="BillLast" />
+                            </p>
+                            <p>
+                                <label for="first">Address</label>
+                                <input id="BillAddress" name="BillAddress" />
+                            </p>
+                            <p>
+                                <label for="first">City</label>
+                                <input id="BillCity" name="BillCity" />
+                            </p>
+                            <p>
+                                <label for="first">State</label>
+                                <input id="BillState" name="BillState" />
+                            </p>
+                            <p>
+                                <label for="first">Zipcode</label>
+                                <input id="BillZip" name="BillZip"/>
+                            </p>
+                        </fieldset>
+						<fieldset class="step">
+                            <legend>Customer Review</legend>
+                            <p>
+                                <label for="first">First name</label>
+                                <input id="rfirst" name="rfirst"/>
+                            </p>
+							 <p>
+                                <label for="first">Last name</label>
+                                <input id="rlast" name="rlast" />
+                            </p>
+                            <p>
+                                <label for="first">Areacode</label>
+                                <input id="rarea" name="rarea" />
+                            </p>
+                        </fieldset>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </body>
+</html>

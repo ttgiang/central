@@ -1,0 +1,253 @@
+	public static int createOutlineComments(Connection conn,String campus,String kix,boolean doHTM,boolean doXML,boolean doPDF,boolean debug) throws Exception {
+
+		Logger logger = Logger.getLogger("test");
+
+		int outlinesWritten = 0;
+
+		boolean methodCreatedConnection = false;
+		boolean showComments = false;
+
+		String type = "CUR";
+		String user = "";
+
+		boolean compressed = true;
+		boolean print = true;
+		boolean detail = false;
+		String outputFolder = "ttg";
+
+		String sql = "";
+
+		try{
+			if (conn == null){
+				conn = AsePool.createLongConnection();
+				methodCreatedConnection = true;
+			}
+
+			if (conn != null){
+
+				FileWriter fstream = null;
+				BufferedWriter output = null;
+				String server = SysDB.getSys(conn,"server");
+				com.ase.aseutil.pdf.Pdf58 pdfWriter = new com.ase.aseutil.pdf.Pdf58();
+
+				try {
+
+					AseUtil aseUtil = new AseUtil();
+
+					String campusName = CampusDB.getCampusName(conn,campus);
+
+					String currentDrive = AseUtil.getCurrentDrive();
+					String documents = SysDB.getSys(conn,"documents");
+					String fileName = currentDrive
+												+ ":"
+												+ documents
+												+ "outlines\\"
+												+ outputFolder
+												+ "\\";
+
+					String htmlHeader = Util.getResourceString("header.ase");
+					String htmlFooter = Util.getResourceString("footer.ase");
+
+					sql = "select coursealpha,coursenum,historyid,coursetitle,coursedate  from tblcourse where campus=? and coursetype='CUR' and not coursedate is null  ";
+					if(!kix.equals("")){
+						sql += " and historyid='"+kix+"'";
+					}
+					sql += " order by coursealpha,coursenum";
+
+					if(debug){
+						logger.info("fileName: " + fileName);
+						logger.info("campus: " + campus);
+						logger.info("kix: " + kix);
+						logger.info("htm: " + doHTM);
+						logger.info("xml: " + doXML);
+						logger.info("pdf: " + doPDF);
+						logger.info("sql: " + sql);
+					}
+
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setString(1,campus);
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+						kix = AseUtil.nullToBlank(rs.getString("historyid"));
+						String alpha = AseUtil.nullToBlank(rs.getString("coursealpha"));
+						String num = AseUtil.nullToBlank(rs.getString("coursenum"));
+
+						String title = AseUtil.nullToBlank(rs.getString("coursetitle"));
+						String coursedate = AseUtil.nullToBlank(rs.getString("coursedate"));
+						if(coursedate != null && !coursedate.equals("")){
+							coursedate = aseUtil.ASE_FormatDateTime(coursedate, 6);
+						}
+						else{
+							coursedate = "";
+						}
+
+						String filecode = campus + "_" + alpha + "_" + num;
+						String htmlfile = fileName + filecode + ".html";
+						String aphist = "";
+
+						if(debug) logger.info("coursedate: " + coursedate);
+
+						try{
+
+							if(doHTM){
+								fstream = new FileWriter(htmlfile);
+								output = new BufferedWriter(fstream);
+
+								output.write(htmlHeader);
+
+								output.write("<p align=\"center\" class=\"outputTitleCenter\">" + com.ase.aseutil.CampusDB.getCampusName(conn,campus) + "<BR>");
+								output.write(com.ase.aseutil.CourseDB.getCourseDescriptionByTypePlus(conn,campus,alpha,num,type) + "</p>");
+								com.ase.aseutil.Msg msg = com.ase.aseutil.Outlines.viewOutline(conn,kix,user,compressed,print,false,detail);
+								output.write(msg.getErrorLog());
+
+								// approval history (source for page is from crsinfy)
+								aphist = "<br/>"
+									+"<table border=\"0\" width=\"660\" class=\"tableCaption\">"
+									+"<tr>"
+									+"<td align=\"left\"><hr size=1><a style=\"text-decoration:none\" name=\"approval_history\"  class=\"goldhighlights\">Approval History</a></td>"
+									+"</tr>"
+									+"<tr bgcolor=\"#ffffff\">"
+									+"<td>"
+									+"<table border=\"0\" cellpadding=\"2\" width=\"100%\">";
+								output.write(aphist);
+
+								ArrayList list = HistoryDB.getHistories(conn,kix,type);
+								if (list != null){
+									History history;
+									aphist = "";
+									for (int i=0; i<list.size(); i++){
+										history = (History)list.get(i);
+										aphist += "<tr class=\"textblackTH\"><td valign=top>" + history.getDte() + " - " + history.getApprover() + "</td></tr>"
+											+ "<tr><td class=\"datacolumn\" valign=top>" + history.getComments() + "</td></tr>";
+									}
+									output.write(aphist);
+								}
+								aphist = "</table>"
+									+"</td>"
+									+"</tr>"
+									+"</table>";
+								output.write(aphist);
+
+								// approver comments
+								if(showComments){
+									aphist = "";
+									int fid = ForumDB.getForumID(conn,campus,kix);
+									if (fid == 0){
+										aphist = "<table width=\"680\" cellspacing=\"1\" cellpadding=\"4\"><tr><td>";
+										aphist += "<br><hr size=1>" + ReviewerDB.getReviewHistory2(conn,kix,0,campus,0,Constant.APPROVAL,"h1","c1");
+										aphist += "</td></tr></table><br><br>";
+										if(aphist != null){
+											aphist = aphist.replace("display: none;","display: nn;");
+										}
+									}
+									else{
+										if (fid > 0){
+											aphist = "<table width=\"100%\" cellspacing=\"1\" cellpadding=\"4\"><tbody>";
+											int k = 0;
+											String clss = "";
+											for(com.ase.aseutil.Generic u: com.ase.aseutil.ForumDB.getUserPosts(conn,fid,0)){
+												++k;
+												int mid = Integer.parseInt(u.getString6());
+												int item = Integer.parseInt(u.getString9());
+												aphist += "<tr class=\""+clss+"\"><td style=\"text-align:left;\">";
+												aphist += Board.printChildren(conn,fid,item,0,0,mid,user);
+												aphist += "</td></tr>";
+											} // for
+
+											aphist += "</tbody></table><br><br>";
+										} // if fid
+
+									} // if enableMessageBoard
+
+									if(!aphist.equals("")){
+										output.write(aphist);
+									}
+								}
+
+								aphist =  "<br>";
+								String[] statusTab = null;
+								statusTab = com.ase.aseutil.CourseDB.getCourseDatesByType(conn,kix,"CUR");
+								aphist += ""
+									+ "<TABLE cellSpacing=0 cellPadding=5 width=\"680\" border=1>"
+									+ "<TBODY>"
+									+ "<TR>"
+									+ "<TD class=\"textblackTH\" width=\"25%\">Proposer:</TD>"
+									+ "<TD class=\"dataColumn\" width=\"75%\">"+statusTab[0]+"</TD>"
+									+ "</TR>"
+									+ "<TR>"
+									+ "<TD class=\"textblackTH\" width=\"25%\">Approved Date:</TD>"
+									+ "<TD class=\"dataColumn\">"+statusTab[3]+"</TD>"
+									+ "</TR>"
+									+ "</TBODY>"
+									+ "</TABLE>"
+									+ "<br><br>";
+								output.write(aphist);
+
+								output.write(htmlFooter);
+							} // doHTM
+
+							if(doXML){
+								createXML(conn,outputFolder,campus,alpha,num,kix);
+							}
+
+							if(doPDF){
+								String htmName = AseUtil.getCurrentDrive() + ":\\tomcat\\webapps\\centraldocs\\docs\\outlines\\"+outputFolder+"\\xml\\"+filecode+".xml";
+								String pdfName = AseUtil.getCurrentDrive() + ":\\tomcat\\webapps\\centraldocs\\docs\\outlines\\"+outputFolder+"\\pdf\\"+filecode+".pdf";
+								pdfWriter.createPDF(server,campusName,(alpha + " " + num),htmName,pdfName,title,Constant.OFF,coursedate);
+							}
+
+						}
+						catch(Exception e){
+							System.out.println("failed to create outline");
+						}
+						finally{
+							if(doHTM){
+								output.close();
+							}
+						}
+
+						++outlinesWritten;
+
+					} // while
+					rs.close();
+					ps.close();
+
+					pdfWriter = null;
+				}
+				catch(Exception e){
+					System.out.println("fail to process data");
+				}
+
+				// release connection
+				try{
+					if (conn != null){
+						conn.close();
+						conn = null;
+					}
+				}
+				catch(Exception e){
+					logger.fatal("createOutlineComments: " + e.toString());
+				}
+
+			} // conm
+
+			// only if the connection was created here
+			if (methodCreatedConnection){
+				try{
+					conn.close();
+					conn = null;
+				}
+				catch(Exception e){
+					logger.fatal("createOutlineComments: " + e.toString());
+				}
+
+			} // methodCreatedConnection
+
+		}
+		catch(Exception e){
+			logger.fatal("createOutlineComments: " + e.toString());
+		}
+
+		return outlinesWritten;
+
+	}

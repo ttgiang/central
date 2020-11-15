@@ -1,0 +1,19 @@
+table.reference{
+	border:0px;
+	border-collapse:collapse;
+}
+
+table.reference th{
+	background-color:#e5eecc;
+	border:0px solid #c3c3c3;
+	padding:5px;
+	vertical-align:top;
+	text-align:right;	
+}
+
+table.reference td {
+	border:0px solid #c3c3c3;
+	padding:3px;
+	vertical-align:top;
+}
+

@@ -1,0 +1,67 @@
+ul#hfinder-menu {
+    list-style: none;
+    margin: 0;
+    padding: 2px;
+    font: 12px sans-serif;
+    height: 19px;
+}
+ul#hfinder-menu li.hfinder-menu-item {
+    float: left;
+    padding: 3px;
+    margin: 0 3px;
+    position: relative;
+}
+ul#hfinder-menu li.hfinder-menu-item:hover {
+    background: rgb(128, 128, 128);
+    color: white;
+}
+ul#hfinder-menu li.hfinder-menu-item:hover > ul {
+    visibility: visible;
+}
+div#hfinder-contextmenu {
+    /*visibility: hidden;*/
+    position: absolute;
+    z-index: 4;
+    right: 25px;
+    bottom: 25px;
+}
+li#context-title-description {
+    display: none;
+}
+div#hfinder-contextmenu ul,
+ul#hfinder-menu ul {
+    font: 12px sans-serif;
+    color: black;
+    background: white url('../images/stripes.png');
+    width: 16em;
+    list-style: none;
+    margin: 0;
+    padding: 2px;
+    border: 1px solid rgb(128, 128, 128);
+    opacity: 0.9;
+}
+ul#hfinder-menu ul {
+    position: absolute;
+    visibility: hidden;
+    top: 18px;
+    left: 0;
+    z-index: 2;
+}
+li.sep {
+    border-bottom: 1px solid rgb(200, 200, 200);
+    margin-bottom: 2px;
+}
+div#hfinder-contextmenu ul > li,
+ul#hfinder-menu ul > li {
+    padding: 3px 5px;
+}
+div#hfinder-contextmenu ul > li > span,
+ul#hfinder-menu ul > li > span,
+div#directory-view ul > li > span {
+    padding: 0 0 0 15px;
+}
+div#hfinder-contextmenu ul > li:hover,
+ul#hfinder-menu ul > li:hover {
+    background: #369;
+    color: white;
+}

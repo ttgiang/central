@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+    xmlns:html="http://www.w3.org/1999/xhtml" 
+    writing-mode="lr-tb" 
+    hyphenate="false" 
+    text-align="start" 
+    role="html:html">
+
+  <fo:layout-master-set>
+    <fo:simple-page-master page-width="auto" page-height="auto" 
+                           master-name="all-pages">
+      <fo:region-body column-gap="12pt" column-count="1" margin-left="1in" 
+                      margin-bottom="1in" margin-right="1in" margin-top="1in"/>
+      <fo:region-before display-align="before" extent="1in" 
+                        region-name="page-header"/>
+      <fo:region-after display-align="after" extent="1in" 
+                      region-name="page-footer"/>
+      <fo:region-start extent="1in"/>
+      <fo:region-end extent="1in"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="all-pages">
+    <fo:title>Hello World</fo:title>
+    <fo:static-content flow-name="page-header">
+      <fo:block font-size="small" text-align="center" space-before="0.5in" 
+                space-before.conditionality="retain">
+        Hello World
+      </fo:block>
+    </fo:static-content>
+
+    <fo:static-content flow-name="page-footer">
+      <fo:block font-size="small" text-align="center" space-after="0.5in" 
+                space-after.conditionality="retain">
+        - <fo:page-number/> -
+      </fo:block>
+    </fo:static-content>
+
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block role="html:body">
+        <fo:block space-before="1em" space-after="1em" role="html:p">
+          Hello World!
+        </fo:block>
+      </fo:block>
+    </fo:flow>
+
+  </fo:page-sequence>
+
+</fo:root>

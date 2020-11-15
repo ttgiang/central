@@ -1,0 +1,280 @@
+/**
+ * Copyright 2007 Applied Software Engineering,LLC. All rights reserved. You may
+ * not modify,use,reproduce,or distribute this software except in compliance
+ * with the terms of the License made with Applied Software Engineernig
+ *
+ * @author ttgiang
+ */
+
+//
+// ReportSyllabus.java
+//
+package com.ase.aseutil.report;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import com.ase.aseutil.AsePool;
+import com.ase.aseutil.AseUtil;
+import com.ase.aseutil.CampusDB;
+import com.ase.aseutil.Constant;
+import com.ase.aseutil.CourseDB;
+import com.ase.aseutil.Encrypter;
+import com.ase.aseutil.Helper;
+import com.ase.aseutil.Outlines;
+import com.ase.aseutil.Syllabus;
+import com.ase.aseutil.SyllabusDB;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+public class ReportSyllabus extends ReportTemplate {
+
+	private static final long serialVersionUID = 6524277708436373642L;
+
+	private static Logger logger = Logger.getLogger(ReportSyllabus.class.getName());
+
+	public ReportSyllabus(){
+		super.initParams();
+	}
+
+    /**
+     * Creates a PDF document.
+     * @param filename the path to the new PDF document
+     * @throws    DocumentException
+     * @throws    IOException
+     * @throws    SQLException
+     */
+	public static void runReport(HttpServletRequest request,HttpServletResponse response) throws IOException{
+
+		AsePool connectionPool = null;
+		Connection conn = null;
+		String junk = "";
+		String user = "";
+		String alpha = "";
+		String num = "";
+		String campusName = "";
+		String reportFileName = "";
+
+		String[] info = null;
+		String campus = "";
+		String viewCampus = "";
+		String report = "";
+		String colum = "";
+		String sql = "";
+		String kix = "";
+		String reportProps = "";
+		String reportFolder = "";
+		String outputFolder = "";
+		String logoFile = "";
+		String outline = "";
+
+		int i = 0;
+
+		boolean debug = false;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		PdfPCell cell = null;
+		Phrase phrase = null;
+		PdfPTable grid = null;
+
+		if (debug) System.out.println("1");
+
+		float cursorPosition = 0;
+
+		try{
+
+			initParams();
+
+			AseUtil aseUtil = new AseUtil();
+
+			HttpSession session = request.getSession(true);
+
+			viewCampus = Encrypter.decrypter((String)session.getAttribute("aseCampus"));
+			user = Encrypter.decrypter((String)session.getAttribute("aseUserName"));
+			report = (String)session.getAttribute("rpt");
+			kix = (String)session.getAttribute("kix");
+
+			// step 0
+			connectionPool = AsePool.getInstance();
+			conn = connectionPool.getConnection();
+
+			// screen specifics
+			info = Helper.getKixInfo(conn,kix);
+			alpha = info[Constant.KIX_ALPHA];
+			num = info[Constant.KIX_NUM];
+			campus = info[Constant.KIX_CAMPUS];
+			campusName = CampusDB.getCampusNameOkina(conn,campus);
+			outline = CourseDB.getCourseDescription(conn,alpha,num,campus);
+
+			reportProps = "report" + report;
+			reportFolder = aseUtil.getReportFolder();
+			outputFolder = aseUtil.getReportOutputFolder(viewCampus +"/");
+			logoFile = aseUtil.getCampusLogo(campus);
+			reportFileName = outputFolder + user + ".pdf";
+
+			// step 1
+			//Document document = new Document(PageSize.A4, l, r, t, b);	// 36 = =.5 inch
+			Document document = new Document(PageSize.A4, 36, 36, 63, 36);
+
+			// step 2
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(reportFileName));
+			TableHeader event = new TableHeader();
+			writer.setPageEvent(event);
+			writer.setPageEvent(new Watermark("Curriculum Central"));
+
+			// step 3
+			document.open();
+			document.newPage();
+
+			// step 4
+			//writeSyllabus(conn,931,campus,user);
+
+			Syllabus syllabus = SyllabusDB.getSyllabus(conn,campus,931);
+
+			sql = "SELECT division,title,credits,prereq,coreq,CoursePreReq,CourseCoReq,recprep,coursedescr "
+				+ "FROM vw_WriteSyllabus "
+				+ "WHERE campus=? "
+				+ "AND CourseAlpha=? "
+				+ "AND CourseNum=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			ps.setString(2,syllabus.getAlpha());
+			ps.setString(3,syllabus.getNum());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+
+				String division = "";
+				String title = "";
+				String credits = "";
+				String prereq = "";
+				String coreq = "";
+				String recprep = "";
+				String objectives = "";
+				String descr = "";
+
+				division = AseUtil.nullToBlank(rs.getString("division"));
+				title = AseUtil.nullToBlank(rs.getString("title"));
+				credits = AseUtil.nullToBlank(rs.getString("credits"));
+
+				prereq = AseUtil.nullToBlank(rs.getString("CoursePreReq"));
+				prereq = Outlines.drawPrereq(prereq,"",true);
+				prereq = prereq
+							+ "\n"
+							+ AseUtil.nullToBlank(rs.getString("prereq"));
+
+				coreq = AseUtil.nullToBlank(rs.getString("CourseCoReq"))
+							+ "\n"
+							+ AseUtil.nullToBlank(rs.getString("prereq"));
+
+				recprep = AseUtil.nullToBlank(rs.getString("recprep"));
+				descr = AseUtil.nullToBlank(rs.getString("coursedescr"));
+
+				phrase = new Phrase(campusName, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, ASE_DATACOLOR));
+				document.add(Chunk.NEWLINE);
+				document.add(phrase);
+
+				phrase = new Phrase(division, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, ASE_DATACOLOR));
+				document.add(Chunk.NEWLINE);
+				document.add(phrase);
+
+				phrase = new Phrase("Course Syllabus - " + syllabus.getSemester() + " " + syllabus.getYear(),
+											FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, ASE_DATACOLOR));
+				document.add(Chunk.NEWLINE);
+				document.add(phrase);
+
+				phrase = new Phrase(syllabus.getAlpha() + " "
+										+ syllabus.getNum() + " - "
+										+ title + " (" + credits + " credits)",
+										FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, ASE_DATACOLOR));
+				document.add(phrase);
+				document.add(Chunk.NEWLINE);
+
+				String[] instructor = new String[4];
+				instructor = aseUtil.lookUpX(conn,
+													"tblUsers",
+													"lastname,firstname,hours,location,phone",
+													"userid='" + user + "'");
+
+/*
+				if ("NODATA".equals(instructor[0])) {
+					table.addCell(new Phrase("Instructor:"));
+					table.addCell(new Phrase("[MISSING INFO]"));
+
+					table.addCell(new Phrase("Office Hours:"));
+					table.addCell(new Phrase("[MISSING INFO]"));
+
+					table.addCell(new Phrase("Office Location:"));
+					table.addCell(new Phrase("[MISSING INFO]"));
+				}
+				else{
+					table.addCell(new Phrase("Instructor:"));
+					table.addCell(new Phrase(instructor[1] + " " + instructor[0]));
+
+					table.addCell(new Phrase("Office Hours:"));
+					table.addCell(new Phrase(instructor[2]));
+
+					table.addCell(new Phrase("Office Location:"));
+					table.addCell(new Phrase(instructor[3]));
+
+					table.addCell(new Phrase("Contact Information:"));
+					table.addCell(new Phrase(instructor[4]));
+				}
+*/
+				String text = "Catalog Course Description,Co-Requisites,Pre-Requisites,Recommended Preparations,Textbooks and other Resources,Grading Policy";
+				String[] aText = text.split(",");
+
+				String[] aData = new String[6];
+				aData[0] = descr;
+				aData[1] = coreq;
+				aData[2] = prereq;
+				aData[3] = recprep;
+				aData[4] = syllabus.getTextBooks();
+				aData[5] = syllabus.getGrading();
+
+				for(int z=0; z<aText.length; z++){
+					phrase = new Phrase(aText[z] + ":", FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, ASE_HEADERCOLOR));
+					document.add(phrase);
+
+					document.add(Chunk.NEWLINE);
+
+					processElement(document,aData[z], 0);
+				}
+			}
+			rs.close();
+			ps.close();
+
+			// step 5
+			document.close();
+
+			// open and launch document
+			writePDF(request,response,reportFileName);
+
+		} catch(IllegalArgumentException iae){
+			logger.fatal("ReportSyllabus - processRequest - iae: " + iae.toString());
+		} catch(Exception ex){
+			logger.fatal("ReportSyllabus - processRequest ex: \n" + i + "\n" + junk + "\n" + ex.toString());
+		} finally {
+			connectionPool.freeConnection(conn,"ReportSyllabus",user);
+		}
+    }
+}

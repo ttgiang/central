@@ -1,0 +1,144 @@
+/* Begin CSS Popout Menu */
+
+#menu{
+	width:100%;
+	float:left;
+	height: 2em;
+}
+
+/* around the first-level dropdown */
+#menu a{
+	display:block;
+	border-width:1px;
+	border-style:solid;
+	border-color:#ccc #ccc #ccc #ccc;
+	white-space:nowrap;
+	margin:0;				/* space between each item drop down item */
+	padding:0 5px;
+}
+
+/* top level menu */
+#menu h2{
+	display:block;
+	border-width:1px;
+	border-style:solid;
+	border-color:#4682b4 #fff #4682b4 #4682b4;
+	white-space:nowrap;
+	margin:0;
+	padding:0 10px;
+}
+
+#menu h2{
+	color:#fff;
+	background:#4682b4 url(/css/images/expand3.gif) no-repeat 100% 100%;
+	t/ext-transform:uppercase
+}
+
+/* first level drop down */
+#menu a{
+	background:#eee;
+	text-decoration:none;
+	width:14em;
+	height:2em;
+}
+
+#menu a, #menu a:visited{
+	color:#000;
+}
+
+/* menu item without a sub */
+#menu a:hover{
+	color:#a00;
+	background:#ddd;
+}
+
+#menu a:active{
+	color:#060;
+	background:#ccc;
+}
+
+/* width/spacing of menu items */
+#menu ul{
+	list-style:none;
+	margin:0;
+	padding:0;
+	float:left;
+	width:10em;
+}
+
+#menu li{
+	position:relative;
+}
+
+#menu ul ul{
+	position:absolute;
+	z-index:500;
+	top:auto;
+	display:none;
+}
+
+/* 
+	where the submenu appears in reference to the first-level menu 
+	also where the submenu opens besides the first-level menu
+*/
+#menu ul ul ul{
+	top:0;
+	left:140%;
+}
+
+/* Begin non-anchor hover selectors */
+
+/* Enter the more specific element (div) selector
+on non-anchor hovers for IE5.x to comply with the
+older version of csshover.htc - V1.21.041022. It
+improves IE's performance speed to use the older
+file and this method */
+
+div#menu h2:hover{
+	background:#000 url(/css/images/expand3.gif) no-repeat -999px -9999px;
+}
+
+div#menu li:hover{
+	cursor:pointer;
+	z-index:100;
+}
+
+div#menu li:hover ul ul,
+div#menu li li:hover ul ul,
+div#menu li li li:hover ul ul,
+div#menu li li li li:hover ul ul
+{display:none;}
+
+div#menu li:hover ul,
+div#menu li li:hover ul,
+div#menu li li li:hover ul,
+div#menu li li li li:hover ul
+{display:block;}
+
+/* End of non-anchor hover selectors */
+
+/* Styling for Expand */
+
+/* first-level dropdown with submenu*/
+#menu a.x, #menu a.x:visited{
+	color:#000;
+	background:#eee url(/css/images/expand3.gif) no-repeat 100% 100%;
+	height: 2em;
+	width:14em;
+}
+
+#menu a.x:hover{
+	color:#fff;
+	background:#ccc;
+	height: 2em;
+	width:14em;
+}
+
+#menu a.x:active{
+	color:#060;
+	background:#ccc;
+	height: 2em;
+	width:14em;
+}
+
+/* End CSS Popout Menu */

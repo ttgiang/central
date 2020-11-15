@@ -1,0 +1,81 @@
+html {
+	padding-right: 0px;
+	padding-left: 0px;
+	font-size: small;
+	b/ackground: gray;
+	padding-bottom: 0px;
+	margin: 0px;
+	color: #666;
+	padding-top: 0px;
+	font-family: verdana, arial,sans-serif;
+	height: 100%
+}
+
+/*------ covered in style.css
+body {
+	padding-right: 0px;
+	padding-left: 0px;
+	b/ackground: gray;
+	padding-bottom: 0px;
+	margin: 0px;
+	c/olor: #666;
+	padding-top: 0px;
+	height: 100%
+}
+*/
+
+div#container {
+	min-height: 100%;
+	b/ackground: #f0f0f0;
+	margin: 0px auto;
+	width: 100%;
+	position: relative;
+	height: 100%
+ 	background: url("images/stripes.png");
+}
+
+div#header {
+	padding-right: 1em;
+	padding-left: 1em;
+	background: #00747a no-repeat 100% 10px;
+	padding-bottom: 1em;
+	padding-top: 1.8em; 			/* needs to be large enough to accommodate div header */
+	border-bottom: gray 1px double
+}
+
+div#header p {
+	font-size: 1.1em;
+	margin: 0px;
+}
+
+div#content {
+	padding-right: 1em;
+	padding-left: 1em;
+	padding-bottom: 5em;
+	padding-top: 1em
+}
+
+div#content p {
+	padding-right: 1em;
+	padding-left: 1em;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	text-align: justify
+}
+
+div#footer {
+	font-size: smaller;
+	border-top: gray 1px double;
+	background: #ddd;
+	width: 100%;
+	bottom: 0px;
+	position: absolute
+}
+
+div#footer p {
+	padding-right: 0;
+	padding-left: 0;
+	padding-bottom: .5;
+	margin: 0px;
+	padding-top: .5em
+}

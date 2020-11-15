@@ -1,0 +1,13 @@
+.technology{ /*header of 2nd demo*/
+	cursor: hand;
+	cursor: pointer;
+	margin: 10px 0;
+}
+
+.openlanguage{ /*class added to contents of 2nd demo when they are open*/
+	color: blue;
+}
+
+.closedlanguage{ /*class added to contents of 2nd demo when they are closed*/
+	color: blue;
+}

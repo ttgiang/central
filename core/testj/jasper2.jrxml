@@ -1,0 +1,68 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+
+public static Connection establishConnection()
+{
+Connection connection = null;
+try
+{
+Class.forName("oracle.jdbc.driver.OracleDriver");
+String oracleURL = "jdbc:oracle:thin:@localhost:1521:mySID";
+connection = DriverManager.getConnection(oracleURL,"username","password");
+connection.setAutoCommit(false);
+}
+catch(SQLException exception)
+{
+exception.printStackTrace();
+}
+return connection;
+
+}
+
+/* JasperReport is the object
+that holds our compiled jrxml file */
+JasperReport jasperReport;
+
+
+/* JasperPrint is the object contains
+report after result filling process */
+JasperPrint jasperPrint;
+
+// connection is the data source we used to fetch the data from
+Connection connection = establishConnection(); 
+// jasperParameter is a Hashmap contains the parameters
+// passed from application to the jrxml layout
+HashMap jasperParameter = new HashMap();
+
+// jrxml compiling process
+jasperReport = JasperCompileManager.compileReport
+("C://sample_report.jrxml");
+
+// filling report with data from data source
+
+jasperPrint = JasperFillManager.fillReport(jasperReport,jasperParameter, connection); 
+
+// exporting process
+// 1- export to PDF
+JasperExportManager.exportReportToPdfFile(jasperPrint, "C://sample_report.pdf");
+
+// 2- export to HTML
+JasperExportManager.exportReportToHtmlFile(jasperPrint, "C://sample_report.html" ); 
+
+// 3- export to Excel sheet
+JRXlsExporter exporter = new JRXlsExporter();
+exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, "C://simple_report.xls" );
+
+exporter.exportReport();

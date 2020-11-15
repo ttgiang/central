@@ -1,0 +1,56 @@
+<input type='hidden' value='' name='questions'>
+<input type='hidden' value='1' name='numberOfControls'>
+<textarea cols='80' class='input' name='slo94' rows='4'></textarea>
+<input type='radio' value='Y' name='95_0' >&nbsp;Y&nbsp;&nbsp;<input type='radio' value='N' name='95_0' >&nbsp;N&nbsp;&nbsp;
+
+<input type='hidden' value='' name='questions'>
+<input type='hidden' value='1' name='numberOfControls'>
+<textarea cols='80' class='input' name='slo95' rows='4'></textarea>
+<input type='radio' value='Y' name='96_0' >&nbsp;Y&nbsp;&nbsp;<input type='radio' value='N' name='96_0' >&nbsp;N&nbsp;&nbsp;<input type='hidden' value='' name='questions'><input type='hidden' value='1' name='numberOfControls'></td><td valign="top" align="right" class="dataColumn"></td></tr><tr><td>&nbsp;</td><td align="left" valign="top" colspan="3"><font class="textblackTH">Reviewer comments:</font><br><textarea cols='80' class='input' name='slo96' rows='4'></textarea></td></tr><tr><td align="right" valign="top" colspan="4"><input type='hidden' name='allRadios' value='94,95,96'><input type='hidden' name='kix' value='V59l1m845'><input title="save review" type='submit' name='aseSubmit' value='Save' class='inputsmallgray' onClick="checkForm('a');">&nbsp;&nbsp;<input title="abort selected operation" type='submit' name='aseFinish' value='Close' class='inputsmallgray' onClick="return cancelForm('ICS','241','','')">&nbsp;&nbsp;</td></tr></table></form>
+
+
+<hr size="1" noshade><p align="left"><b>NOTE</b>: When available, select <b>Yes</b> or <b>No</b> for each SLO then click the 'Save' button.<br/><br/>Once all SLOs are approved, select 'Return to Proposer'
+to notify the proposer that you are finished reviewing.</p>
+
+										</fieldset>
+										<!-- PAGE CONTENT ENDS HERE -->
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- footer -->
+					<tr>
+						<td class="intd" height="05%">
+							<table border="0" cellpadding="3" cellspacing="0" height="22" width="100%">
+	<tbody>
+		<tr class="LEEBGColor">
+			<td nowrap="nowrap" class="copyright">Copyright 2007, All rights reserved</td>
+			<td align="right">
+				<a href="contact.jsp" class="linkcolumn"><font class="copyright">contact</font></a>
+				<font class="copyright">|</font>&nbsp;<a href="support.jsp" class="linkcolumn"><font class="copyright">support</font></a>
+				<font class="copyright">|</font>&nbsp;<a href="hlpidx.jsp" class="linkcolumn"><font class="copyright">help</font></a>
+				
+					<font class="copyright">|</font>&nbsp;<a href="sess.jsp" class="linkcolumn"><font class="copyright">profile</font></a>
+				
+				&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+						</td>
+					</tr>
+					<!-- footer -->
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	tabdropdown.init("bluemenu")
+</script>
+
+</body>
+</html>

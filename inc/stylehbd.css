@@ -1,0 +1,374 @@
+.rel {position: relative}
+
+body {
+	background-color: #FFFFFF;
+	margin: 0;
+	font: normal 9pt Verdana, Arial;
+}
+
+.abs {position: absolute}
+
+table, td, tr, th, p, div, br, ul, li {font-size: 12px;}
+
+#a {text-decoration: underline;color: #354A55;}
+a {color: #354A55;}
+a:hover {text-decoration: underline;color: #5B7F93;}
+
+hr {margin-top: -5px;height: 1px;background-color: #999999;color: #999999;visibility : visible;}
+
+.breadcrumbs {background-color: #FFFFFF;margin-top: 0px;margin-bottom: 30px;padding-left: 2px;}
+.listing {padding: 0px;}
+.listing td {padding-left: 2px;}
+.listing th {padding-left: 2px;background-color: #C4D3DB;
+	border-top: 1px solid #999999;border-bottom: 1px solid #999999;
+	color: #777E82;
+}
+
+.hbd {font-size: 10px;}
+
+.helpfont {font-size: 10px; font-weight:bold;}
+.header {font-size: 14px; font-weight:bold;}
+.header08 {font-size: 08px; font-weight:bold;}
+.header10 {font-size: 10px; font-weight:bold;}
+.header11 {font-size: 11px; font-weight:bold;}
+.header12 {font-size: 12px; font-weight:bold;}
+.header14 {font-size: 14px; font-weight:bold;}
+
+.hbdtext{color:000000; FONT-WEIGHT: normal; font-size: 07pt; }
+.normaltext{color:000000; FONT-WEIGHT: normal}
+
+.textblue{color:004080;  font-size: 09pt}
+.textbluebold{color:004080;  font-size: 12pt; FONT-WEIGHT: bold}
+.textblack08{color:000000;  font-size: 08pt}
+.textblack{color:000000;  font-size: 09pt}
+
+.tableBorder{ BORDER-TOP: #33B6E8 1px solid; BORDER-RIGHT: #33B6E8 1px solid; BORDER-BOTTOM: #33B6E8 1px solid; BORDER-LEFT: #33B6E8 1px solid }
+.textblackTRTheme{background-color:e1e1e1;  font-size: 09pt; }
+
+.tableBorder0{ BORDER-TOP: #33B6E8 1px solid; BORDER-RIGHT: #33B6E8 1px solid; BORDER-BOTTOM: #33B6E8 1px solid; BORDER-LEFT: #33B6E8 1px solid }
+.textblackTRTheme0{background-color:e1e1e1;  font-size: 09pt; }
+
+.tableBorder1{ BORDER-TOP: #336699 1px solid; BORDER-RIGHT: #336699 1px solid; BORDER-BOTTOM: #336699 1px solid; BORDER-LEFT: #336699 1px solid }
+.textblackTRTheme1{background-color:eeeecc;  font-size: 09pt; }
+
+.tableBorder2{ BORDER-TOP: #d2a41c 1px solid; BORDER-RIGHT: #d2a41c 1px solid; BORDER-BOTTOM: #d2a41c 1px solid; BORDER-LEFT: #d2a41c 1px solid }
+.textblackTRTheme2{background-color:c3f3c3;  font-size: 09pt; }
+
+.tableBorder3{ BORDER-TOP: #e1e1e1 1px solid; BORDER-RIGHT: #e1e1e1 1px solid; BORDER-BOTTOM: #e1e1e1 1px solid; BORDER-LEFT: #e1e1e1 1px solid }
+.textblackTRTheme3{background-color:ececff;  font-size: 09pt; }
+
+.login{FONT-WEIGHT: bold; text-align: left; nowrap; top; COLOR: #525252;}
+.loginError{FONT-WEIGHT: bold; COLOR: red;}
+.logininput {
+	background-color: #F5F5F5;
+	border: 1px solid #99b3b4;
+	border-width: 1;
+	background: white url("../images/input-bg.gif") repeat-x 0 0;
+}
+
+.textblackTH{FONT-WEIGHT: bold; text-align: left; nowrap; vertical-align: top; COLOR: #525252;}
+.textblackTHLeft{FONT-WEIGHT: bold; text-align: left; nowrap; vertical-align: top; COLOR: #525252;}
+.textblackTHRight{FONT-WEIGHT: bold; text-align: right; nowrap; vertical-align: top; COLOR: #525252;}
+.textblackTHCenter{FONT-WEIGHT: bold; text-align: center; nowrap; vertical-align: top; COLOR: #525252;}
+.textblackTD{text-align: left; nowrap; vertical-align: top;}
+
+.textbrownTH{FONT-WEIGHT: bold; text-align: center; nowrap; vertical-align: top; COLOR: #525252;}
+
+.outputTitleCenter{font-size:14pt; FONT-WEIGHT: bold; text-align: center; nowrap; vertical-align: top; COLOR: #525252;}
+
+.textblackTHNormal{FONT-WEIGHT: bold; text-align: left; nowrap; COLOR: #525252;}
+.textblackTHLeftNormal{FONT-WEIGHT: bold; text-align: left; nowrap;}
+.textblackTHRightNormal{FONT-WEIGHT: bold; text-align: right; nowrap;}
+.textblackTHCenterNormal{FONT-WEIGHT: bold; text-align: center; nowrap;}
+.textblackTDNormal{FONT-WEIGHT: bold; text-align: left; nowrap; COLOR: #525252;}
+
+.textColumn{text-align: left; nowrap; font: 5.5pt ArialNarrow }
+.dataColumn{text-align: left; nowrap; COLOR: #083772; }
+.labelColumn{text-align: left; nowrap; vertical-align: top; COLOR: #525252; }
+
+.textblack12{color:000000; font-size: 12pt; FONT-WEIGHT: bold}
+.textbold{color:000000; font-size: 09pt; FONT-WEIGHT: bold}
+
+.textblackbold{color:000000;  font-size: 09pt; FONT-WEIGHT: bold}
+.syllabus{color:000000;  font-size: 12pt;}
+
+.listing th a {text-decoration: none;}
+.listing th a:hover {text-decoration: none;}
+.listing .active {background-color: #7B9CAE;color: #FFFFFF;}
+.listing .active a {color: #FFFFFF;text-decoration: none;}
+.listing .active a:hover {color: #FFFFFF;text-decoration: none;}
+
+.odd {background-color: #FFFFFF;}
+.even {background-color: #E1E1E1;}
+.old {background-color: #DDDEDF;}
+.new {background-color: #F6F5F5;}
+
+.content {padding: 0px;}
+.content .leftvalue {width:15%;text-align: right;}
+.content td {padding-left: 2px;padding-top: 4px;padding-bottom: 4px;}
+.content th {
+	padding-left: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	background-color: #C4D3DB;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	color: #777E82;
+	text-align: left;
+}
+
+.error {padding-top: -10px;width:100%;}
+.error td {color: #FF0000;text-align: left;padding-left: 2px;padding-bottom: 20px;}
+
+.message {padding-top: -10px;padding-bottom: 20px;width:100%;}
+.message td {
+	padding-left: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	background-color: #C4D3DB;
+	color: #000000;
+	text-align: left;
+}
+
+.tableRevision {
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+}
+
+.revisionTr {
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+}
+
+.copyright {color: #C0C0C0;}
+
+.location {}
+
+.inputRequired {
+	background-color: LIGHTYELLOW;
+	font-size: 09pt;
+	#border-style: solid;
+	border: 1px solid #99b3b4;
+	border-width: 1;
+}
+
+.input {
+	background-color: #F5F5F5;
+	font-size: 09pt;
+	#border-style: solid;
+	border: 1px solid #99b3b4;
+	border-width: 1;
+	background: white url("../images/input-bg.gif") repeat-x 0 0;
+}
+
+.inputajax {
+	width:220px;
+	#border: 1px solid #999;
+	border: 1px solid #99b3b4;
+	background-color: #F5F5F5;
+	font-size: 09pt;
+	background: white url("../images/input-bg.gif") repeat-x 0 0;
+}
+
+.inputsmall { background-color: #ffffff; font-size: 09pt; border-style: solid; border-width: 1;}
+
+.inputsmallgray {
+	border-style: solid;
+	border-width: 1;
+	color:#083772;
+   background-color:#779999;
+   background-image:url("../images/back03.gif");
+   border-color:#DDDDDD;
+}
+
+.inputsmallgraybold {
+	border-style: solid;
+	FONT-WEIGHT: bold;
+	border-width: 1;
+  	color:#083772;
+   background-color:#779999;
+   background-image:url("../images/back03.gif");
+   border-color:#DDDDDD;
+}
+
+.inputsmallgrayoff {
+	border-style: solid;
+	border-width: 1;
+  	color:#c0c0c0;
+   background-color:#779999;
+   background-image:url("../images/back03.gif");
+   border-color:#DDDDDD;
+}
+
+.inputsmallgrayextra{
+	border-style: solid;
+	border-width: 1;
+	color:#083772;
+   background-color:#779999;
+   background-image:url("../images/back03a.gif");
+   border-color:#DDDDDD;
+}
+
+.inputsmallgrayextraoff{
+	border-style: solid;
+	border-width: 1;
+	color:#c0c0c0;
+   background-color:#779999;
+   background-image:url("../images/back03a.gif");
+   border-color:#DDDDDD;
+}
+
+.inputsmallblue { background-color: #edf3f3; font-size: 08pt; border-style: solid; border-width: 1;}
+.inputsmall11 { background-color: #ffffff; font-size: 11pt; border-style: solid; border-width: 1;}
+.textarea {
+	background-color: #F5F5F5; font-size: 11pt; border-style: solid; border-width: 1;
+}
+
+select {
+	font-family: Arial, helvetica, sans-serif; background-color: #F5F5F5; font-size: 10pt;
+}
+
+form {
+	margin:0; padding:0;
+}
+
+.smalltextrequired{ font-size: 8pt;background-color: LIGHTYELLOW;}
+.smalltext{ font-size: 8pt}
+.smalltext10{ font-size: 10pt}
+.smalltext11{ font-size: 11pt}
+.smalltext12{ font-size: 12pt}
+
+.nav2:link {color: gray; text-decoration: none; font-family : arial; font-size : 08pt}
+.nav2:visited {color: gray; text-decoration: none; font-family : arial; font-size : 08pt}
+.nav2:hover{color:990000; text-decoration: none; font-family : arial; font-size : 08pt}
+
+.nav2_10:link {color: gray; text-decoration: none; font-family : arial; font-size : 10pt}
+.nav2_10:visited {color: gray; text-decoration: none; font-family : arial; font-size : 10pt}
+.nav2_10:hover{color:990000; text-decoration: none; font-family : arial; font-size : 10pt}
+
+.nav2_11:link {color: gray; text-decoration: none; font-family : arial; font-size : 11pt}
+.nav2_11:visited {color: gray; text-decoration: none; font-family : arial; font-size : 11pt}
+.nav2_11:hover{color:990000; text-decoration: none; font-family : arial; font-size : 11pt}
+
+.nav3:link {COLOR: gray;  FONT-SIZE: 10pt; TEXT-DECORATION: none; FONT-WEIGHT: bold}
+.nav3:visited {COLOR: gray;  FONT-SIZE: 10pt; TEXT-DECORATION: none; FONT-WEIGHT: bold}
+.nav3:hover {COLOR: #000000;  FONT-SIZE: 10pt; TEXT-DECORATION: none; FONT-WEIGHT: bold}
+
+.nav4:link {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: gray;  TEXT-DECORATION: none}
+.nav4:visited {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: gray;  TEXT-DECORATION: none}
+.nav4:hover {FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #ff3300;  TEXT-DECORATION: none}
+
+A.TopMenuLink:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: none
+}
+A.TopMenuLink:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: none
+}
+A.TopMenuLink:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: underline
+}
+A.TopMenuLink:active {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: underline
+}
+TD.HeaderRow {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; TEXT-DECORATION: none
+}
+
+.formFieldName{
+  FONT-SIZE: 9pt; COLOR: #000000; font-weight : bold;
+}
+
+.crazy {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND-COLOR: silver
+}
+
+.foot SPAN {
+	FONT-SIZE: 10px; COLOR: #b8b8b8
+}
+.foot A {
+	COLOR: #eaeaea; TEXT-DECORATION: none
+}
+.foot A:hover {
+	TEXT-DECORATION: underline
+}
+.foot B A {
+	FONT-WEIGHT: bold; COLOR: #d8d8d8; TEXT-DECORATION: underline
+}
+.foot B A:hover {
+	TEXT-DECORATION: none
+}
+
+.epi-chromeBorder {BACKGROUND-COLOR: #999999}
+.epi-chromeHeaderBG {BACKGROUND-COLOR: #eee}
+.epi-chromeHeaderFont { font-weight: bold; font-size: xx-small; color: #003366; }
+.epi-chromeBG {BACKGROUND-COLOR: #ffffff}
+
+.headerBottom
+{
+  background: url("/images/header/backgroundimage.gif");
+  height: 35px;
+	width: 100%;
+	font-size: 10px;
+	color: #FFFFFF;
+}
+
+.help {
+	RIGHT: 5px; POSITION: absolute; TOP: 5px
+}
+ HTML #help_programBrowser {
+	RIGHT: 30px
+}
+#help_container {
+	BORDER-RIGHT: #666 2px solid; PADDING-RIGHT: 10px; BORDER-TOP: #666 2px solid; PADDING-LEFT: 10px; Z-INDEX: 100; BACKGROUND: #fff; LEFT: 50%; PADDING-BOTTOM: 10px; MARGIN: 0px 0px 0px -200px; OVERFLOW: auto; BORDER-LEFT: #666 2px solid; WIDTH: 400px; PADDING-TOP: 10px; BORDER-BOTTOM: #666 2px solid; POSITION: absolute; TOP: 120px; HEIGHT: 250px; TEXT-ALIGN: left
+}
+#help_container .help_close {
+	DISPLAY: block; TEXT-ALIGN: center
+}
+#help_container H2 {
+	MARGIN: 0.5em 0px 0px
+}
+#help_container UL LI {
+	MARGIN-BOTTOM: 1.5em; MARGIN-LEFT: -0.5em
+}
+#help_container UL LI UL LI {
+	MARGIN-BOTTOM: 0.5em; MARGIN-LEFT: -0.5em
+}
+
+.fieldhighlight {background-color:#ffffdd}
+.rowhighlight {background-color:#e1e1e1}
+
+.reviewline { background:#e7f9ff; padding:5px;}
+
+/* text style for the site links (at extreme top-right of header) */
+.SiteLink {
+	 font-family: Verdana, Helvetica, sans-serif;
+	 color:blue;
+	 font-size: 11px;
+}
+
+/* hyperlink style for the site links */
+A.SiteLink:link 		{text-decoration:none;color:blue;}
+A.SiteLink:visited  {text-decoration:none;color:blue;}
+A.SiteLink:active   {text-decoration:none;color:blue;}
+A.SiteLink:hover    {text-decoration:underline;color:blue;font-weight: bold}
+
+.linkcolumn:link {COLOR: blue; TEXT-DECORATION: none;}
+.linkcolumn:visited {COLOR: blue; TEXT-DECORATION: none;}
+.linkcolumn:hover {COLOR: black; TEXT-DECORATION: underline}
+
+.SiteLink {
+	font-family: arial, Helvetica, sans-serif;
+	color:blue;
+	font-size: 11px;
+}
+
+.invalidEntry {
+    color:white;
+    background:red;
+ }
+
+.validEntry {
+    color:green;
+}

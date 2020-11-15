@@ -1,0 +1,525 @@
+/* ------- Chicago Park District styles ------- */
+@import url(basestyles.css);
+
+/* ------- Layout ------- */
+body {
+	font: 75%/1.4em Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	color: #333;
+	background-color: #665;
+	background-image: url("../images/bg.png");
+	background-position: left top;
+	background-repeat: repeat-x;
+	background-attachment: fixed;
+	text-align: center;
+	position: relative;
+	}
+	
+#pageBounds {
+	margin: 0 auto;
+	width: 780px;
+	position: relative;
+	background: #fff;
+	position: relative;
+	z-index: 1;
+	text-align: center;
+	}
+
+#contentBounds {
+	margin: 0 auto;
+	width: 774px;
+	text-align: left;
+	position: relative;
+	z-index: 1;
+	}
+
+/* ------- navigation ------- */
+#nav {
+	font-size: 92%;
+	font-weight: bold;
+	list-style: none;
+	margin: 0 auto 3px;
+	background: #d8d8cd url("../images/bg_nav.gif") left bottom repeat-x;
+	text-align: center;
+	border-bottom: 3px solid #665;
+	padding: 0 0 0 5px;
+	width: 774px;
+	voice-family: "\"}\""; 
+	voice-family:inherit;
+	width: 769px;
+	}
+#nav li {
+	float: left;
+	margin: 0;
+	padding: 0 0 0 2px;
+	background: url("../images/d_nav.gif") left bottom no-repeat;
+	}
+#nav li a {
+	display: block;
+	color: #333;
+	text-align: center;
+	line-height: 1em;
+	padding: 9px 0;
+	white-space: nowrap;
+	}
+
+#nav li#n1 a { width: 53px; }
+#nav li#n2 a { width: 112px; }
+#nav li#n3 a { width: 73px; }
+#nav li#n4 a { width: 58px; }
+#nav li#n5 a { width: 87px; }
+#nav li#n6 a { width: 90px; }
+#nav li#n7 a { width: 69px; }
+#nav li#n8 a { width: 89px; }
+#nav li#n9 a { width: 113px; }
+
+#nav li a:hover {
+	color: #333;
+	background: url("../images/here_nav.gif") left bottom repeat-x;
+	text-decoration: none;
+	}
+#nav li a.here, #nav li a.here:hover {
+	background: #f5f5ed;
+	}
+
+#localnav {
+	height: 24px;
+	border-bottom: 1px solid #dadad1;
+	width: 774px;
+	background: url("../images/bg_localnav.gif") left top repeat-x;
+	list-style: none;
+	font-size: 92%;
+	margin: -3px 0 0;
+	}
+#localnav li {
+	float: left;
+	line-height: 24px;
+	margin: 0;
+	padding: 0 15px;
+	background: url("../images/d_localnav.gif") 100% 55% no-repeat;
+	}
+
+#mainContent {
+	float: left;
+	width: 480px;
+	margin: 0 0 2em 12px;
+	display: inline;
+	position: relative;
+	z-index: 2;
+	min-height: 300px;
+	}
+
+#home #mainContent {
+	float: left;
+	width: 515px;
+	margin: 0;
+	}
+
+.full #mainContent {
+	width:750px;
+	}
+
+#sideBar {
+	float: right;
+	width: 256px;
+	margin: 0 0 2em;
+	}
+
+#home #mainContent, #home #sideBar { margin-bottom: 0; }
+
+#footer {
+	clear: both;
+	margin: 0 auto;
+	width: 774px;
+	line-height: 1.2em;
+	color: #665;
+	background: url("../images/bg_footer.gif") left top repeat-x;
+	height: 33px;
+	border-top: 3px solid #665;
+	}
+
+/* ------- globals ------- */
+a:link, a:visited {
+	color: #069;
+	text-decoration: none;
+	}
+
+a:hover {
+	text-decoration: underline;
+	color: #72a114;
+	}
+
+a:active {
+	color: #ccc;
+	}
+	
+a img {
+	background: none;
+	border: 0;
+	}
+	
+a.more, .localnav li a {
+	font-style: oblique;
+	background: url("../images/bullet_m.gif") 100% 5px no-repeat;
+	padding-right: 9px;
+	}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #444;
+	line-height: normal;
+	margin: 0;
+	position: relative;
+	z-index: 999;
+	}
+
+h1 {
+	color: #333322;
+	font-size: 200%;
+	margin: 10px 0 0;
+	}
+
+#home #mainContent h2, #home #sideBar h2 {
+	color: #fff;
+	font-weight: bold;
+	font-size: 117%;
+	background: #665;
+	line-height: 25px;
+	height: 25px;
+	padding: 0 7px;
+	margin-top: 0;
+	}
+
+#mainContent h2 {
+	color: #888;
+	font-size: 137%;
+	background: none;
+	line-height: 20px;
+	padding: 0 0 10px 0;
+	margin-top: 1em;
+	}
+#sideBar h2 {
+	color: #fff;
+	font-weight: bold;
+	font-size: 117%;
+	background: #665;
+	line-height: .9em;
+	padding: 6px 7px;
+	margin-top: 0;
+	}
+
+h2 img { padding-top: 6px; }
+
+h3, legend {
+	font-size: 107%;
+	color: #333322;
+	margin-top: 20px;
+	font-weight: bold;
+	}
+
+legend {
+	margin: 0;
+	padding: 0 3px;
+	}
+
+h4 {
+	font-size: 100%;
+	padding-top: 7px;
+	}
+	
+li h4 {
+padding-top: 0;
+}
+
+ul li {
+	}
+
+sup { line-height: 0; }
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	}
+
+ul li {
+	position: relative;
+	z-index: 99;
+	margin: 5px;
+	line-height: 1.2em;
+	padding: 2px 0 2px 10px; 
+	background: url("../images/bullet.gif") .25em .5em no-repeat;
+	}
+
+#home ul li {
+	position: inherit;
+	}
+
+
+img.alignright {
+	float: right;
+	margin: 4px 0 5px 20px;
+	}
+
+img.alignleft {
+	float: left;
+	margin: 4px 9px 5px 0;
+	}
+
+#govcontext img, img.titleimage {
+	float: right;
+	margin: 15px 0 10px 10px;
+	padding: 3px;
+	border: 1px solid #ddd;
+	}
+
+.box { border: 1px solid #ccc; }
+
+#sideBar select,#sideBar input {
+	font-size: 95%;
+}
+
+
+/* ------- content ------- */
+#flashContent { margin: 0 0 3px; }
+#latestUpdates {
+	margin: 0 0 3px;
+	width: 256px;
+	height: 210px;
+	border-bottom: 3px solid #665;
+	position: relative;
+	}
+#latestUpdates .box {
+	height: 183px;
+	overflow: auto;
+	position: relative;
+	}
+
+#seasonAds {
+	position: relative;
+	top: 0;
+	margin: -216px 0 3px 259px;
+	width: 256px;
+	height: 213px;
+	overflow: hidden;
+	/* background is season specific -- definitions are in seasons.css */
+	}
+#seasonAds ul, #seasonAds ul li { list-style: none; background: none; padding: 0; margin: 0; line-height: 0; }
+
+#seasonAds ul li#q1 a,
+#seasonAds ul li#q2 a,
+#seasonAds ul li#q3 a,
+#seasonAds ul li#q4 a {
+	float: left;
+	width: 128px;
+	height: 106px;
+	text-indent: -999em;
+	overflow: hidden;
+	}
+#seasonAds ul li#q3 { clear: left; }
+#seasonAds ul li#q3 a,
+#seasonAds ul li#q4 a {
+	height: 107px;
+	}
+
+#upcomingEvents {
+	margin: 0 0 3px;
+	}
+#upcomingEvents .box {
+	position: relative;
+	height: 230px;
+	overflow: auto;
+	}
+#upcomingEvents ul li {
+	float: left;
+	display: inline;
+	width: 45%;
+	height: 52px;
+	margin: .25em .25em .25em .45em;
+	}
+#upcomingEvents ul li em {
+	font-style: normal;
+	font-size: 92%;
+	line-height: 100%;
+	}
+
+/* ------- sideBar ------- */
+#featuredDestinations {
+	margin: 0 0 3px;
+	border-bottom: 3px solid #665;
+	background-color: #f5f5ed;
+	}
+#featuredDestinations .box {
+	position: relative;
+	height: 269px;
+	overflow: auto;
+	}
+#featuredDestinations ul li {
+	clear: both;
+	margin: 0;
+	border-bottom: 1px solid #d2d2c2;
+	padding: 5px;
+	line-height: 1.2em;
+	background: #f5f5ed url("../images/bg_dest.gif") left top repeat-x;
+	font-size: 92%;
+	}
+/*#featuredDestinations ul li img {
+	float: left;
+	width: 79px;
+	padding: 0 5px 0 0;
+	}*/
+#featuredDestinations ul li span {
+	float: right;
+	width: 141px;
+	}
+
+#otherFacilities {
+	margin: 0 0 3px;
+	border-bottom: 3px solid #665;
+	}
+#otherFacilities .box {
+	position: relative;
+	}
+#otherFacilities ul li {
+	background: none;
+	padding-left: 0;
+	padding-top: 0;
+	}
+#otherFacilities ul li a {
+	display: block;
+	height: 50px;
+	cursor: pointer;
+	}
+#otherFacilities ul li span {
+	float: right;
+	width: 185px;
+	padding: 12px 0 0;
+	margin: 0;
+	}
+#otherFacilities ul li img {
+	float: left;
+	width: 50px;
+	}
+#home #otherFacilities .box {
+	height: 322px;
+	overflow: auto;
+	}
+#home #otherFacilities ul li span {
+	width: 170px;
+	}
+
+#locationDetails {
+	margin: 15px 0 3px;
+	border-bottom: 3px solid #665;
+	}
+#locationDetails .box {
+	padding: 8px;
+	background: #f5f5ed url("../images/bg_location.gif") left top repeat-x;
+	}
+
+#relatedInfo {
+	margin: 0 0 3px;
+	border-bottom: 3px solid #665;
+	}
+#relatedInfo h2 {
+	background: #006598;
+	}
+
+#availableFacs {
+	margin: 0 0 3px;
+	border-bottom: 3px solid #665;
+	}
+#availableFacs .box {
+	}
+
+
+
+/* ------- search ------- */
+#search {
+position: absolute;
+top: 24px;
+right: 14px;
+color: #fff;
+}
+
+#search img {
+margin: 0 0 0 5px;
+position: absolute;
+top: 1px;
+}
+
+#search select {
+width: 110px;
+}
+
+#search input { width: 140px; }
+
+#search input.go { width: auto; }
+
+
+/* ------- g ------- */
+#footer p {
+	margin: 0;
+	}
+#footer ul {
+	padding-left: 2px;
+	font-size: 92%;
+	list-style: none;
+	}
+#footer ul li {
+	float: left;
+	margin: 0;
+	padding: 9px 8px 0;
+	background: url("../images/d_footer.gif") 100% 95% no-repeat;
+	}
+#footer ul li.last, #localnav li.last, #footer ul li.siteby {
+	background: none;
+	}
+#footer ul li.copyright, #footer ul li.siteby {
+	float: right;
+	}
+#footer ul li a:link, #footer ul li a:visited {
+	color: #665;
+	background: none;
+	padding: none;
+	}
+#footer ul li a:hover {
+	padding: none;
+	}
+
+
+#seal {
+	z-index: 1;
+	position: absolute;
+	top: -1px;
+	left: -66px;
+	width: 112px;
+	height: 363px;
+	background: transparent url("../images/seal.png") left top no-repeat;
+	text-indent: -999em;
+	overflow: hidden;
+	}
+#seal a {
+	display: block;
+	height: 103px;
+	width: 112px;
+	}
+	
+/* ------- misc ------- */
+
+.shadow {
+  float: left;
+  background: url("../images/drop.png") no-repeat bottom right;
+  margin: 1px 0 0 1px;
+}
+
+.shadow.detail { margin-left: 42px; display: inline; }
+
+.shadow img {
+	display: block;
+	position: relative;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 2px;
+  margin: -1px 5px 5px -1px;
+}
+
+.note { font-style: italic; font-size: 83%; }

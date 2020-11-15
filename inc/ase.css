@@ -1,0 +1,138 @@
+*{font-size:12px;font-family:Arial,Helvetica,Geneva,sans-serif;}
+
+/* start round region spec*/
+td.t2stroundbody{text-align:left;background-color:#f7f7e7;vertical-align:top;}
+
+/*Region Defaults*/
+.t2RegionHeader {white-space:nowrap;border-bottom:2px #cccc99 solid;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:14px;font-weight:bold;color:#336699;}
+.t2RegionHeader td{white-space:nowrap;}
+.t2ButtonHolder{padding-left:100px;white-space:nowrap;text-align:right;border-bottom:2px #cccc99 solid;}
+.t2RegionBody {vertical-align:top;font-size:10px;color:#000000;padding:2px;padding-top:10px;}
+.htmldbRegion{margin-top:10px;margin-bottom:10px;}
+/*Breadcrumb Region*/
+.t2BreadcrumbRegion {padding-left:15px;font-weight:bold;}
+
+/*Reports Defaults*/
+th.t2header{empty-cells : show;	border-collapse : collapse;font-size:13px;font-weight:bold;white-space:nowrap;color:#336699;background-color:#cccc99;padding:2px;padding-left:8px;padding-right:8px;}
+th.t2header a{font-size:13px;color:#336699;}
+td.t2data{empty-cells : show;	border-collapse : collapse;padding:2px;padding-left:8px;padding-right:8px;}
+td.t2dataalt{empty-cells : show;	border-collapse : collapse;padding:2px;padding-left:8px;padding-right:8px;}
+
+.t2standard{empty-cells : show;	border-collapse : collapse;border:1px solid #AAAAAA;border-right:none;border-bottom:none;}
+.t2standard th.t2header{border:1px solid #AAAAAA;border-left:none;border-top:none;}
+.t2standard td.t2data{border:1px solid #AAAAAA;border-left:none;border-top:none;}
+
+img{border:0px;}
+
+.BGColor {
+	background-color: #4682b4;  /* 4682b4 or 70.130.180 */
+	BORDER-RIGHT: #4682b4 1px solid;
+	BORDER-BOTTOM: #4682b4 1px solid;
+	BORDER-LEFT: #4682b4 1px solid;
+}
+.BGColorRow{COLOR: black;}
+
+.HAWBGColor {
+	COLOR: #F3F3F3;
+	background-color: #91004B; /* 91004B or 145.0.75 */
+	BORDER-RIGHT: #91004B 1px solid;
+	BORDER-BOTTOM: #91004B 1px solid;
+	BORDER-LEFT: #91004B 1px solid;
+}
+.HAWBGColorRow{COLOR: black;}
+
+.HILBGColor {
+	COLOR: #F3F3F3;
+	background-color: #D52B1E; /* D52B1E or 213.43.30 */
+	BORDER-RIGHT: #D52B1E 1px solid;
+	BORDER-BOTTOM: #D52B1E 1px solid;
+	BORDER-LEFT: #D52B1E 1px solid;
+}
+.HILBGColorRow{COLOR: black;}
+
+.HONBGColor {
+	COLOR: #F3F3F3;
+	background-color: #00747A; /* 00747A or 0.166.122 */
+	BORDER-RIGHT: #00747A 1px solid;
+	BORDER-BOTTOM: #00747A 1px solid;
+	BORDER-LEFT: #00747A 1px solid;
+}
+.HONBGColorRow{COLOR: black;}
+
+.KAPBGColor {
+	COLOR: #F3F3F3;
+	background-color: #002395; /* 002395 or 00.35.149	*/
+	BORDER-RIGHT: #002395 1px solid;
+	BORDER-BOTTOM: #002395 1px solid;
+	BORDER-LEFT: #002395 1px solid;
+}
+.KAPBGColorRow{COLOR: black;}
+
+.KAUBGColor {
+	COLOR: #F3F3F3;
+	background-color: #7D5CC6; /* 7D5CC6 or 125.92.198 */
+	BORDER-RIGHT: #7d5cc6 1px solid;
+	BORDER-BOTTOM: #7d5cc6 1px solid;
+	BORDER-LEFT: #7d5cc6 1px solid;
+}
+.KAUBGColorRow{COLOR: black;}
+
+.LEEBGColor {
+	COLOR: #F3F3F3;
+	background-color: #3D7EDB; /* 3D7EDB or 61.123.219	*/
+	BORDER-RIGHT: #3d7edb 1px solid;
+	BORDER-BOTTOM: #3d7edb 1px solid;
+	BORDER-LEFT: #3d7edb 1px solid;
+}
+.LEEBGColorRow{COLOR: black;}
+
+.MANBGColor {
+	COLOR: #F3F3F3;
+	background-color: #024731; /* 024731 or 2.71.49 */
+	BORDER-RIGHT: #024731 1px solid;
+	BORDER-BOTTOM: #024731 1px solid;
+	BORDER-LEFT: #024731 1px solid;
+}
+.MANBGColorRow{COLOR: black;}
+
+.UHMCBGColor {
+	COLOR: #F3F3F3;
+	background-color: #005172; /* 005172 or 0.81.114 */
+	BORDER-RIGHT: #005172 1px solid;
+	BORDER-BOTTOM: #005172 1px solid;
+	BORDER-LEFT: #005172 1px solid;
+}
+.UHMCBGColorRow{COLOR: black;}
+
+.WOABGColor {
+	COLOR: #F3F3F3;
+	background-color: #A71930; /* A71930 or 167.25.48 */
+	BORDER-RIGHT: #A71930 1px solid;
+	BORDER-BOTTOM: #A71930 1px solid;
+	BORDER-LEFT: #A71930 1px solid;
+}
+.WOABGColorRow{COLOR: black;}
+
+.WINBGColor {
+	COLOR: #F3F3F3;
+	background-color: #7AB800; /* 7AB800 or 122.184.0 */
+	BORDER-RIGHT: #7ab800 1px solid;
+	BORDER-BOTTOM: #7ab800 1px solid;
+	BORDER-LEFT: #7ab800 1px solid;
+}
+.WINBGColorRow{COLOR: black;}
+
+.tableCaption{
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	padding: 0;
+	background-color: #dbeaf5;
+	color: #3D7EDB;
+}
+
+.copyright {color: #C0C0C0;}

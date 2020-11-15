@@ -1,0 +1,1335 @@
+/**
+ * Copyright 2007 Applied Software Engineering,LLC. All rights reserved. You may
+ * not modify,use,reproduce,or distribute this software except in compliance
+ * with the terms of the License made with Applied Software Engineernig
+ *
+ * @author ttgiang
+ */
+
+//
+// ReportOutline.java
+//
+package com.ase.aseutil.report;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import com.ase.aseutil.AsePool;
+import com.ase.aseutil.AseUtil;
+import com.ase.aseutil.CampusDB;
+import com.ase.aseutil.CompetencyDB;
+import com.ase.aseutil.Constant;
+import com.ase.aseutil.ContentDB;
+import com.ase.aseutil.CourseDB;
+import com.ase.aseutil.Encrypter;
+import com.ase.aseutil.FunctionDesignation;
+import com.ase.aseutil.GESLO;
+import com.ase.aseutil.GESLODB;
+import com.ase.aseutil.Helper;
+import com.ase.aseutil.IniDB;
+import com.ase.aseutil.LinkedUtil;
+import com.ase.aseutil.LinkerDB;
+import com.ase.aseutil.SQLValues;
+import com.ase.aseutil.ValuesDB;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+public class ReportOutline extends ReportTemplate {
+
+	private static final long serialVersionUID = 6524277708436373642L;
+
+	private static Logger logger = Logger.getLogger(ReportOutline.class.getName());
+
+	public ReportOutline(){
+		super.initParams();
+	}
+
+    /**
+     * Creates a PDF document.
+     * @param filename the path to the new PDF document
+     * @throws    DocumentException
+     * @throws    IOException
+     * @throws    SQLException
+     */
+	public static void runReport(HttpServletRequest request,HttpServletResponse response) throws IOException{
+
+		HttpSession session = request.getSession(true);
+
+		String viewCampus = Encrypter.decrypter((String)session.getAttribute("aseCampus"));
+		String user = Encrypter.decrypter((String)session.getAttribute("aseUserName"));
+		String report = (String)session.getAttribute("rpt");
+		String kix = (String)session.getAttribute("kix");
+
+		try{
+			AseUtil aseUtil = new AseUtil();
+			String outputFolder = aseUtil.getReportOutputFolder(viewCampus +"/");
+			String reportFileName = outputFolder + user + ".pdf";
+			String reportFolder = aseUtil.getReportFolder();
+			String reportProps = "report" + report;
+			String sql = aseUtil.getPropertySQL(session,reportProps);
+			aseUtil = null;
+
+			runReportX(viewCampus,user,kix,reportFileName,sql);
+
+			// open and launch document
+			writePDF(request,response,reportFileName);
+		}
+		catch(Exception e){
+			logger.fatal("ReportOutline.runReport."+report + ": " + e.toString());
+		}
+	}
+
+	public static void runReportX(String viewCampus,
+											String user,
+											String kix,
+											String reportFileName,
+											String sql) throws IOException{
+
+		AsePool connectionPool = null;
+		Connection conn = null;
+		String junk = "";
+		String alpha = "";
+		String num = "";
+		String campusName = "";
+
+		String[] info = null;
+		String outlineCampus = "";
+		String colum = "";
+		String outputFolder = "";
+		String outline = "";
+		String field01 = "";
+		String field02 = "";
+
+		int i = 0;
+
+		boolean debug = false;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		PdfPCell cell = null;
+		Phrase phrase = null;
+		PdfPTable grid = null;
+
+		if (debug) System.out.println("1");
+
+		float cursorPosition = 0;
+
+		try{
+			AseUtil aseUtil = new AseUtil();
+
+			// step 0
+			connectionPool = AsePool.getInstance();
+			conn = connectionPool.getConnection();
+
+			// screen specifics
+			info = Helper.getKixInfo(conn,kix);
+			alpha = info[Constant.KIX_ALPHA];
+			num = info[Constant.KIX_NUM];
+			outlineCampus = info[Constant.KIX_CAMPUS];
+			campusName = CampusDB.getCampusNameOkina(conn,outlineCampus);
+			outline = CourseDB.getCourseDescription(conn,alpha,num,outlineCampus);
+
+			// step 1
+			//Document document = new Document(PageSize.A4, l, r, t, b);	// 36 = =.5 inch
+			Document document = new Document(PageSize.A4, 36, 36, 63, 36);
+
+			// step 2
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(reportFileName));
+			TableHeader event = new TableHeader();
+			writer.setPageEvent(event);
+			writer.setPageEvent(new Watermark("Curriculum Central"));
+
+			// step 3
+			document.open();
+			document.newPage();
+
+			// step 4
+			colum = "";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,kix);
+			ps.setString(2,user);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+
+				++i;
+
+				grid = null;
+
+				event.setHeader(alpha + " " + num + " - " + outline,campusName,user);
+
+				colum = AseUtil.nullToBlank(rs.getString("colum"));
+
+				field01 = AseUtil.nullToBlank(rs.getString("field01"));
+				field01 = removeImages(field01);
+
+				field02 = AseUtil.nullToBlank(rs.getString("field02"));
+				field02 = removeImages(field02);
+
+				if (	(colum).equals(Constant.COURSE_CONTENT) ||
+						(colum).equals(Constant.COURSE_PROGRAM_SLO) ||
+						(colum).equals(Constant.COURSE_OBJECTIVES) ||
+						(colum).equals(Constant.COURSE_COMPETENCIES)) {
+					printLinkedMaxtrixContent(document,writer,conn,kix,colum,user,field01,i);
+				}
+				else if ((colum).equals(Constant.COURSE_FUNCTION_DESIGNATION)){
+					drawFunctionDesignation(document,writer,conn,kix,outlineCampus,field01,i);
+				}
+				else if ((colum).equals(Constant.COURSE_CCOWIQ)){
+					drawCowiq(document,writer,conn,outlineCampus,kix,field01,i);
+				}
+				else if ((Constant.COURSE_GESLO).equals(colum)){
+					getGESLO(document,writer,conn,outlineCampus,kix,field01,i);
+				}
+				else if ((Constant.COURSE_AAGEAREA_C40).equals(colum)){
+					writeQuestion(document,field01,i);
+					diversificationMatrix(document,
+													conn,
+													kix,
+													CampusDB.getCampusItem(conn,kix,colum),
+													"",
+													Constant.COURSE_AAGEAREA_C40,
+													Constant.COURSE_COMPETENCIES,
+													true,
+													true);
+
+					document.add(Chunk.NEWLINE);
+
+					diversificationMatrix(document,
+													conn,
+													kix,
+													CampusDB.getCampusItem(conn,kix,colum),
+													"",
+													Constant.COURSE_AAGEAREA_C40,
+													Constant.COURSE_OBJECTIVES,
+													true,
+													true);
+
+				}
+				else
+					writeQuestion(document,field01,i);
+
+				// any additional data for each item is printed after the tables with the
+				// exception of diversification
+				if (!(Constant.COURSE_AAGEAREA_C40).equals(colum))
+					processElement(document,field02, i);
+			}	// while
+
+			rs.close();
+			ps.close();
+
+			// step 5
+			document.close();
+
+		} catch(IllegalArgumentException iae){
+			logger.fatal("ReportOutline - runReport - iae: " + iae.toString());
+		} catch(Exception ex){
+			logger.fatal("ReportOutline - runReport ex: \n" + i + "\n" + junk + "\n" + ex.toString());
+		} finally {
+			connectionPool.freeConnection(conn,"ReportOutline",user);
+		}
+    }
+
+	/*
+	 * writeQuestion
+	 * <p>
+	 * @param	junk	String
+	 *	<p>
+	 */
+	public static void writeQuestion(Document document,String junk,int i) {
+
+		try{
+			if (junk != null && junk.length() > 0){
+				junk = convertToDOSCharacters(junk);
+				junk = "<font class=\"textblackth\"><br>" + "" + (i) + ". " + junk + "<br></font>";
+				processElement(document,junk, i);
+				document.add(new Phrase(""));
+			}
+
+		} catch(IllegalArgumentException iae){
+			logger.fatal("ReportOutline - writeQuestion - iae: " + iae.toString());
+		} catch(Exception ex){
+			logger.fatal("ReportOutline - writeQuestion ex: \n" + ex.toString());
+		}
+
+	}
+
+	/*
+	 * diversificationMatrix
+	 * <p>
+	 * @param conn			Connection
+	 * @param kix			String
+	 * @param topic		String
+	 * @param subTopic	String
+	 * @param dst			String
+	 * @param compressed boolean
+	 * @param print		boolean
+	 * <p>
+	 */
+	public static void diversificationMatrix(Document document,
+															Connection conn,
+															String kix,
+															String topic,
+															String subTopic,
+															String src,
+															String dst,
+															boolean compressed,
+															boolean print) throws Exception {
+
+		//Logger logger = Logger.getLogger("test");
+
+		int i = 0;
+		int j = 0;
+		int rowsAffected = 0;
+
+		boolean found = false;
+
+		String sql = "";
+		String temp = "";
+		String img = "";
+		String longcontent = "";
+		StringBuffer buffer = new StringBuffer();
+		String checked = "";
+
+		String columnTitle = "";
+		String[] aALPHABETS = (Constant.ALPHABETS).split(",");
+
+		PdfPTable main = null;
+		Phrase p = null;
+
+		try {
+			String[] info = Helper.getKixInfo(conn,kix);
+			String campus = info[Constant.KIX_CAMPUS];
+
+			// colect data for rows (going down the left most column)
+			String[] xAxis = SQLValues.getTValues(conn,campus,topic,"descr");
+			String[] xiAxis = SQLValues.getTValues(conn,campus,topic,"key");
+
+			// colect data for columns
+			String[] yAxis = null;
+			String[] yiAxis = null;
+			if ((Constant.COURSE_COMPETENCIES).equals(dst)){
+				columnTitle = "Competency";
+				yAxis = SQLValues.getTCompetency(conn,campus,kix,"descr");
+				yiAxis = SQLValues.getTCompetency(conn,campus,kix,"key");
+			}
+			else if ((Constant.COURSE_OBJECTIVES).equals(dst)){
+				columnTitle = "Course SLO";
+				yAxis = SQLValues.getTComp(conn,campus,kix,"descr");
+				yiAxis = SQLValues.getTComp(conn,campus,kix,"key");
+			}
+
+			// if we have adequate data, display
+			if (xAxis!=null && yAxis!=null && yiAxis != null){
+				float[] colsWidth = new float[yiAxis.length + 1];
+				for (int f=1;f<yiAxis.length + 1;f++){
+					colsWidth[f] = 3f;
+				}
+				colsWidth[0] = 100f - (yiAxis.length * 3f);
+				main = new PdfPTable(colsWidth);
+				main.setWidthPercentage(100);
+				main.setTotalWidth(100);
+				main.getDefaultCell().setBackgroundColor(BaseColor.GRAY);
+
+				p = new Phrase(topic+" / "+columnTitle, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+				main.addCell(p);
+
+				for(i=0;i<yAxis.length;i++){
+					found = true;
+					p = new Phrase(aALPHABETS[i], FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+					main.addCell(p);
+				}
+
+				//Image jpg = Image.getInstance(AseUtil.getCurrentDrive() + ":/tomcat/webapps/central/images/images/checkmarkG.gif");
+				//jpg.scaleAbsolute(154, 94);
+
+				// print detail row
+				for(i=0;i<xAxis.length;i++){
+					// select data that connects the X and Y grid of the table
+					// add the comma at the end and beginning so that we know our compare
+					// via indexOf will find the exact match only.
+					String yGrid = ","
+										+ ValuesDB.getYIDs(conn,campus,kix,src,dst,Integer.parseInt(xiAxis[i]))
+										+",";
+					if (i % 2 == 0)
+						main.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+					else
+						main.getDefaultCell().setBackgroundColor(BaseColor.CYAN);
+
+					p = new Phrase(xAxis[i], headerFont);
+					main.addCell(p);
+
+					for(j=0;j<yAxis.length;j++){
+						if (yGrid.indexOf(","+yiAxis[j]+",")>-1){
+							//main.addCell(jpg);
+							main.addCell(new Phrase("X"));
+						}
+						else{
+							main.addCell(new Phrase(""));
+						}
+					}
+				}
+			} // if
+			else{
+
+				main = new PdfPTable(1);
+				main.setWidthPercentage(100);
+				main.setTotalWidth(100);
+				main.getDefaultCell().setBackgroundColor(BaseColor.LIGHT_GRAY);
+
+				p = new Phrase(topic, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+				main.addCell(p);
+
+				for(i=0;i<xAxis.length;i++){
+					p = new Phrase(xAxis[i], headerFont);
+					main.addCell(p);
+				}
+			}
+
+		} catch (SQLException ex) {
+			logger.fatal("ReportOutline: diversificationMatrix - " + ex.toString());
+		} catch (Exception e) {
+			logger.fatal("ReportOutline: diversificationMatrix - " + e.toString());
+		}
+
+		document.add(main);
+
+		return;
+	}
+
+	/*
+	 * getGESLO
+	 *	<p>
+	 *	@param	conn			Connection
+	 *	@param	campus		String
+	 *	@param	kix			String
+	 *	@param	question		String
+	 * @param	questionNo 	int
+	 *	<p>
+	 */
+	public static void getGESLO(Document document,
+											PdfWriter writer,
+											Connection conn,
+											String campus,
+											String kix,
+											String question,
+											int questionNo) {
+
+		//Logger logger = Logger.getLogger("test");
+
+		int id = 0;
+		String sid = "";
+		String kid = "";
+		String kdesc = "";
+		String slo = "";
+		String sql = "";
+
+		StringBuffer buf = new StringBuffer();
+
+		int totalTopics = 10;
+		String[] topic = new String[totalTopics];
+
+		BaseColor ASE_COLOR_01	= ASE_LIGHT_GRAY;
+		BaseColor ASE_COLOR_02	= new BaseColor(255, 255, 255);
+		BaseColor ASE_COLOR_03	= new BaseColor(0, 255, 255);
+		BaseColor ASE_COLOR_04	= new BaseColor(144, 238, 144);
+		BaseColor ASE_COLOR_05	= new BaseColor(255, 255, 168);
+		BaseColor ASE_COLOR_06	= new BaseColor(176, 216, 255);
+		BaseColor ASE_COLOR_07	= new BaseColor(181, 251, 191);
+		BaseColor ASE_COLOR_08	= new BaseColor(244, 255, 221);
+		BaseColor ASE_COLOR_09	= ASE_LIGHT_GRAY;
+
+		BaseColor[] bc = {ASE_COLOR_01,
+								ASE_COLOR_02,
+								ASE_COLOR_03,
+								ASE_COLOR_04,
+								ASE_COLOR_05,
+								ASE_COLOR_06,
+								ASE_COLOR_07,
+								ASE_COLOR_08,
+								ASE_COLOR_09};
+
+		String temp = "";
+
+		boolean found = false;
+
+		int i=0;		// row of table
+		int j=0;		// col of table
+
+		GESLO geslo;
+
+		int countOfEvals = 0;
+		String[] evals = new String[totalTopics];
+
+		int checks = 4;
+		int checkCounter = 0;
+		String[] inputField = new String[checks];
+		String[] checked = new String[checks];
+		String[] levels = new String[checks];
+
+		PdfPTable contentTable = null;
+		PdfPTable methodEval = null;
+		PdfPTable nestedTable = null;
+		PdfPTable junkTable = null;
+		PdfPCell cell = null;
+		Phrase p = null;
+
+		float pos = 0;
+		float totalHeightContentTable = 0;
+		float totalHeightMethodEval = 0;
+
+		try {
+			AseUtil aseUtil = new AseUtil();
+
+			//Image jpg = Image.getInstance(AseUtil.getCurrentDrive() + ":/tomcat/webapps/central/images/images/checkmarkG.gif");
+			//jpg.scaleAbsolute(154, 94);
+
+			float[] colsWidth = {2f,98f};
+			contentTable = new PdfPTable(colsWidth);
+			contentTable.setWidthPercentage(100);
+			contentTable.setTotalWidth(100);
+
+			countOfEvals = IniDB.mumberOfItems(conn,campus,"MethodEval");
+
+			// draw the first table of selected items
+			i = 0;
+			sql = "SELECT id, kid, kdesc "
+						+ "FROM tblINI "
+						+ "WHERE campus=? AND "
+						+ "category='GESLO' "
+						+ "ORDER BY seq";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				id = rs.getInt("id");
+				kid = rs.getString("kid");
+				kdesc = rs.getString("kdesc");
+
+				topic[i] = kid;
+
+				for(checkCounter=0;checkCounter<checks;checkCounter++){
+					checked[checkCounter] = "";
+					inputField[checkCounter] = "";
+				}
+
+				geslo = GESLODB.getGESLO(conn,campus,kix,id);
+				if (geslo!=null){
+
+					evals[i] = "," + geslo.getSloEvals() + ",";
+
+					if (geslo.getGeid() > 0)
+						checked[0] = "checked";
+
+					switch(geslo.getSloLevel()){
+						case 0 : checked[1] = "checked"; break;
+						case 1 : checked[2] = "checked"; break;
+						case 2 : checked[3] = "checked"; break;
+					}
+				}
+
+				levels[0] = "";
+				levels[1] = "Preparatory Level";
+				levels[2] = "Level 1";
+				levels[3] = "Level 2";
+
+				for(checkCounter=0;checkCounter<checks;checkCounter++){
+					if ("checked".equals(checked[checkCounter]))
+						inputField[checkCounter] = levels[checkCounter];
+				}
+
+				contentTable.getDefaultCell().setBackgroundColor(bc[i]);
+				//cell = new PdfPCell(jpg,true);
+				cell = new PdfPCell(new Phrase("X"));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				contentTable.addCell(cell);
+
+				// the selected GESLO is nested in a table
+				nestedTable = new PdfPTable(colsWidth);
+				nestedTable.setWidthPercentage(100);
+				nestedTable.setTotalWidth(100);
+				nestedTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.NO_BORDER);
+				cell.setColspan(2);
+				p = new Phrase(kid + " - " + kdesc + "\n\n", dataFontBold);
+				cell.addElement(p);
+				nestedTable.addCell(cell);
+
+				//cell = new PdfPCell(jpg,true);
+				cell = new PdfPCell(new Phrase("X"));
+				cell.setBorder(PdfPCell.NO_BORDER);
+				nestedTable.addCell(cell);
+
+				p = new Phrase(inputField[1]
+								+ inputField[2]
+								+ inputField[3], dataFontBold);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.NO_BORDER);
+				cell.addElement(p);
+				nestedTable.addCell(cell);
+
+				contentTable.addCell(nestedTable);
+
+				pos = writer.getVerticalPosition(false);
+				totalHeightContentTable = contentTable.getTotalHeight();
+
+				++i;
+
+				found = true;
+			} // while
+			rs.close();
+			ps.close();
+
+			// actual topics
+			totalTopics = i;
+
+			if (found && (Constant.CAMPUS_KAP).equals(campus)){
+				buf.setLength(0);
+				found = false;
+
+				// if method of evaluation has been selected, limit this list to only what was selected;
+				// otherwise, show the entire list.
+				sql = "historyid=" + aseUtil.toSQL(kix, 1);
+				String methodEvaluation = aseUtil.lookUp(conn,"tblCourse",Constant.COURSE_METHODEVALUATION,sql);
+				methodEvaluation = CourseDB.methodEvaluationSQL(methodEvaluation);
+				if (methodEvaluation != null && methodEvaluation.length() > 0)
+					sql = "SELECT id, kdesc "
+						+ "FROM tblINI "
+						+ "WHERE campus=? AND "
+						+ "category='MethodEval' AND "
+						+ "id IN ("+methodEvaluation+") "
+						+ "ORDER BY kdesc";
+				else
+					sql = "SELECT id, kdesc "
+						+ "FROM tblINI "
+						+ "WHERE campus=? AND "
+						+ "category='MethodEval' "
+						+ "ORDER BY kdesc";
+
+				ps = conn.prepareStatement(sql);
+				ps.setString(1,campus);
+				rs = ps.executeQuery();
+
+				float[] colsMethodEvalWidth = new float[totalTopics+1];
+				colsMethodEvalWidth[0] = 25f;
+				float val = 75f/totalTopics;
+				for (int m=1;m<totalTopics+1;m++){
+					colsMethodEvalWidth[m] = val;
+				}
+				methodEval = new PdfPTable(colsMethodEvalWidth);
+				methodEval.setWidthPercentage(100);
+				methodEval.setTotalWidth(100);
+
+				/*
+					sid is string representation of id with commas on each end. the commas were added
+					to help in the use if indexOf to find the values within the CSV of values saved to DB.
+				*/
+				i = 0;
+
+				methodEval.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+				p = new Phrase("", headerFont);
+				methodEval.addCell(p);
+
+				for(j=0; j<totalTopics;j++){
+					methodEval.getDefaultCell().setBackgroundColor(bc[j]);
+					p = new Phrase(topic[j], dataFontBold);
+					methodEval.addCell(p);
+				}
+
+				while (rs.next()) {
+					id = rs.getInt("id");
+					sid = ","+id+",";
+					kdesc = rs.getString("kdesc");
+
+					methodEval.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+					p = new Phrase(kdesc, headerFont);
+					methodEval.addCell(p);
+
+					for(j=0;j<totalTopics;j++){
+						methodEval.getDefaultCell().setBackgroundColor(bc[j]);
+
+						if (evals[j] != null && evals[j].length() > 0 && (evals[j].indexOf(sid)>=0)){
+							float[] colsWidthX = {15f,85f};
+							junkTable = new PdfPTable(colsWidthX);
+							junkTable.setWidthPercentage(100);
+							junkTable.setTotalWidth(100);
+							junkTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+							//cell = new PdfPCell(jpg,true);
+							cell = new PdfPCell(new Phrase("X"));
+							cell.setBorder(PdfPCell.NO_BORDER);
+							junkTable.addCell(cell);
+							junkTable.addCell(new Phrase(""));
+							methodEval.addCell(junkTable);
+						}
+						else
+							methodEval.addCell(new Phrase(""));
+					}
+
+					pos = writer.getVerticalPosition(false);
+					totalHeightMethodEval = methodEval.getTotalHeight();
+
+					++i;
+					found = true;
+				} // while
+				rs.close();
+				ps.close();
+			}	// found
+
+			if (pos < (totalHeightMethodEval + totalHeightMethodEval) && found)
+				document.newPage();
+
+			writeQuestion(document,question,questionNo);
+
+			if (found){
+				document.add(new Phrase(""));
+				document.add(contentTable);
+
+				if ((Constant.CAMPUS_KAP).equals(campus)){
+					document.add(new Phrase(""));
+					document.add(methodEval);
+				}
+			}
+
+		} catch (Exception e) {
+			logger.fatal("ReportOutline: getGESLO - " + e.toString());
+		}
+
+		return;
+	}
+
+	/*
+	 * showLegend - shown as a matrix when connected with competency and more
+	 * <p>
+	 * @param document	Document
+	 * @param yAxis		String[]
+	 * <p>
+	 */
+	public static void showLegend(Document document,String[] yAxis) throws Exception {
+
+		Phrase phrase = new Phrase();
+
+		if (yAxis != null && yAxis.length > 0){
+			com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+			list.setLettered(true);
+			list.setIndentationLeft(12);
+			ListItem items = null;
+			for(int i=0;i<yAxis.length;i++){
+				phrase = new Phrase();
+				phrase.setFont(myFont.getDataFont());
+				phrase.add(yAxis[i]);
+				items = new ListItem(phrase);
+				list.add(items);
+			}
+
+			document.add(list);
+		}
+
+		return;
+	}
+
+	/**
+	 * showLinkedMatrixContentsX - returns sql for linked src
+	 * <p>
+	 * @param	conn			Connection
+	 * @param	campus		String
+	 * @param	kix			String
+	 * @param	src			String
+	 * @param	srcName		String
+	 * @param	dst			String
+	 * @param	dstName		String
+	 * @param	print			boolean
+	 * @param	currentTab	boolean
+	 * @param	currentNo	boolean
+	 * @param	user			boolean
+	 * <p>
+	 */
+	public static void showLinkedMatrixContentsX(Document document,
+																PdfWriter writer,
+																Connection conn,
+																String campus,
+																String kix,
+																String src,
+																String srcName,
+																String dst,
+																String dstName,
+																String user,
+																String question,
+																int questionNo) throws Exception {
+
+		String rowColor = "";
+		String sql = "";
+		String temp = "";
+		String img = "";
+		String dstFullName = "";
+		String longcontent = "";
+
+		int ix = 0;
+		int jy = 0;
+
+		int i = 0;
+		int j = 0;
+		int rowsAffected = 0;
+
+		String linked = "";
+		String checked = "";
+		String field = "";
+		String selected = "";
+		String thisKey = "";
+
+		PdfPTable main = null;
+		Phrase p = null;
+
+		boolean found = false;
+		boolean foundXOnly = false;
+
+		float pos = 0;
+		float totalTableHeight = 0;
+
+		try {
+			AseUtil aseUtil = new AseUtil();
+
+			String[] xAxis = SQLValues.getSrcData(conn,campus,kix,src,"descr");
+			String[] xiAxis = SQLValues.getSrcData(conn,campus,kix,src,"key");
+
+			String[] yAxis = SQLValues.getDstData(conn,campus,kix,dst,"descr");
+			String[] yiAxis = SQLValues.getDstData(conn,campus,kix,dst,"key");
+
+			if (xAxis!=null && yAxis!=null && yiAxis != null){
+
+				found = true;
+
+				String[] aALPHABETS = (Constant.ALPHABETS).split(",");
+
+				float[] colsWidth = new float[yiAxis.length + 1];
+				for (int f=1;f<yiAxis.length + 1;f++){
+					colsWidth[f] = 3f;
+				}
+				colsWidth[0] = 100f - (yiAxis.length * 3f);
+				main = new PdfPTable(colsWidth);
+				main.setWidthPercentage(100);
+				main.setTotalWidth(100);
+
+				// print header row
+				main.getDefaultCell().setBackgroundColor(BaseColor.GRAY);
+				p = new Phrase(srcName+"/"+dstName, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+				main.addCell(p);
+				for(i=0;i<yAxis.length;i++){
+					p = new Phrase(aALPHABETS[i], FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+					main.addCell(p);
+				}
+
+				main.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+				//Image jpg = Image.getInstance(AseUtil.getCurrentDrive() + ":/tomcat/webapps/central/images/images/checkmarkG.gif");
+				//jpg.scaleAbsolute(154, 94);
+
+				// print detail row
+				for(i=0;i<xAxis.length;i++){
+					ix = Integer.parseInt(xiAxis[i]);
+
+					dstFullName = LinkedUtil.GetLinkedDestinationFullName(dst);
+					if ("Objectives".equals(dstFullName))
+						dstFullName = "SLO";
+
+					// retrieve values saved to db
+					if ((Constant.COURSE_OBJECTIVES).equals(dst)){
+						if ((Constant.COURSE_COMPETENCIES).equals(src))
+							selected = CompetencyDB.getSelectedSLOs(conn,kix,xiAxis[i]);
+						else if ((Constant.COURSE_CONTENT).equals(src))
+							selected = ContentDB.getSelectedSLOs(conn,kix,xiAxis[i]);
+						else
+							selected = LinkerDB.getSelectedLinkedItem(conn,kix,src,dstFullName,ix);
+					}
+					else
+						selected = LinkerDB.getSelectedLinkedItem(conn,kix,src,dstFullName,ix);
+
+					// make into CSV for proper indexOf search
+					selected = "," + selected + ",";
+
+					p = new Phrase(xAxis[i],myFont.getDataFont());
+        			main.addCell(p);
+
+					for(j=0;j<yAxis.length;j++){
+
+						thisKey = "," + yiAxis[j] + ",";
+
+						if (selected.indexOf(thisKey) > -1){
+							//main.addCell(jpg);
+							main.addCell(new Phrase("X"));
+						}
+						else{
+							main.addCell(new Phrase(""));
+						}
+					}
+
+					pos = writer.getVerticalPosition(false);
+					totalTableHeight = main.getTotalHeight();
+
+				} // for i;
+			}
+			else{
+				if (xAxis!=null){
+
+					foundXOnly = true;
+
+					main = new PdfPTable(1);
+					main.setWidthPercentage(100);
+					main.setTotalWidth(100);
+
+					// print header row
+					main.getDefaultCell().setBackgroundColor(BaseColor.GRAY);
+					p = new Phrase(srcName, FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.WHITE));
+					main.addCell(p);
+
+					main.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+
+					// print detail row
+					for(i=0;i<xAxis.length;i++){
+						p = new Phrase(xAxis[i],myFont.getDataFont());
+						main.addCell(p);
+					} // for i;
+
+					pos = writer.getVerticalPosition(false);
+					totalTableHeight = main.getTotalHeight();
+				}
+			} // if we have data
+
+			// force new page if we have a table bigger than space available
+			if (pos < totalTableHeight && found)
+				document.newPage();
+
+			writeQuestion(document,question,questionNo);
+
+			if (found){
+				main.setSplitLate(false);
+				document.add(main);
+
+				if (!foundXOnly){
+					document.add(new Phrase(""));
+					p = new Phrase("LEGEND", FontFactory.getFont(FontFactory.TIMES_ROMAN, dataFontSize, Font.BOLD, BaseColor.GRAY));
+					document.add(p);
+					showLegend(document,yAxis);
+				}
+			}
+
+		} catch (SQLException ex) {
+			logger.fatal("LinkedUtil: showLinkedMatrixContentsX - " + ex.toString());
+		} catch (Exception e) {
+			logger.fatal("LinkedUtil: showLinkedMatrixContentsX - " + e.toString());
+		}
+
+		return;
+	}
+
+	/**
+	 * printLinkedMaxtrixContent - returns sql for linked src
+	 * <p>
+	 * @param	request	HttpServletRequest
+	 * @param	conn		Connection
+	 * @param	kix		String
+	 * @param	user		String
+	 * <p>
+	 */
+	public static void printLinkedMaxtrixContent(Document document,
+																PdfWriter writer,
+																Connection conn,
+																String kix,
+																String src,
+																String user,
+																String question,
+																int questionNo) throws SQLException {
+
+
+		//Logger logger = Logger.getLogger("test");
+
+		String[] info = Helper.getKixInfo(conn,kix);
+		String campus = info[4];
+
+		int j = 0;
+
+		String srcName = "";
+		String dst = "";
+		String dstName = "";
+		String linkedDst = "";
+		String temp = "";
+		String[] aLinkedDst = null;
+
+		try{
+			srcName = LinkedUtil.GetLinkedItemDescr(conn,src);
+			linkedDst = LinkedUtil.GetLinkedKeys(conn,campus,src);
+			if (linkedDst != null && linkedDst.length() > 0){
+				aLinkedDst = linkedDst.split(",");
+				for (j=0;j<aLinkedDst.length;j++){
+					dst = aLinkedDst[j];
+					dstName = LinkedUtil.GetKeyNameFromDst(conn,dst);
+					showLinkedMatrixContentsX(document,writer,conn,campus,kix,src,srcName,dst,dstName,user,question,questionNo);
+				} // for j
+			}	// if
+			else
+				showLinkedMatrixContentsX(document,writer,conn,campus,kix,src,srcName,"","",user,question,questionNo);
+
+		} catch (Exception e) {
+			logger.fatal("LinkedUtil: printLinkedMaxtrixContent - " + e.toString());
+		}
+
+		return;
+	}
+
+	/**
+	 * drawFunctionDesignation
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * @param	input		String
+	 * @param	view		boolean
+	 */
+	public static void drawFunctionDesignation(Document document,
+																PdfWriter writer,
+																Connection conn,
+																String kix,
+																String campus,
+																String question,
+																int questionNo){
+
+		//Logger logger = Logger.getLogger("test");
+
+		StringBuffer buf = new StringBuffer();
+		String temp = "";
+		String input = "";
+		int i = 0;
+
+		int maxFD = 10;
+
+		String[] cat = "AA,AS,AAS,BAS,XX".split(",");
+
+		float pos = 0;
+		float totalTableHeight = 0;
+
+		PdfPTable main = null;
+
+		try{
+
+			input = CourseDB.getCourseItem(conn,kix,Constant.COURSE_FUNCTION_DESIGNATION);
+
+			String[] data = new String[maxFD];
+			for (i=0;i<maxFD;i++){
+				data[i] = "0";
+			}
+
+			// make sure that we have maxFD elements
+			if (input != null && !"".equals(input)){
+				String[] junk = input.split(",");
+
+				for (i=0;i<junk.length;i++){
+					data[i] = junk[i];
+				}
+			}
+
+			float[] colsWidth = {20f,40f,40f};
+			main = new PdfPTable(colsWidth);
+			main.setWidthPercentage(100);
+			main.setTotalWidth(100);
+
+			// Title
+			main.getDefaultCell().setBackgroundColor(BaseColor.LIGHT_GRAY);
+			main.addCell(new Phrase("Degree", headerFont));
+			main.addCell(new Phrase("Program", headerFont));
+			main.addCell(new Phrase("Category", headerFont));
+			main.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+
+			// LA
+			main.addCell(new Phrase("AA Liberal Arts:", headerFont));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Program","LA",data[0]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+
+			Paragraph paragraph = new Paragraph();
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[0],data[1]);
+			paragraph.add(new Phrase(temp, dataFontNormal));
+			paragraph.add(Chunk.NEWLINE);
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[0],data[2]);
+			paragraph.add(new Phrase(temp, dataFontNormal));
+			main.addCell(paragraph);
+
+			// AS
+			main.addCell(new Phrase("AS:", headerFont));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Program",cat[1],data[3]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[1],data[4]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+
+			// AAS
+			main.addCell(new Phrase("AAS:", headerFont));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Program",cat[2],data[5]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[2],data[6]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+
+			// BAS
+			main.addCell(new Phrase("BAS:", headerFont));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Program",cat[3],data[7]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[3],data[8]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+
+			// XX
+			main.addCell(new Phrase("Delevopmental/Remedial:", headerFont));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Program",cat[4],data[9]);
+			main.addCell(new Phrase(temp, dataFontNormal));
+			temp = FunctionDesignation.getFunctionDesignation(conn,campus,"Category",cat[3],data[8]);
+			main.addCell(new Phrase("", dataFontNormal));
+
+			pos = writer.getVerticalPosition(false);
+			totalTableHeight = main.getTotalHeight();
+
+			if (pos < totalTableHeight)
+				document.newPage();
+
+			writeQuestion(document,question,questionNo);
+
+			main.setSplitLate(false);
+
+			document.add(main);
+
+		}catch(Exception ex){
+			logger.fatal("FunctionDesignation: drawFunctionDesignation - " + ex.toString());
+		}
+
+		return;
+	}
+
+	/**
+	 * drawCowiq
+	 * <p>
+	 * @param	conn		Connection
+	 * @param	campus	String
+	 * @param	kix		String
+	 * @param	view		boolean
+	 * <p>
+	 */
+	public static void drawCowiq(Document document,
+											PdfWriter writer,
+											Connection conn,
+											String campus,
+											String kix,
+											String question,
+											int questionNo){
+
+		//Logger logger = Logger.getLogger("test");
+
+		String temp = "";
+		int i = 0;
+		int id = 0;
+		int seq = 0;
+		int topic = 0;
+		int index = 0;
+		int saveTopic = 0;
+		String sid = "";
+		String header = "";
+		String descr = "";
+		BaseColor bgColor = null;
+
+		int oldID = 0;
+
+		String sql = "";
+		String[] dataItem = null;
+		String[] dataItem2 = null;
+		int[] dI2 = null;
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String item = "";
+		String item2 = "";
+
+		String defaultValue = "0";
+		boolean found = false;
+
+		int numberOfControls = 0;
+
+		float pos = 0;
+		float totalTableHeight = 0;
+
+		try{
+			AseUtil aseUtil = new AseUtil();
+
+			// get the ID holding the values of any saved COWIQ
+			// when oldID > 0, we have data saved. If not, we never
+			// saved data for this KIX
+			oldID = LinkerDB.getLinkedID(conn,campus,kix,Constant.COURSE_CCOWIQ,Constant.COURSE_CCOWIQ,0);
+
+			// if the id exists, fill up the array with data for use to populate form
+			if (oldID>0){
+				sql = "SELECT item,item2 "
+					+ "FROM tblCourseLinked2 "
+					+ "WHERE historyid=? "
+					+ "AND id=? "
+					+ "ORDER BY item2 ";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1,kix);
+				ps.setInt(2,oldID);
+				rs = ps.executeQuery();
+				while(rs.next()){
+					found = true;
+					if ("".equals(item)){
+						item = "" + rs.getInt("item");
+						item2 = "" + rs.getInt("item2");
+					}
+					else{
+						item = item + "," + rs.getInt("item");
+						item2 = item2 + "," + rs.getInt("item2");
+					}
+				}
+				rs.close();
+
+				if (found){
+					dataItem = item.split(",");
+					dataItem2 = item2.split(",");
+
+					// binary search function does not seem to work out as well as
+					// using integer. converting to Integer array works better
+					dI2 = new int[dataItem2.length];
+					for(i=0;i<dataItem2.length;i++){
+						dI2[i] = Integer.parseInt(dataItem2[i]);
+					}
+				}
+			}
+
+			float[] colsWidth = {90f,10f};
+			PdfPTable main = new PdfPTable(colsWidth);
+			main.setWidthPercentage(100);
+			main.setTotalWidth(100);
+
+			sql = "SELECT id,topic,header,descr,seq "
+				+ "FROM tblccowiq "
+				+ "WHERE campus=? "
+				+ "ORDER BY topic,seq ";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,campus);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				id = rs.getInt("id");
+				topic = rs.getInt("topic");
+				seq = rs.getInt("seq");
+				header = rs.getString("header");
+				descr = rs.getString("descr");
+
+				if (seq==0)
+					bgColor = ASE_LIGHT_GRAY;
+				else
+					if (numberOfControls%2==0)
+						bgColor = ASE_ODD_ROW_COLOR;
+					else
+						bgColor = ASE_EVEN_ROW_COLOR;
+
+				main.getDefaultCell().setBackgroundColor(bgColor);
+				main.addCell(new Phrase(header,headerFont));
+
+				if (seq==0)
+					main.addCell(new Phrase(""));
+				else{
+					if (oldID>0 && found){
+						defaultValue = "0";
+						index = Arrays.binarySearch(dI2,id);
+						if (index>-1)
+							defaultValue = dataItem[index];
+
+						main.addCell(new Phrase(defaultValue,dataFontNormal));
+					}
+					else
+						main.addCell(new Phrase(""));
+				}
+
+				pos = writer.getVerticalPosition(false);
+				totalTableHeight = main.getTotalHeight();
+
+				++numberOfControls;
+			}
+			rs.close();
+			ps.close();
+
+			if (pos < totalTableHeight)
+				document.newPage();
+
+			writeQuestion(document,question,questionNo);
+
+			main.setSplitLate(false);
+
+			document.add(main);
+
+		}catch(SQLException se){
+			System.out.println("Cowiq: drawCowiq - " + se.toString());
+		}catch(Exception ex){
+			System.out.println("Cowiq: drawCowiq - " + ex.toString());
+		}
+
+		return;
+	}
+
+	/**
+	 * removeImages
+	 * <p>
+	 */
+	public static String removeImages(String s) throws Exception {
+
+		int start = 0;
+		int end = 0;
+
+		if (s != null){
+
+			// loop through and remove all images and replace with character
+			start = s.indexOf("<img");
+			while (start > -1){
+				end = s.indexOf(">");
+				if (end > -1){
+					s = replace(s,"X",start,end);
+					start = s.indexOf("<img");
+				}
+				else
+					start = -1;
+			}
+		}
+
+		return s;
+	}
+
+	/**
+	 * replace
+	 * <p>
+	 */
+	public static String replace(String source,String replaceText,int from,int to) throws Exception {
+
+		String s = null;
+
+		if (source != null && from > -1 && to > -1){
+			s = source.substring(0,from) + replaceText + source.substring(to+1);
+		}
+
+		return s;
+	}
+
+}

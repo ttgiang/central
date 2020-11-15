@@ -1,0 +1,38 @@
+WYSIWYG.getEditorWindow(yourAreatextID).document.innerHTML
+over
+document.getElementById("wysiwygtextbody").contentWindow.document.body.innerHTML;
+
+------------------------------
+
+L2022
+
+ /**
+    * Determine if the browser version is compatible
+    *
+    * @return true/false depending on compatiblity of the browser
+    *
+    * modified by GeekFG http://blog.geekfg.net
+    */
+   isBrowserCompatible: function() {
+      // Validate browser and compatiblity
+      if ((navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) || !document.getElementById || !document.designMode){   
+         //no designMode (Safari lies)
+            return false;
+      } 
+      return true;
+   },   
+   
+   
+ L2726
+ 
+ /**
+ * Emulates insertAdjacentHTML(), insertAdjacentText() and 
+ * insertAdjacentElement() three functions so they work with Netscape 6/Mozilla
+ * by Thor Larholm me@jscript.dk
+ * modified by GeekFG http://blog.geekfg.net
+ */
+if((typeof HTMLElement!="undefined" && (!HTMLElement.prototype.insertAdjacentElement || !HTMLElement.prototype.insertAdjacentHTML))){
+
+------------------------------
+
+try in file scripts/wysiwyg.js find function invertIELineBreakCapability: function(n) and replace string sel.pasteHTML("<br>"); to sel.pasteHTML("<br/>");

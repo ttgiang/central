@@ -1,0 +1,39 @@
+
+.pagination {
+	padding: 4px 0px 4px 7px;
+	margin: 7px 0 0 0;
+	font-size: 90%;
+}
+
+.pagination p {
+	position:relative;
+	text-align:left;
+}
+
+.pagination a:link, .pagination a:visited, .pagination a:active {
+	text-decoration:none;
+	background:#fff;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color: #00679B;
+}
+
+.pagination a:hover {
+	background:#cde;
+	color:#fff
+}
+
+.pagination font {
+	font-weight:bold;
+	background:#ffffb9;
+	padding:3px 3px;
+	color: #00679B;
+}
+
+.pagination span {
+	text-decoration:none;
+	background:#fff;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color:#ccc;
+}

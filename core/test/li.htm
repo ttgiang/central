@@ -1,0 +1,240 @@
+<html>
+<head>
+	<title>User Interface</title>
+	<style type='text/css'>
+		#dhtmlgoodies_tooltip{
+			background-color:#EEE;
+			border:1px solid #000;
+			position:absolute;
+			display:none;
+			z-index:20000;
+			padding:2px;
+			font-size:0.9em;
+			-moz-border-radius:6px;	/* Rounded edges in Firefox */
+			font-family: "Trebuchet MS", "Lucida Sans Unicode", Arial, sans-serif;
+		}
+
+		#dhtmlgoodies_tooltipShadow{
+			position:absolute;
+			background-color:#555;
+			display:none;
+			z-index:10000;
+			opacity:0.7;
+			filter:alpha(opacity=70);
+			-khtml-opacity: 0.7;
+			-moz-opacity: 0.7;
+			-moz-border-radius:6px;	/* Rounded edges in Firefox */
+		}
+	</style>
+	<script type="text/javascript" src="../inc/dropdowntabs.js"></script>
+	<link rel="stylesheet" type="text/css" href="../inc/style.css">
+	<link rel="stylesheet" type="text/css" href="../inc/bluetabs.css" />
+	<link rel="stylesheet" type="text/css" href="../inc/site.css" />
+	<link rel="stylesheet" type="text/css" href="../inc/ase.css" />
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<table border="0" cellpadding="0" cellspacing="1" width="100%" height="100%">
+	<tbody>
+		<tr>
+			<td bgcolor="#ffffff" valign="top" height="100%">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%" background="images/stripes.png">
+					<!-- header -->
+					<tr>
+						<td class="intd" height="05%">
+							<table border="0" width="100%" id="asetable2" >
+								<tr bgcolor="#4682b4">
+									<td valign="top">
+										<div id="bluemenu" class="bluetabs">
+											<ul>
+												<li><a href="/central/core/index.jsp">Home</a></li>
+												<li><a href="/central/core/tasks.jsp">My Tasks</a></li>
+												<li><a href="/central/core/crs.jsp" rel="course">Course</a></li>
+												<li><a href="/central/core/crsrpt.jsp" rel="report">Reports</a></li>
+												<li><a href="/central/core/utilities.jsp" rel="utilities">Utilities</a></li>
+												<li><a href="/central/core/lo.jsp">Log Out</a></li>
+												<li><a href="/central/core/about.jsp" rel="help">Help</a></li>
+											</ul>
+										</div>
+
+										<div id="course" class="dropmenudiv">
+											<a href="/central/core/crscan.jsp?edt=PRE">Cancel Proposed Outline</a>
+											<a href="/central/core/crscpy.jsp?edt=CUR">Copy Course Outline</a>
+											<a href="/central/core/crsappr.jsp?edt=PRE">COURSE APPROVAL</a>
+											<a href="/central/core/crssts.jsp">Course Approval Status</a>
+											<a href="/central/core/crsxrf.jsp?edt=CUR">Course Cross Listing</a>
+											<a href="/central/core/crsrvwer.jsp?edt=PRE">Course Review</a>
+											<a href="/central/core/crscrt.jsp?edt=PRE">CREATE NEW COURSE</a>
+											<a href="/central/core/crsdlt.jsp?edt=CUR">Delete Course Outline</a>
+											<a href="/central/core/crsrvw.jsp?edt=PRE">Invite Course Reviewers</a>
+											<a href="/central/core/crsedt.jsp?edt=CUR">Modify Approved Outline</a>
+											<a href="/central/core/crsedt.jsp?edt=PRE">Modify Proposed Outline</a>
+											<a href="/central/core/crsrnm.jsp?edt=PRE">Renumber Approved Outline</a>
+											<a href="/central/core/crsvw.jsp">View Course Content</a>
+											<a href="/central/core/crslst.jsp">List Courses</a>
+										</div>
+
+										<div id="report" class="dropmenudiv">
+											<a href="/central/core/crscnclled.jsp">Cancelled Outline</a>
+											<a href="/central/core/crsprgrs.jsp">Progress Report</a>
+										</div>
+
+										<div id="programs" class="dropmenudiv">
+											<a href="/central/core/prg.jsp">Programs</a>
+										</div>
+
+										<div id="utilities" class="dropmenudiv">
+											<a href="/central/core/appridx.jsp">Approver Sequence Maintenance</a>
+											<a href="/central/core/dstidx.jsp">Distribution List</a>
+											<a href="/central/core/crsrss.jsp">Reassign Ownership</a>
+											<a href="/central/core/bnr.jsp">Banner Courses</a>
+											<a href="/central/core/dfqst.jsp">Course Item Definition (campus)</a>
+											<a href="/central/core/dfqsts.jsp">Course Item Definition (system)</a>
+											<a href="/central/core/cmps.jsp">UH Campuses</a>
+											<a href="/central/core/hlpidx.jsp">Help Maintenance</a>
+											<a href="/central/core/catidx.jsp">COURSE CATALOG</a>
+											<a href="/central/core/disciplineidx.jsp">College Listing</a>
+											<a href="/central/core/alphaidx.jsp">Course Listing</a>
+											<a href="/central/core/newsidx.jsp">News</a>
+											<a href="/central/core/stmtidx.jsp">General Statements</a>
+											<a href="/central/core/sylidx.jsp">SYLLABUS LISTING</a>
+											<a href="/central/core/ini.jsp">System Settings</a>
+											<a href="/central/core/usrlog.jsp">User Activity Log</a>
+											<a href="/central/core/useridx.jsp">User Maintenance</a>
+											<a href="/central/core/crsfld.jsp">Display Course Content (raw data)</a>
+											<a href="/central/core/maillog.jsp">View Mail Log</a>
+										</div>
+
+										<div id="help" class="dropmenudiv">
+											<a href="/central/core/cccm6100.jsp">View CCCM6100</a>
+											<a href="/central/core/about.jsp">About Curriculum Central</a>
+											<a href="/central/core/hlpidx.jsp">Curriculum Central Help</a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- header -->
+					<tr>
+						<td class="intd" height="90%" align="center" valign="top">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								<tr>
+									<td align="center" valign="top">
+										<!-- PAGE CONTENT GOES HERE -->
+										<fieldset class="FIELDSET">
+											<legend>Sample Template</legend>
+											<br>
+											<!-- body -->
+											<table border="0" cellpadding="0" cellspacing="0" id="table1">
+												<tbody>
+													<tr>
+														<td valign="top">
+															<form action="?" method="post" name="aseForm">
+																<table align="center" border="0" cellpadding="0" cellspacing="0" width="100" id="table2">
+																	<tbody>
+																		<tr>
+																			<td bgcolor="#4682b4"><img src="../images/pixel.gif" border="0" height="1" width="10"></td>
+																			<th bgcolor="#4682b4" nowrap="nowrap">
+																				<font color="#FFFFFF">Curriculum Central Login</font><img src="../images/pixel.gif" border="0" height="1" width="20">
+																			</th>
+																			<td><img src="../images/formtab_r.gif" border="0" height="21" width="10"></td>
+																			<td background="../images/line_t.gif" width="60%">&nbsp;</td>
+																			<td background="../images/line_t.gif"><img src="../images/pixel.gif" border="0" height="1" width="10"></td>
+																		</tr>
+																		<tr>
+																			<td background="../images/line_l.gif"><img src="../images/pixel.gif" border="0"></td>
+																			<td colspan="3">
+																				<div id="subscribe_error" style="display: none;"></div>
+																				<img src="../images/pixel.gif" border="0" height="10" width="1"><br>
+																				<table border="0" cellpadding="0" cellspacing="0" width="100%" id="table3">
+																					<tbody>
+																						<tr>
+																							<td bgcolor="#a0a0a0">
+																								<table border="0" cellpadding="2" cellspacing="1" width="100%" id="table4">
+																									<tbody>
+																										<tr>
+																											<td id="user" bgcolor="#ffffff" nowrap="nowrap">&nbsp;User ID:</td>
+																											<td bgcolor="#dbeaf5"><input name="user" class="input" value="" type="text">
+																											</td>
+																										</tr>
+																										<tr>
+																											<td id="userpw" bgcolor="#dbeaf5">Password:</td>
+																											<td bgcolor="#ffffff"><input name="userpw" class="input" value="" type="password">
+																												<input type="hidden" name="formName" value="aseForm">
+																												<input type="hidden" name="formAction" value="Login">
+																											</td>
+																										</tr>
+																									</tbody>
+																								</table>
+																							</td>
+																						</tr>
+																						<tr>
+																							<td><br>Log in with your UH username and password. Your username should be all lowercase.</td>
+																						</tr>
+																					</tbody>
+																				</table>
+																				<img src="../images/pixel.gif" border="0" height="10" width="1"><br>
+																			</td>
+																			<td background="../images/line_r.gif"><img src="../images/pixel.gif" border="0"></td>
+																		</tr>
+																		<tr>
+																			<td><img src="../images/formtab_b.gif" border="0" height="20"></td>
+																			<td colspan="4" align="right" bgcolor="#4682b4">
+																				<table border="0" cellpadding="0" cellspacing="0" id="table5">
+																					<tbody>
+																						<tr>
+																							<td bgcolor="#dbeaf5">
+																								<input name="Submit" value="Submit" style="border: 0px none ; background: rgb(219, 234, 245) none repeat scroll 0%; height: 17px; width: 100px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;" type="submit">
+																							</td>
+																							<td><img src="../images/pixel.gif" border="0" height="18" width="1"></td>
+																						</tr>
+																					</tbody>
+																				</table>
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</form>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+											<!-- body -->
+										</fieldset>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- footer -->
+					<tr>
+						<td class="intd" height="05%">
+							<table border="0" cellpadding="3" cellspacing="0" height="22" width="100%">
+								<tbody>
+									<tr bgcolor="#4682b4">
+										<td nowrap="nowrap" class="copyright">Copyright ©1999-2007 Applied Software Engineering Inc. All rights reserved.</td>
+										<td align="right">
+											<font color="white">|</font>&nbsp;<a href="contact.jsp" class="linkcolumn"><font color="white">contact</font></a>
+											<font color="white">|</font>&nbsp;<a href="support.jsp" class="linkcolumn"><font color="white">support</font></a>
+											<font color="white">|</font>&nbsp;<a href="hlpidx.jsp" class="linkcolumn"><font color="white">help</font></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<!-- footer -->
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	tabdropdown.init("bluemenu")
+</script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+.bluetabs{
+	border-bottom: 0px solid gray;
+}
+
+.bluetabs ul{
+	padding: 3px 0;
+	margin-left: 0;
+	margin-top: 1px;
+	margin-bottom: 0;
+	/* font: bold 11px arial; */
+	list-style-type: none;
+	text-align: left; /*set to left, center, or right to align the menu as desired*/
+}
+
+.bluetabs li{
+	display: inline;
+	color: #2d2b2b;
+	margin: 0;
+}
+
+.bluetabs li a{
+	text-decoration: none;
+	padding: 3px 7px;
+	margin-right: 3px;
+	border: 1px solid #778;
+	color: #2d2b2b;
+	background: white url(media/bluetab.gif) top left repeat-x; /*THEME CHANGE HERE*/
+}
+
+.bluetabs li a:visited{
+	color: #2d2b2b;
+}
+
+.bluetabs li a:hover{
+	text-decoration: underline;
+	color: #2d2b2b;
+}
+
+.bluetabs li.selected{
+}
+
+.bluetabs li.selected a{ /*selected main tab style */
+	background-image: url(media/bluetabactive.gif); /*THEME CHANGE HERE*/
+	border-bottom-color: white;
+}
+
+.bluetabs li.selected a:hover{ /*selected main tab style */
+	text-decoration: none;
+}
+
+.ddcolortabsline{
+}
+
+/* ######### Style for Drop Down Menu ######### */
+
+.dropmenudiv{
+	position:absolute;
+	top: 0;
+	border: 1px solid #e1e1e1; /*theme change here 918d8d was here*/
+	border-width: 0 1px;
+	font:normal 11px;
+	line-height:18px;
+	z-index:100;
+	background-color: #f5f5f5;	/*white here*/
+	width: 220px;
+	visibility: hidden;
+}
+
+.dropmenudiv a{
+	width: auto;
+	display: block;
+	text-indent: 5px;
+	border: 0 solid #e1e1e1; 	/*theme change here 918d8d was here*/
+	border-bottom-width: 1px;	/*line between menu items*/
+	padding: 3px 0;
+	text-decoration: none;
+	color: blue;
+}
+
+.dropmenudiv b{
+	width: auto;
+	display: block;
+	text-indent: 5px;
+	border: 0 solid #e1e1e1; 	/*theme change here 918d8d was here*/
+	border-bottom-width: 1px;	/*line between menu items*/
+	padding: 3px 0;
+	text-decoration: bold;
+	color: black;
+}
+
+* html .dropmenudiv a{ /*IE only hack*/
+	width: 100%;
+}
+
+.dropmenudiv a:hover{		/*background of menu selection*/
+	background-color: #ffd;
+	color: #E87B10;
+	text-decoration: none;
+}
+
+/* ######### TTG modified ######### */
+
+.dropmenudivASE{
+	position:absolute;
+	top: 0;
+	border: 1px solid #e1e1e1; /*theme change here 918d8d was here*/
+	border-width: 0 1px;
+	font:normal 9px;
+	line-height:18px;
+	z-index:100;
+	background-color: #f5f5f5;	/*white here*/
+	width: 600px;
+	visibility: hidden;
+}
+
+.dropmenudivASE a{
+	width: auto;
+	display: block;
+	text-indent: 5px;
+	border: 0 solid #e1e1e1; 	/*theme change here 918d8d was here*/
+	border-bottom-width: 1px;	/*line between menu items*/
+	padding: 4px 0;
+	text-decoration: none;
+	color: blue;
+}
+
+.dropmenudivASE b{
+	width: auto;
+	display: block;
+	text-indent: 5px;
+	border: 0 solid #e1e1e1; 	/*theme change here 918d8d was here*/
+	border-bottom-width: 1px;	/*line between menu items*/
+	padding: 3px 0;
+	text-decoration: bold;
+	color: black;
+}
+
+* html .dropmenudivASE a{ /*IE only hack*/
+	width: 100%;
+}
+
+.dropmenudivASE a:hover{		/*background of menu selection*/
+	background-color: #ffd;
+	color: #E87B10;
+	text-decoration: none;
+}
+

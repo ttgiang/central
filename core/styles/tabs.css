@@ -1,0 +1,42 @@
+.bgtabon {
+	BACKGROUND-COLOR: #eee
+}
+.bgtaboff {
+	BACKGROUND-COLOR: #7cb0e4
+}
+.texttabon {
+	COLOR: #003366
+}
+.texttaboff {
+	COLOR: #ffffff
+}
+.tabon {
+	PADDING-LEFT: 8px; FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(../../images/tab_corner.gif); COLOR: #003366; BACKGROUND-REPEAT: no-repeat; BACKGROUND-COLOR: #eee
+}
+.tabon A:link {
+	COLOR: #003366; TEXT-DECORATION: none
+}
+.tabon A:visited {
+	COLOR: #003366; TEXT-DECORATION: none
+}
+.tabon A:active {
+	COLOR: #003366; TEXT-DECORATION: none
+}
+.tabon A:hover {
+	COLOR: #003366; TEXT-DECORATION: none
+}
+.taboff {
+	PADDING-LEFT: 8px; FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(../../images/tab_corner.gif); COLOR: #ffffff; BACKGROUND-REPEAT: no-repeat; BACKGROUND-COLOR: #7cb0e4
+}
+.taboff A:link {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+.taboff A:visited {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+.taboff A:active {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+.taboff A:hover {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0"?> 
+
+<schema targetNamespace="http://www.buyShoes.com" 
+        xmlns="http://www.w3.org/1999/XMLSchema" 
+        xmlns:buyShoes="http://www.buyShoes.com" 
+> 
+
+  <attribute name="userLevel"> 
+    <simpleType baseType="integer"> 
+      <minInclusive value="1" />
+      <maxInclusive value="3" /> 
+    </simpleType> 
+  </attribute> 
+
+</schema>

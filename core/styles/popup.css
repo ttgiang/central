@@ -1,0 +1,52 @@
+div.file-titlebar {
+    padding: 2px 5px;
+    font-weight: bold;
+    border-bottom: 1px solid rgb(128, 128, 128);
+    margin-bottom: 3px;
+    font: 16px sans-serif;
+}
+div#file-upload,
+div#file-modify-attributes {
+    position: absolute;
+    width: 600px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    margin: -125px 0 0 -300px;
+    border: 3px solid rgb(128, 128, 128);
+    background: url('../images/brushed_metal.png');
+    z-index: 5;
+    display: none;
+}
+div#file-upload {
+    display: block;
+}
+div#file-upload label,
+div#file-modify-attributes label {
+    font: 12px sans-serif;
+    display: block;
+    text-align: right;
+}
+input#hfinder-location-input {
+    font: 12px sans-serif;
+    padding: 2px;
+}
+input#hfinder-location-input:focus,
+input#hfinder-location-input:hover {
+    outline: 2px solid rgb(203, 245, 254);
+    -moz-outline: 2px solid rgb(203, 245, 254);
+}
+input[type='text'],
+textarea {
+    border: 1px solid rgb(128, 128, 128);
+}
+iframe#hfinder-file {
+    z-index: 20;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: white;
+    display: none;
+}

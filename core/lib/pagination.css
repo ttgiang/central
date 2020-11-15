@@ -1,0 +1,76 @@
+a { color: #00679B; }
+
+a:hover { color: #FE5011; }
+
+.pagination {
+	padding: 4px 0px 4px 7px;
+	margin: 7px 0 0 0;
+	font-size: 90%;
+}
+
+.pagination p {
+	position:relative;
+	text-align:left;
+}
+
+.pagination a:link, .pagination a:visited, .pagination a:active {
+	text-decoration:none;
+	background:#fff;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color: #00679B;
+}
+
+.pagination .linkcolumn:link, .pagination .linkcolumn:visited, .pagination .linkcolumn:active {
+	text-decoration:none;
+	background:#E6FBBD;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color: #00679B;
+}
+
+.pagination a:hover {
+	background:#cde;
+	color:#fff
+}
+
+.pagination font {
+	font-weight:bold;
+	background:#E6FBBD;
+	color: #00679B;
+}
+
+.pagination enabled {
+	font-weight:bold;
+	background:cyan;
+	color: #00679B;
+}
+
+.pagination span {
+	text-decoration:none;
+	background:#fff;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color:#ccc;
+}
+
+.pagination spanX {
+	font-size:xx-small;
+	text-decoration:none;
+	background:#fff;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color:#ccc;
+}
+
+.pagination .current {
+	text-decoration:none;
+	background:#4d97F2;
+	padding:2px 5px;
+	border: 1px solid #ccc;
+	color:#fff;
+}
+
+.pagination .spanlink:link {COLOR: blue; TEXT-DECORATION: none;}
+.pagination .spanlink:visited {COLOR: blue; TEXT-DECORATION: none;}
+.pagination .spanlink:hover {COLOR: #E87B10; TEXT-DECORATION: none; cursor:pointer; }
