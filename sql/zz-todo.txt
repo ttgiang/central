@@ -1,0 +1,1424 @@
+auto and autox
+
+===> KAU
+	Check on SLO review
+	Required items
+
+===> WIN
+
+	test.jsp for WIN
+
+cnv00.jsp
+
+===> ER
+
+	26
+		issues with getting some data to display properly. should we copy outlines format?
+		crsfldy.jsp
+
+	18
+		forumdb - create task
+
+		Review/FORUM
+			when adding from review screen, need to create root post like cnv18 (createRootPost) otherwise it will look like we have a reply
+			why are there notification of replies when none created?
+
+		how to denote not read messages. should be based on date of last visit?
+
+		see ForumDB.setNotifyFlag( - is recursion needed
+
+	00
+		multiline input boxes
+		dependency questions as linked 
+
+===> sandbox
+		cur.jsp
+		sysspc.jsp
+		ccsetup.jsp
+		import list
+			extra button to import PLO works and it shows on the main edit screen.
+			however, it does not show when returning to the extra button screen or view of outline
+
+			crsgen, and slctlst
+
+test.jsp to create task for missing outlines in approval
+
+When reviews for multiple, email not including attachment
+
+C:\tomcat\bin\tomcat5w.exe //MS//Tomcat5
+%SystemRoot%\system32\mstsc.exe /console
+
+// ------------------------------------- 
+// cleaning
+// ------------------------------------- 
+	er0000 to cnv
+	test to test folder
+	
+// ------------------------------------- 
+// current work
+// ------------------------------------- 
+PROGRAMS
+	task list for komenaka has program that is not PRE. It is CUR.
+		need to work on stray task
+
+		does viewing entered comments for programs use crsrvwcmnts.jsp
+
+		look at ReviewServlet.java where 'mode' is requested in website but (// SOMETHING NOT RIGHT HERE)
+		
+		review comment count not correct for programsdb.java
+
+		mode for programs is in reviewer history but doesn't look like it has reviewer. only approval
+
+
+// sanitize in functions.js
+	
+*** MUST check on tblINFO and attachments. Does not have NEWS and id. Just straight name
+
+approval of pre does not have yes/no
+	(crsapprpndx.jsp) need to send mail
+	 OutlineServlet.requestingApproval(
+	 	when disapprove, need to remove the requested PRE/REQ?
+	
+send co-req through then remove but task remains
+outline review report
+--where is audio linked
+--list of div/dept to myrtle
+--news upload dir missing
+--blank out KAU questions
+
+------------------------
+
+during approval, second person views approval history
+	group count has wrong information
+	displayVotingHistory has wrong summary of vote history
+	distribution list approval is not working
+
+	REMOVED in approverDB commented out code for first approver
+	
+*** cancel delete approval does not delete distribution list
+
+	--need to delete from campus outlines when deleting course
+	approval sending out correctly but doesn't allow group to finish before notifying next
+
+	crsdltxz.jsp - Delete process starts with getting the outline
+		// call to set the course up for deleting. put in mod mode and get data ready for review
+		msg = CourseDelete.setCourseForDelete(conn,kix,user,route);	
+			// put in mod and get ready for review as 
+			msg = CourseModify.modifyOutlineX(conn,campus,alpha,num,user,Constant.COURSE_DELETE_TEXT);
+			// once in mod, set for approval
+			msg = CourseDB.setCourseForApproval(conn,campus,alpha,num,user,Constant.COURSE_DELETE_TEXT,route,user);
+				// get approvers and set up
+				msg = setCourseForApprovalX(conn,campus,alpha,num,proposer,mode,user);
+
+------------------------
+
+UPDATE    tblValues
+SET              topic = 'PSLO - ' + SUBSTRING(topic, 6, 10)
+WHERE     (campus = 'KAP') AND (SUBSTRING(topic, 1, 3) = 'PLO')
+
+UPDATE tblValues
+SET topic = 'PSLO - ' + SUBSTRING(topic, 9, 10)
+WHERE     (campus = 'KAP') AND (SUBSTRING(topic, 1, 7) = 'PSLO -  ')
+
+Outline approved
+Program approved
+
+linking items
+	--Removing method evaluation should remove from all linked items
+		--On linking screen, if method eval was part of linked but no evals selected, don't show.
+	for sqlvalues, what about PSLO or other new linked items
+	
+		/*
+		 * countLinkedItems
+		 *	<p>
+		 *	@param	conn	Connection
+		 *	@param	kix	String
+		 *	<p>
+		 *	@return int
+		 */
+		 public static void countLinkedItems(Connection conn,String kix){
+	
+			String tables = Tables.findColumnName("historyid");
+	
+			if (tables != null && tables.length() > 0){
+	
+				String[] table = tables.split(",");
+	
+				for(int i=0; i<table.length; i++){
+					if (table[i].toLowerCase().indexOf("temp") == -1){
+						String where = "WHERE historyid='"+kix+"'";
+						try{
+							int rowsAffected = (int)AseUtil.countRecords(conn,table[i],where);
+							if (rowsAffected > 0 && table[i].toLowerCase().indexOf("tblhtml") < 0){
+								System.out.println(i + ". " + table[i] + " - " + rowsAffected);
+							}
+						}
+						catch(Exception e){
+							//
+						}
+					} // if
+				} // for
+	
+				System.out.println("============================");
+	
+			} // if
+	
+			return;
+		}
+
+
+createProps.jsp
+
+Forum time stamp is always 12
+
+HIL
+	approval of requisites in outlineservlet. need to know where
+	to log history
+	
+	OutineSubmissionWithProgram
+
+tblProps
+	search addition to prop table
+
+D:\tomcat\webapps\centraldocs\docs\jobs
+
+forum (tln, ccprod done)
+	id is identity
+
+----------------------
+
+<a href="crsmode.jsp" class="linkcolumn">maintain process</a>&nbsp;|
+
+report with PDF (vwcrsy.jsp) - need to adjust second page where header overlaps with content
+
+/central/docs
+
+AseContextListener
+	d-2020-101385
+	
+- ccconfig.jsp
+	added to util.java
+
+- FOP src/com/ase/aseutil/fop
+	compiles fine
+	kills tomcat after running
+
+user authentication ?
+	not sure but code added for checking
+
+--usrprfl.jsp
+
+// truncation problem
+	programsDB
+
+// problem with click on submit when no attachment selected
+
+-----------------
+	
+	getSystemDateSQL
+
+		coursedb
+			public static boolean isCourseReviewer(Connection conn,String campus,String alpha,String num,String user) throws Exception {
+		programsdb
+			public static boolean isProgramReviewer(Connection conn,String campus,String kix,String user) throws Exception {
+
+-----------------
+
+	change routing
+		crssts.jsp
+		tempdb.java
+		routing.gif
+		rte.jsp,rtex.jsp,rtey.jsp
+		rte.js,rtex.js
+	
+-----------------
+
+vw_linkedmatrix
+	Z72 in SRC
+	
+	crslnksx.jsp	- /central/servlet/linker?arg=frm
+	crscmpw.jsp		- crscmpww.jsp
+	crscntntx.jsp	- /central/servlet/linker?arg=frm
+	crsgenx.jsp		- /central/servlet/linker?arg=frm
+
+
+//------------------------------------------------
+
+ERXXXXXX
+	Program review (prgedt)
+
+//------------------------------------------------
+
+	cancel review and review in approval
+	
+	helper
+		public static String showOutlinesByUserProgress(Connection conn,
+																	String campus,
+																	String user,
+																	String progress,
+																	String caller){
+
+	sltcrs
+		data = Helper.showOutlinesByUserProgress(conn,campus,user,Constant.COURSE_REVIEW_TEXT,caller);
+		data += Helper.showOutlinesByUserProgress(conn,campus,user,Constant.COURSE_REVIEW_IN_APPROVAL,caller);
+
+//------------------------------------------------
+
+ER0011
+	appridx.jsp
+		ApproverDB.getRoutingInUse
+
+//------------------------------------------------
+
+ER0001
+
+	SELECT c.historyid,c.CourseAlpha,c.CourseNum,c.coursetitle,c.Progress,c.subprogress,c.route
+	FROM tblTasks t INNER JOIN tblCourse c ON t.campus = c.campus 
+	AND t.coursealpha = c.CourseAlpha 
+	AND t.coursenum = c.CourseNum
+	WHERE c.campus=?
+	AND t.message='Approve outline'
+	AND c.CourseType='PRE'
+	AND t.submittedfor=?
+
+//------------------------------------------------
+
+ER00012
+	ILO
+		crsqlstx.jsp
+		crslnkdxx.jsp
+				out.println(LinkedUtil.getLinkedMaxtrixContent(request,conn,kix,user,false,true));
+		LinkedUtil.java lots of areas of unknown.
+
+		how do we display ILO on linked report? Use system setting
+
+		does X81 need to show on outline mod? NO
+			causes error in view outline
+
+		test.jsp 
+			showLinkedMatrixContentsX	
+
+//------------------------------------------------
+
+ER00009
+	ReviewerDB.getCampusReviewUsers2 (ttg-getCampusReviewUsers2)
+		crsrvw2.jsp - no longer needed
+		crsrvw.jsp 
+	
+//------------------------------------------------
+
+SQLValues.splitMethodEval(temp);
+	outlines.formatoutlines
+	AseUtil.drawHTMLFieldX
+
+//------------------------------------------------
+
+Mysterious NO on number 19
+	outline format correction
+	need to rerun outline create
+
+//------------------------------------------------
+
+getNextApprover
+	test.jsp
+
+//------------------------------------------------
+
+ER00010
+	help by page
+
+//================================================//
+
+ReviewerDB.java
+
+testTest.jsp
+	task recreate
+
+aseUploadFolder
+	REPORT_OUTPUT_FOLDER		= ":/tomcat/webapps/central/docs/urpts/";
+	
+testProgramsDB.jsp, prgrvwer
+
+programsdb truncation problem
+	cancelProgramReview
+	prgrvwer - msg = ProgramsDB.reviewProgram(conn,campus,kix,user);
+
+mailerdb - attachment
+
+-- approval - bemersol - application error
+
+testTaskDB.jsp
+ntfidx.jsp
+
+3,4,5,6
+1,3
+4,5,6
+
+//------------------------------------------------
+
+ReviewerDB.getCampusReviewUsers2 (ttg-getCampusReviewUsers2)
+	crsrvw2.jsp - NOT USED after this move
+	crsrvw.jsp
+	emaillst.jsp
+
+//------------------------------------------------
+
+Voting tally for review (ttg-showGroupVote) - currently hidden
+	crsappr.jsp showGroupVote = false;
+	crshst.jsp
+	There is a problem with grouping of data. Approver seq is not possible since the inviter have not 
+		approved to provide a sequence number
+	By inviter does not work since the inviter is not always the same as the approver
+
+	testHistoryDB.jsp
+		grouping of votes
+	
+//------------------------------------------------
+
+ApproverDB.java, ProgramsDB.java
+	
+	this works for lastApproverSeq > 0 but how about using it for lastApproverSeq = 0
+
+	// check for comma to remove delegate from showing on reporet
+	lastApprover = ApproverDB.getApproversBySeq(conn,campus,lastApproverSeq,route);
+	if (lastApprover.indexOf(",") > -1)
+		lastApprover = lastApprover.substring(0,lastApprover.indexOf(","));
+
+	// check for comma to remove delegate from showing on reporet
+	nextApprover = ApproverDB.getApproversBySeq(conn,campus,lastApproverSeq+1,route);
+	if (nextApprover.indexOf(",") > -1)
+		nextApprover = nextApprover.substring(0,nextApprover.indexOf(","));
+
+--ECON back
+
+ECON missing approval history pending area
+
+Create COM program
+	Create com outline
+	Submit approval outline as pending to DC
+	Submit approval program
+		sees list of outlines and submit
+		
+	Problem is pending was still there
+	
+prgstsh.jsp data is wrong
+test other department
+
+1) reports outline approval status (not showing up for department chairs) 
+2) email attachment
+3) ECON - 
+4) LANG - 
+5) ProgramLinkedToOutlineRequiresApproval  
+
+notifyApproverOfChangeInSequence
+	data not quite there
+
+/*
+	this SQL collects based on TOPIC = SUB TOPIC
+*/
+SELECT shortdescr
+FROM tblValues 
+WHERE campus='LEE'
+AND src='X18'
+AND subtopic IN
+(
+SELECT tblDivision.divisioncode
+FROM tblChairs INNER JOIN
+tblDivision ON tblChairs.programid = tblDivision.divid
+WHERE tblChairs.coursealpha='ICS'
+AND tblDivision.campus='LEE'
+)
+ORDER BY seq
+
+/*
+	this SQL collects based on SUB TOPIC = ALPHA
+*/
+
+SELECT shortdescr
+FROM tblValues 
+WHERE campus='LEE'
+AND src='X18'
+AND subtopic='ICS'
+
+SLO process (out.println(helper.listOutlineAssessments(conn,campus,"crsslo",user));)
+
+src in tblvalues/tbllists
+Days to deactive - turned off all of LEE
+history for LEE
+
+task list is not correct after adding required or elective
+approval of pending item screen requires work
+
+duplicate historyid in tblPrograms
+complete work for task create on program approval
+
+Anti Spamy (samy.jsp)
+
+Program can be linked in PROPOSE
+DIVISION follows DEPARTMENT
+Error on ART should go to MATULL, MD Marshall
+
+Migrate data
+
+Test ESL approval (BERNER)
+
+shwprgfld saves then when not allowed to modify approved, return to previous is wrong
+
+prgedt
+	- on return of viewing version history is wrong - delete attachment previous is wrong
+		partially corrected. after delete page is empty but link goes back correct.
+	
+view clean content?
+
+* Fill Missing Items Across Campus
+
+CRSEDTX.jsp for #20
+
+•	Program uploads needs to be available after save
+	o	Attachments on print/view screen
+	o	Modify program selected from create screen
+
+slf4j-api-1.5.2.jar (remove)
+test.jsp for show tasks
+
+====================== MAU
+07.16.2010
+
+(Check )Method of evaluation has error on linking screen (does not show up)
+•	Course Credits/Contact Hours (#4 and 11)
+	o	Add item Variable
+	o	Add item Other
+•	On create, include program
+	o	Which program SLO is this course mainly designed for? (Intended to fulfill). Follows title. Include ‘Other’ as an option under program list.
+	o	On confirmation screen, list program SLO
+•	Resize course edit controls
+•	Text and material needs help box for stage 2 (Help Maintenance)
+	o	Should pre-populate for all course items
+•	#24 needs yes/no (do not default)
+•	#27 needs yes/no (do not default)
+•	#30 needs yes/no (do not default)
+•	#31 needs yes/no (do not default)
+•	Modify is modify of existing
+•	Create new should be only for new (Create outline)
+•	Delete should be OK 
+•	Upload completed message
+•	Help screen for all course mod areas
+•	Calendar on approver date
+•	Department add/division add – administration for both items
+
+•	Ability to reorder system table sequence
+•	Add program questions for UHMC
+•	On add user, need to not show SYSADM; password needs *; default the campus; complete email after user id is added; complete full name on add;
+
+--	(SKIP) Drop down box FDCategory – AA – listing is same as the other 2
+-- On changing approver name, don’t leave the name of the person in there
+--	Routing – graduate, PHD, topical, undergrad, psy (leave new and, experiment, and amnesty – only 3)
+
+•	Ability to print complete help document for course edit
+
+
+
+2 years/4 years
+
+Applied Business & Information Technology (Maui’s longest program name)
+
+http://dynamicdrive.com/dynamicindex17/switchcontent2.htm
+http://www.dynamicdrive.com/dynamicindex8/dhtmlwindow/index.htm
+
+====================== HIL
+report of outlines by date approved
+attachment for programs
+
+--email notify for cross list
+--need approval for cross list
+--Create time range for approval
+--date to hide/show proposal
+
+Approval packets
+	Department chair submits packets
+	Sent back is given time or not
+	create deadline for all approval sequence
+	queue for items not submitted on time for approval
+
+15 needs notification from div chair
+title of work at top line (provide question mod by campus for create new?)
+termination = delete
+
+====================== HIL
+
+--Help needs a close button (crsedt2.jsp,crscmp.jsp,crscntnt.jsp,crshlpx,crsgen,crslnks,crsxtr,shwfld)
+--for IE help buttons seemed to low on crsedt
+--all calls to view reports should use kix
+--GenericUploadServlet.java
+
+--requisites yes/no
+--help text without popup?
+--long competency (content field)
+	crslnks aseSubmitClick(\'a\',1000);\">
+	crscmp.jsp
+	crscntnt.jsp
+-proposer/approver communications
+
+--need to correct fill items across campuses
+
+====================== TTG
+cc proposer on most
+system value report for fields
+file upload (display of version is wrong)
+tblMisc
+
+program (createHistoryID)
+	(ignore) print items
+	(-) update question needs course or programs
+
+	-division code needs to convert from alpha to num (use qryARC/PRE/CUR to do)
+	programservlet must finish insert
+	prgedtx.jsp - needs to not use SQL in JSP
+	prgedt needs to work on CUR
+	remove divisioncode from table
+	process data -- 
+		run queries from access
+		import to sql (remove keys first)
+		put back keys
+	on create program is 1-7 (isNewProgram)
+	prgedt
+	ProgramsDB - viewPrograms
+	Constant.PROGRAM_ITEMS_TO_PRINT_ON_CREATE
+		
+
+IN PROGRESS
+-----------
+notifications (createProps.jsp)
+rqst.jsp
+sqlutil.sqlschema
+joda use in forum
+
+need to be able to play as THANH without sending mail to production names
+
+File write - saservlet.java parm1=lgs
+
+Process (// maintain process)
+	crsmode,...
+	dfqst.jsp
+	shwfld.jsp - need to retrieve process required items
+
+-default values added to course item (crsedt,crsedt3)
+	how to handle when user blanks it out? should crsedtx catch it?
+	what if user wants it empty?
+
+-save dialog box on edit outline (functions.js, <input type="hidden" value="0" name="catchChange"> in crsedt.jsp)
+	for some reason, the message appears for list box without changes also.
+	perhaps set the screen to not validate against listbox
+
+prevent saving over old syllabus
+
+======================================
+KAU
+======================================
+	modify/new/review enable items
+	contact hours need input box
+
+======================================
+TEST SYSTEM ONLY
+======================================
+
+	pdf
+		vwcrsx.jsp
+
+	display outline taking a while (DONE???)
+		-vwoutline,crscpy
+		-sqlutil
+		-utilservlet (job scheduler)
+		-tblCampusOutlines
+		-helper.listOutlinesToDisplayX
+		-CampusDB.updateCampusOutline(conn,historyID,campus);
+		-need to add when proposed/modify/cancel/delete or REFRESH daily		
+	
+	diversification - crsedt3,
+							crsedtx.jsp,
+							divmtrx, 
+							outlines.java
+							
+		need to automatically jump to divmtrx
+		what if topic does not exists
+
+	crscmnt.jsp - REVIEW_COMMENTS
+		allow enabled items during approval (test server only)
+		test check/uncheck state
+		CAN REVIEWERS ENABLE ITEMS?
+		how can we prevent one reviewer from turning on/off another reviewer's enabled items
+		Re-apply - ttg-review - approver may undo enabled items from reviewers during approval
+			Coursedb
+			ReviewerDB
+		during approval process,
+			approver add comments then sends for review. however, review process reset edit1		
+		need to know what to do with next set of data and allowing proposer/reviewer/approver to talk
+
+	usrprfl.jsp - needs mail once entry (test server only)
+		**** UPDATE TBLMAIL SET PROCESSED = 1 **** do this first before going to prod
+		sendnow added to user table
+		ProfileServlet.java
+		UserDB.java (defaulting to 1 in code to updateprofile)
+		allow saving of every mail that is created and process = 0
+		mailq to display collection of messages
+		task for mail log
+		taskdb.createMailLogTasks
+		MUST send only 1 message nightly (MailerJob needs fixing)
+
+	Clean up linked/linked2 after keys are deleted from methodeval
+		When method eval change/delete, 
+		Delete ids that was deleted from methodeval
+		What if all method evals deleted? Need to dlete from courselinked after all courselinked2 are gone
+
+View Log 
+
+testing add/delete
+	sys.jsp, sysmod, sysservlet.java
+	dbg.jsp, dbgmod,
+
+CC proposer should get cced
+
+APPROVAL SELECTS goes to proposer then back to the person send back
+
+crsreq has code for adding new alpha?
+
+processlog
+
+APPROVER SELECT
+	after sending back randomly, fast track does not list correctly
+	Seri approvers, davidmil revised, thanh sent back for approve.. check approval status. simmons is listed as last
+	
+Approver getApprovers determines first approver	
+	do we need to remove the old code that is commented out
+
+Syllabus 
+
+SLO
+	when calling up for modify, should clear SLO review/approve dates
+
+crsdltxz.jsp 
+	--has problem with listing approvers to select
+	--using getApprovers with num
+	--On approval screen, should remove REVISE button
+	Need to add to approval status
+	Display archived outline has all null
+	Should not be able to click from modify screen
+	showApprovalProgress contains delete in SQL
+	did not show up in cancel/restore screen
+	need to figure out route number
+
+coursedb.setCourseForApprovalX(Connection conn,
+	where is setCourseForApprovalX called from and is step back needed (line 1234)
+	else if ((Constant.REJECT_STEP_BACK_ONE).equals(whereToStartOnOutlineRejection)){
+	What to do about step back during
+
+
+yes/no/na
+coreq list
+
+======================================
+TTG
+======================================
+Open/close folder on linking screen
+Go directly to linking screen from item screen
+When approving, allow expand/collapse of linked items
+Help link at bottom of screen is not showing correctly
+modify should not use AJAX or if use make sure alpha is picked up
+inline edit for system table
+Deny approval button
+	Allow to go on with approval process
+Alpha maintenance (BannerAlpha)
+	BannerDepartment2
+	alphaidx.jsp
+Cancel needs to delete files attached
+Need to check linked items when deleting PSLO
+terms and glossary
+When radio for GESLO selected, place check marks there
+Character counter for comments
+Quotes are problematic
+
+======================================
+MAU
+======================================
+--Item index
+--Task list not showing correct last updated date (dte is of task creation)
+--System config edit is wrong
+--Quick entry with empty entries (bullets)
+--Objectives = CSLO
+--Turn KAP help off from Mau
+--One email per day
+--Include method eval text only on screens
+--Add Kahele as campadm
+
+Screencast to BK
+
+PSY = Social Science
+5-Year Review
+On view outlines, method of eval should display like comps/contents
+
+Release notes
+-------------
+
+IN FLIGHT
+---------
+	processPage - crsrvwx.jsp is sample
+	
+	mailerjob/x
+
+	Outlines.viewOutlineXYZ - this is a new version
+		code in viewoutline with user=THANHG
+		need to compare data between this version and the current one.
+
+	crslg.jsp
+		delete  
+		FROM         jdbclog
+		WHERE     (YEAR([date]) = 2009) AND (MONTH([date]) < 6)
+
+TTG
+-------------
+	CAS
+	hard coding
+		In aseutil for check on drawing of html, don't do hard coding for MAU
+
+	CODING
+		Jericho HTML in outlines.java
+		AntiSamyDemoWebApp
+		album
+		Log4jConfigLoader.java
+
+need to be able to transfer from-to campuses
+Music 253 with SPACE encoding
+
+deleting GESLO doesn't delete from table ? processGESLO
+
+Review
+	-- Sending mail for reviewer comments only when last reviewer is done
+	--	User can view messages on Banner tab
+	Permit editing of reviewer comments until last reviewer is done (crscmnt.jsp)
+		-- edit reviewer comment
+		edit approver comment
+	
+need to have attached files renamed/copied to match when modifying existing outlines
+
+yakauhsoj@yahoo.com
+joshua
+3-4, very nice, good treatment and helpful,
+
+Firefox input box cursor is in the wrong location
+FOR THANH - Review should not be used for 5 year update cycle
+- Dean approves but not having to do profile
+- Hank Hennessey has multiple profiles to switch to and from
+
+================= CAMPUS
+
+add 'divison chair' name to list of pending approval
+when approving again, make sure only list remaining approvers
+
+crs needs to be for user and all others
+
+MailerDB - mailbundle
+Review - can take place even during approval
+
+2009-07-18
+	Outside group needing access to review (task, my profile, log out, etc.)
+		Non faculty will have different password. Need to create screen for change password
+
+	Enable buttons for all votes at KAP
+
+Property notification
+
+Approval - 
+	When resubmitting again, not showing list for selection
+	--DES missing tasks when first assigned
+	--history
+	--Thanh showing up in pending for approval (is approver and should be on list; need to delete)
+	--When cancelling, remove all tasks from other users and history.
+
+ttgiang
+	Admin view of CCCM6100 - to add update
+
+encryption
+	delete not working (tblArc dup - this is deleting same outline and it fails)
+	--enable outline item
+
+If department = admin and division = admin, permit full access
+Approval process needs commenting like reviewer as well
+Hawaiian language
+Hours per week for hil
+
+DistributionDB.removeBracketsFromList (need to catch up with code already there)
+
+testing distribution list for review and approval
+	reviewerdb.getCampusReviewUsers - isAdmin
+	userdb.getCampusUsersAndDistribution - isAdmin
+
+before approval
+	outlines.outlinePassesValidation
+	validation
+	include check for linking
+
+PENDING
+-------
+
+Recycle course number after archived or deleted? Should have flag and ability to override
+NotifiedWhenApproved in courseDB not in DB
+consent for pre/co (crsreq.jsp,initm.jsp)
+	need to work on form validation
+
+RETEST/REWORK
+-------------
+
+-prereq/coreq showing up wrong
+-outline should print linked items (test_viewoutline.jsp)
+-Save what was touched edit (report of only changes - tblMisc)
+	need to update the same outline and not create new. need to take the outline
+	through the entire process and not leave it hanging in tblMisc
+-required field validation
+-Copy doesn't flow correctly
+-dfqstx.jsp - questionType needed
+-AntiSpamy tacks on extra character
+
+COMPLETED
+---------
+
+--Need comps for program SLO
+	--Create link for comps (left) and SLO (top) as grid
+--canceloutline
+--program slo
+--percentage approval (first, all)
+--Include proposer as CC to all mail going out for approval
+--RequestServlet
+--report for effective terms
+--Have campus provide a list of departments under a division for the approval process
+--word counter
+--report of changes made for input to banner
+--Item index needs highlights for required
+--CourseApproval need domain?
+--New Number of sections per semester or year? is a number of characters with max of 30
+
+================================= HON
+
+================================= MAU
+	Contact hours need lab/lecture
+	How date proposed completed
+
+	special resources y/n
+	
+	--competency length 500
+	--#7 word counter
+	--program slo needs list like pre/co req
+	--Need banner title (catalog title)
+	--Help text needs wysiwyg
+	--Course title size? = 100 characters in length
+	--#4 Credits = variable
+	--#10 Pre-req not saved (flip)
+	--#11 co-req (flip)
+	--#12 need single line item (rec prep)
+	--#13 flip
+	--#14 flip
+	--#15 flip
+	--repeatable needs explain
+	--increase/decrease/no change, explain (has explain box now). 
+
+================================= LEE
+--testedit.jsp
+--testrequisite.jsp
+--testcheck.jsp (testx56.jsp)
+--testrdr.jsp
+
+================================= KAP
+	--Banner title is campus C6 when it should be comments.
+
+Experimental uses effective term and needs expiry date
+
+	--KCC-currcomm not on list of reviewer
+	--UH list server needs to allow list server authentication
+
+	Outline Dates
+		Report of all dates - By Division/Department report (currently only by alpha)
+		Next review date report - By Division/Department report (currently only by alpha)
+		Assessment date report - By Division/Department report (currently only by alpha)
+
+	--SLO information screen (course level)
+	--separate slo and competencies
+	--Content and competency should use method of eval (Under SLO maintenance, remove 1 of 2 icon)
+	--Drop downs are check marks for KCC
+	-- Link screen - assessment = evaluation (sort order)
+	-- SLO needs 3 links
+	-- Color legends
+	-- Linked Outline Items - report screen (more items...)
+	-- On report screen, use SLO/Comp
+	-- Course = course = ""
+	-- Cross list had null ID
+	-- outline dates use next review. Remove assessment date, Course date = approval date
+	--#57 is same drop down as 58
+	--Button for content is not Content
+	--#47, maximum characters need to be higher (30 characters)
+	--Status of active/inactive
+	--SLO to eval & GE
+	--Competency links to eval & GE
+
+================================= ALL
+Mark task date and day looked at
+Approval must start by date
+copy requires permissions
+GoogieSpell
+Inlineedit
+
+--Checklists flag correction (testcheck.jsp)
+	need to test in production
+
+-- GenSLO (need validation for when not checked at bottom for selection at top)
+-- Content is top of linked tree (need to retest and confirm display properly)
+-- tblprops - make mail messages database
+	-- In mailerDB look at Props - missing KIX as part of processing. Cannot determine content
+	to complete process
+-- testmail and mailerdb debug = true
+
+-- Edit flag correction (testedit.jsp)
+	-- need to test by changing values
+	-- take it through approval processs
+
+Need distribution list for approvers
+what if "Save & Approve" without checking the boxes? Should not send mail
+When rejecting, reason overrides original reason for mod
+Content should use WYSIWYG?
+
+Course SLO review
+	On SLO edit screen (Edit SLO --> crscmp.jsp), if there is nothing for review, hide 'Request Review' button
+	When can I start assessing? (in modify or in progress status - crsslo.jsp)
+	SLO when going from approved to modify
+	Entire workflow
+	when should approval for slo be allowed? The listing of available outlines should only include ??? progress
+
+//TODO
+// -- 	means completed
+// - 		means to address later
+
+In Progress
+	-- Course discipline are for all campuses
+	-- Search activity log not working properly
+	define items what to do with references?
+	In review mode, should be able to review all comments including comments from another round
+		of reviews and not just the current review.
+	--News (need to change SQL for index.asp)
+	Outside viewer/reviewer (invite reviewer, add user, mailing)
+	Print item index
+		currently printing only what's on the screen
+		messes up reviewer comments
+	Distributing list needs a primary
+	EditFieldsServlet should only pass if all goes through correctly
+	Collect SLO Reviewer comments
+	--Reject returns to last person who rejected
+	--createACCJCEntries
+	--cancelOutlineApproval needs to remove task and send mail
+	--when approval fails, need to have correct message (JITO)
+	--Taking outline for mod from CUR is not working
+	--ability to edit raw data (yes/no)
+	--before modifying, clear prereq and such tables
+	--error with extra data content and slo
+		id = 0 in table is reason
+	--view outline for new fields
+	--vwcrsx needs to handle ARC better
+	--lost task for modify when doing slo review
+
+	--new user CURRIVANP001
+	--approval should be sent to each person at a time
+	--when rejected, can't get back in to do more approval, task not created
+	--Present list of approvers when there are dups and let approver select
+		--Division approval should fit division and not alpha
+	--kap #3/4 = AS
+	--shwflds enableOutlineItems (new modify)
+	--outline modify failed (id)
+	--Word Docs = Course Docs; Program Docs
+	--Old #22 not showing all correct assessments and should be alphabetical
+	--voting buttons (EnableVotingButtons)
+	
+	coursecomp has missing history id during slo edit/review process
+	li.jsp
+	test reviewer
+	check skew for chewie page with form
+	
+Conversion
+	ARC LCC conversion
+	CUR/PRE conversion
+	Map old and new for LCC
+	Import approval sequence/users
+	Old CC - hide course content and leave only program before live
+
+Pending
+	Need to import faculty ids. if relying on UH mail, then anyone can get in. Only
+		accounts in CC can continue
+	Remove use of statement/RS in JSP. Use vectors when possible
+	- batch.java (exception/autocommit) -- See questiondb
+	- try to make use of aselistener
+	- Course discipline is messed up, fix coursedb.java, course.java (dispid is text)
+	task aging report
+	Competency/ACCJC. Needs to connect with content
+	HTML verify
+	Help on buttons (crsedt)
+	SLO modify by, completed, approved date (got the dates in table but need programming)
+	multi campus
+	Experimental report needs date
+	Weed out student accounts
+	Browser test
+	Recprep to have individual lined-items like pre and coreq
+	add title to cmd buttons
+	how to know between old and new report
+	simple report for export
+	Fast track - amnesty for quick turn around. CC enable outline, pushes to author, back to CC, END.
+	comments on user maintenance
+	recreate tasks as login when modify and other jobs are pending
+	HTMLFormField 'comma',campus
+	Autocomplete subquery for things like pre/coreqs so that we don't have to show again.
+	Message for admin/faculty when they are not able to modify. Could be multiple DEPT/DIV
+	ajax set time out in tooltops\Ajax tooltip
+	View SLO after adding is not showing correctly (crsassr.jsp - bottom of page)
+	CC Sub group - Course review with distribution list (CourseDB.getCampusReviewUsers)
+	NotifyDivisionChairOnReassign
+	Reassign Ownership should allow division chairs; need to make nice on paging view; need skew;
+	Permit only 1 person(s) to kick off proposal/modification
+	Allow only 1 person(s) to assign who can access outline for edits
+	-Compare 2 side-by-side (crscmprz needs cleaning)
+	Share syllabi PermitSharingOfSyllabi
+	fckeditor.zip
+	Edit/Add/Delete reviewer comments
+		
+Later
+	When selecting course for approval, show only courses that are ready
+		sltcrs should contain only courses that are ready for approval
+		- covered only first number field of sltcrs so far
+	Group list for review
+		use the reviewer selection screen to create a group list
+	Subscription
+	What happens after approval then changes mind
+
+   3. An online summary of curricular actions each semester, listing the approved proposals (alpha) by department/discipline for ease in finding related proposals. The chart should include date of final action (chancellor approval) and what the proposal was. For example: Modification of prerequisites, Modification of credits, Modification of description, New course, New program, or etc.  The proposals on the summary chart would be linked to the "final, signed, approved" proposal only. This chart would be for final, approved proposals and not what the curriculum committee or FS need for their review process.
+
+	application scope and where to place files (all source or just once)
+	Combine alpha/number/title on the same line	
+
+SQL 
+	tblCoureARC 
+		CourseDate as key and defaults to now()
+		
+	tblCoureCAN
+		CourseDate as key and defaults to now()
+
+	tblCourse
+		set historyid to alpha+num+campus+type
+
+-------------------------------------------------------------------------------------------
+
+Question
+	- discipline
+	- division
+	- outline or course
+	- how to restart approval process without telling user has approved already
+	- replace/rename cross listed, copy, change, transfer
+
+Completed
+	2007.11.13	Include help editing on menu
+	2007.11.14	User information needs to include location, office information
+	2007.11.15	ICS or full name selection (alpha?)
+	2007.11.15	Select number before alpha
+	2007.12.06	course approval status should be only for courses in approval mode
+	2007.12.07	when approval is requested, add task to approvers list
+	2008.01.31	AJAX seems to be returning alpha and description. Not allowing showprogress to work.
+	2008.03.31	Multiple approvers before official approver process (reviewers)
+	2008.03.31	does logger need to be in each java source or reuse the aseutil logger
+	2008.03.31	In servlets, use website.parameters instead of request.
+	2008.03.31	Distribution to be completed on save and update
+   2008.03.31	(KCC) An easily-accessible online database that would crosswalk courses that have changed numbers, 
+   				to track changes over time. (use action log)
+   2008.03.31	(KCC) An online listing of experimental courses, with the associated permanent course if 
+   				it was developed. Use report on experimental to see what's available. Use activity log
+   				to show/view changes.
+	2008.03.31	Should coursetitle be from banner or courses. Course info comes from banner but
+					may have been altered by campus.
+	2008.04.02	For copy, need to be able to pick who gets task notification (needs mailing)
+					Use distribution list (NotifiedWhenRename, NotifiedWhenCopy)
+	2008.04.14	Pre/Co Reqs on rename
+	2008.04.14	item index should only have items included by campus
+	2008.04.14	task should be removed by message and not just alpha, number and user alone
+	2008.04.24	user maintenance
+	2008.05.08	Cannot edit outside of alpha
+	2008.05.08	Approval with delegate
+	2008.05.08	Progress Report needs to link properly
+	2008.05.08	Cancel report
+	2008.05.12	List courses by number not working properly
+	2008.06.23	Save not submit
+	2008.06.23	Close not finish
+	2008.07.15	roll over for item index
+	2008.07.15	Need to save Syllabus content for archive
+	2008.07.15	Allow print to be in user specified sequence
+	2008.07.26	Link task to appropriate screens
+	2008.07.26	Data entry sample input mask
+	2008.07.26	Approval sequence needs title
+	2008.07.27	When adding, jump to 3rd tab when done with tab 2 (endOfThisTab). Need to work on when add only
+	2008.07.27	On modifications, show list of items to modify	
+	2008.08.03	Expectations/Methods should follow check boxes on same screen	
+	2008.08.06	Notified when approved not working (null pointer exception);		
+	2008.08.06	User maintenance and case sensitive
+	2008.08.08	Prereq missing audit date/by
+	2008.08.12	C or better
+	2008.08.12	Complete LCC tab
+	2008.08.18	Email
+	2008.08.19	List all math 100 prereqs
+	2008.08.20	Others can't see course definition
+	2008.08.25	What is being modified besides comments (CC2 offers more)
+	2008.09.02	Notify proposer of rejection (approveOutlineX)
+	2008.09.22	reviewer going to history is not including historyid and finalize is not moving to hist2
+	2008.09.23	>> <<
+	2008.09.24	Recycle page (whether to return to #1 when done)
+	2008.09.28	Menu item logs user out
+	2008.09.28	Display content on screen above approval comment box
+	2008.09.28	Create new outline not working in IE
+	2008.09.29	Notify distribution after approval process ends (email is not correct. hotta,thanhg@hawaii.edu - DEBUG only)
+	2008.09.29	Review date not needed on edit screens
+	2008.09.29	Reviewing SLO saying NO does not move screen
+	2008.09.30	SLO - item - check mark approval - approval date
+	2008.10.01	Error message should be more descriptive with reasons why
+	2008.10.01	Change as compared to create new - need to test changing of seq
+	2008.10.01	Approval process without all data causes error (bad data?)
+	2008.10.02	Cancel approval should reset outline to modify
+	2008.10.04	Excess space when viewing outline (#12 and 13 missing)
+	2008.10.04	Resequencing
+	2008.10.05	View outline for new is fewer than for change
+	2008.10.08	SLO only edit
+	2008.10.09	Show approval status old way
+	2008.10.13	vwoutline needs to have proper title
+	2008.10.15	Review/approval should have confirmation screen
+	2008.10.20	View outline slo doesn't look right
+	2008.10.20	pre/co reqs should have similar delete/edit option as slo
+	2008.10.29	use title on status report
+	2008.10.29	distribution list for user maintenance	
+	2008.11.02	experiment to real should go through approval
+	2008.11.04	re-edit editable fields
+	2008.11.09	cancel should be allowed anytime during approval process
+					when cancelling, need to clear history table
+	2008.11.14	Exclude from catalog report
+	2008.11.16	Lock fields from edits on crsedt (yes and no, checks and radios)
+	2008.11.22	Added fields for Maui (Special fees, room consideration, scheduling)
+	2008.11.23	ReviewDate formula (ReviewDate)
+	2008.12.01	clear approved (coursedate) when modifying, copying, renaming				
+	2009.04.01	updating profile caused session to update to that profile
+	2009.04.01	highslide in /central and /central/core
+					"highslide/highslide.js" in crssts.jsp because of width of popup is not wide enough
+	2009.04.14	yes to all change values in questions
+	2009.04.15	Help on enable items
+	2009.04.15	Kapi'olani
+	2009.04.18	Cannot rename ENG to FRN because of alpha restriction
+	2009.04.26	Credit size is only 10 and not 20 as is in design - cannot save either
+	2009.07.16 	tasks not all removed when selected to transfer some and not all some and not all
+					tasks does not equal proposed outlines are left behind during reassignment
+					should synch up when logging in. if task is there without course outline, delete task
+	2009.08.17	don’t like check list for #13 (LEE)
+					Print courses by approved dates (use range)
+
+					KAP
+					Complete connection for PSLO/Comp
+					Reorder outline items (Method Eval,Method instruction,GESLO,PSLO,SLO,Compentency,Content)
+					limit linked listing of evaluation to only items selected on Methof of Eval screen
+					need quick list entry for PSLO for entire alpha at campus
+					Show existing outlines from other campuses on create screen
+					PSLO doest not need link to competency (#18)
+					on linking screen for linked to GESLO, include description to make it easier reading (#15)
+					Quick list entry screen needs plural
+					Delete all course numbers = zero
+	2009.08.18	Outlines approved by academic year (from and to)
+	2009.08.18	Need report showing fast tracked outlines
+	2009.08.23	Paste following items into KAP's PSLO
+					Make effective decisions with intellectual integrity to solve problems and/or  achieve goals utilizing the skills of critical thinking, creative thinking, information literacy, and quantitative/symbolic reasoning.
+					Ethically, compose, convey, and interpret varied perspectives with respect to an intended audience using visual, oral, written, social, and other forms of communication.
+					Evaluate one's own ethics and traditions in relation to those of other peoples and embrace the diversity of human experience while actively engaging in local, regional, and other forms of communication.
+					Through various modes of inquiry, demonstrate how aesthetics engage the human experience, revealing the interconnectedness of knowledge and life.
+					Explore and synthesize knowledge, attitudes, and skills from a variety of cultural and academic perspectives to enhance our local and global communities.
+	2009.08.24	delete needs to go through approval process
+	2009.08.25	Need to create sequencer for when INI is modified for items like method of eval
+	2009.08.26	Elliminating empty rows from showing on view outline
+	2009.09.04	Open MP4 in browser
+	2009.10.11	LEE
+					Get rid of old CC news
+					User maintenance need add button all over (usridx.jsp)
+					view syllabus is not working
+					Statement of assessment below statement of disability
+					Bus 120z = Bus 120
+					Submittedby on Berner's list is not Ann
+					Distribution list date error
+					At bottom of outline view, add proposer (vwcrsx.jsp)
+					Forward additional alpha to Ann
+					Turn of yes/no for consent (crsedt3)
+	2009.12.10	Resequence
+					Review and approval going on at same time
+					validation screen - (crsedtx) 
+					Need personal distribution list (listserv)
+	2009.12.31	Cancel outlines needs to do a restore
+					resetCourseQuestionsToCCCM
+	2010.01.02	For new outlines, need to be able to include PSLOs (LEE)
+					Need PSLO maintenance
+	2010.01.15	comments as running trail
+	2010.04.09	help text not saving on course item. when including sequence, 
+					need to save help text as part of update.
+	2010.04.18	Config items (aseConfig, aseConfigMessage)
+						ase.jsp
+						index.jsp
+						footer.jsp
+						crscfg.jsp (need to make this work)
+	2010.04.25	compare outline item only (// compare items)
+					compare.gif 
+					crsedt2.jsp 
+					crscmpi.jsp
+					crsrvwer.jsp 
+					crscmprx.jsp
+					outlines.java
+	2010.04.25	crslnkdxx.jsp	// LINKED ITEM
+	2010.08.16
+					Adding drop down list for contact hours
+					Message Page
+					Screen with editable items for Functional Designation
+					Pre/Co Requisites Consent
+					Number of credits as drop down list
+					Approval Black Out Date
+					Approval By Date
+					Outline Approvals as Packets
+					Pre/Co Requisites & Cross Listing Approval
+					Course Menu Changes
+					Task Display
+					Programs & Course
+	2010.09.20
+					Ability to attach during program edit
+					compare for item #28
+
+-- SLO link to PSLO click close and returns no where (all buttons on SLO link screen does not return correctly)
+-- test experimental and make sure only those will print
+-- new outline not limited to 30 characters for title
+-- Add HH:MM AM/PM
+
+======================================
+MAU
+======================================
+	#25 needs yes/no
+	Banner title only 25 characters
+	-- PRE-COREQ HAS CONSENT YES/NO WITH DEFAULT TO YES
+		-- x15 - c25 - change to check and size 1 (use consent)
+		-- x16 - c26 - change to check and size 1 (Consent?)
+		-- testfix15-16.jsp
+	-- Content contains 
+		-- SLO/Comp; 
+			-- SLO has G and P; 
+			-- Comp has E/S (need slo)
+	-- FD developmental/Remedial	Development and remedial buttons	empty in third box
+	-- #17 remove other
+	-- #29 add NA to top of each (sent to BK for edits)
+	-- Pre-coreq has 200 characters		
+	-- Remove method eval at bottom of GE
+	
+Using SKEW
+	1) need kix as hidden field on form (crscan.jsp)
+			need to show input field (crscan.jsp)
+	2) need js validation (crscan.js)
+	3) need to include in form submission  (crscan.jsp) --> && Skew.confirmEncodedValue(request)	
+			else statement for form. --> message = "Invalid security code";
+
+======================================
+HIL
+======================================
+-- Upload form
+-- Attach to syllabus
+-- gabi forms link
+-- crscpy.js needs to be put back
+-- Is it possible to remove the "No".  It says "No" and then below it is the cross-listed course.
+-- Reviewer
+
+	--vote - sum up all votes
+
+UH HIL
+	1) --remove #24-26
+	2) -- remove 2 outlines from HIL from approval status
+	3) --block approval for HIL from 16/23 (approval button not available)
+	4) --don't move approver sequence and user maintenance over from test to live or reverse
+	5) --#15 needs list of Alpha (only)
+		--Need to move data? to c33?
+		--Check LEE and other campuses using X29
+	6) -- Program approval report says outline not found
+	7) ***Create link for department chair to view outline from task list
+	8) --Resequence
+	9) --Hide #27
+	10) --Hide #20
+	11) Division/Dept and INI
+
+Restore tblsystem
+
+approval
+	-- task not removed for THANHG who started the approval process
+	-- when done, deleted other tasks on screen as well
+	WORKS fine when roles are defined correctly at division level
+	
+review
+	-- count of reviewer comments not showing on MAU tab
+	-- show all review comments not correct sequence number display for tab 2
+	NEED TO CORRECT item number for current REVIEW items (PRODUCTION for source=2)
+	REVIEW - When reviewing, and no changes made, check mark to verify review, then push to DC then CC then fast track; however, if they need to modify, then they require enable items
+	Review comes up, nothing needs to be worked on, need to check of date, then only to division chair and possibly CC
+
+rename needs to go through approval process
+	need to test rename between renameaccess and renamex
+	
+- when approving at sequence > 1, don't force to change profile
+
+======================================
+UHMC
+======================================
+-- functional designation (aa/dl/../ (diversification list)) for BK to edit – system table
+
+Move Data
+	move link for additional form to live
+	campus admin can access all
+	move approver routing over
+
+-- #11 - number box for all contact hours (drop down from 0 (default) to 15)
+
+-- #29 turn on table values for BK to maintain (see about tblValues)
+	-- val.jsp
+	-- need to fix FunctionDesignation.java
+	-- delete tblFD
+--a-z, a1,
+--check mark for 'or consent' on pre req (crsreqidx.jsp, RequisiteDB.java, crsedt3, crsreq.jsp, outlines.java)
+	-- a.	hide pre req consent for maui (displayOrConsentForPreReqs,DisplayConsentForCourseMods)
+	--need to add to outline print (how to show)
+	--need to add to course mod display screen
+--credit drop down 0 - 15 (NumberOfCreditsRangeValue, crsedt3)
+--UHMC
+--back up system for maui
+--turn on help for create new (master list?)
+	a.	check list before allowing to proceed
+	b.	provide question mod by campus for create new?
+	c.	create new screen 1 of 4
+		Hi Thanh,
+		Here is the verbage and links from our Curriculum Website where faculty must check first if they are proposing a new course.
+
+		2. The first step for new courses is to check the most recent list of Active Courses in the UH System to determine which alphas and numbers are in use. If the new course you are proposing is the same as another course in the system, use that alpha and number. You may also search the entire list at UHCC Master Course List.
+
+		UH Community College Master Course List:
+		http://www.hawaii.edu/offices/cc/docs/mastercourselist.pdf
+		University of Hawaii Master Course List (Active courses in the UH system):
+		https://www.sis.hawaii.edu/uhdad/bwckctlg.p_disp_dyn_ctlg 
+
+--TG 
+	delete #31
+	remove #19
+	move 26 to 18
+	move 27 to 19
+	add 20 but have to do some tweaking
+	#20 with instruction for linking (crsedt2, crsedt3, crsedtx - messagePage)
+
+--BK - #5 combine with 31
+
+
+KAP - admin folder
+
+12/7 - Sent message asking all to review and comment on the correctness of their data. KAP said they had no choice but did not reply.
+
+Request to have campuses maintain their list of issues went without response. Only HIL
+

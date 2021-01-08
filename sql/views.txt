@@ -1,0 +1,56 @@
+USE [ccv2]
+GO
+/****** Object:  View [dbo].[zARC]    Script Date: 08/10/2012 15:18:37 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[zARC]
+AS
+SELECT DISTINCT 
+                      RTRIM(campus) + RTRIM(CourseAlpha) + RTRIM(CourseNum) AS kee, campus, CourseAlpha, CourseNum, historyid, CONVERT(varchar, coursedate, 101) 
+                      AS coursedate
+FROM         dbo.tblCourseARC
+
+GO
+/****** Object:  View [dbo].[zCUR]    Script Date: 08/10/2012 15:18:37 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[zCUR]
+AS
+SELECT DISTINCT 
+                      RTRIM(campus) + RTRIM(CourseAlpha) + RTRIM(CourseNum) AS kee, campus, CourseAlpha, CourseNum, historyid, CONVERT(varchar, coursedate, 101) 
+                      AS coursedate
+FROM         dbo.tblCourse
+WHERE     (CourseType = 'CUR') AND (NOT (coursedate IS NULL))
+
+GO
+/****** Object:  View [dbo].[zHIST]    Script Date: 08/10/2012 15:18:37 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[zHIST]
+AS
+SELECT     kee, campus, coursealpha, coursenum, historyid, MAX(approvaldate) AS approvaldate
+FROM         (SELECT     RTRIM(campus) + RTRIM(coursealpha) + RTRIM(coursenum) AS kee, campus, coursealpha, coursenum, historyid, CONVERT(varchar, approvaldate, 101) 
+                                              AS approvaldate
+                       FROM          dbo.tblApprovalHist2) AS tbl
+GROUP BY kee, campus, coursealpha, coursenum, historyid
+
+GO
+/****** Object:  View [dbo].[zARC2]    Script Date: 08/10/2012 15:18:37 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[zARC2]
+AS
+SELECT     dbo.zARC.kee, dbo.zARC.campus, dbo.zARC.CourseAlpha, dbo.zARC.CourseNum, dbo.zARC.historyid, dbo.zARC.coursedate
+FROM         dbo.zARC LEFT OUTER JOIN
+                      dbo.zHIST ON dbo.zARC.historyid = dbo.zHIST.historyid
+WHERE     (dbo.zHIST.historyid IS NULL)
+
+GO

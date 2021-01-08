@@ -1,0 +1,40 @@
+
+SELECT     tblCourse.campus, tblCourse.CourseAlpha, tblCourse.CourseNum, tblCourse.CourseType, tblCoReq.CoreqAlpha, tblCoReq.CoreqNum, COUNT(tblCourse.historyid) 
+                      AS Expr2, tblCoReq.historyid AS Expr1
+FROM         tblCourse INNER JOIN
+                      tblCoReq ON tblCourse.CourseAlpha = tblCoReq.CourseAlpha AND tblCourse.CourseNum = tblCoReq.CourseNum AND 
+                      tblCourse.CourseType = tblCoReq.CourseType AND tblCourse.campus = tblCoReq.Campus
+GROUP BY tblCourse.campus, tblCourse.CourseAlpha, tblCourse.CourseNum, tblCourse.CourseType, tblCoReq.CoreqAlpha, tblCoReq.CoreqNum, tblCoReq.historyid
+HAVING      (tblCourse.campus = 'KAU')
+ORDER BY tblCourse.campus, tblCourse.CourseAlpha, tblCourse.CourseNum, tblCoReq.CoreqAlpha, tblCoReq.CoreqNum
+
+// DONE
+
+SELECT     historyid, Campus, CourseAlpha, CourseNum, CourseType, id, CoreqAlpha, CoreqNum, Grading, auditdate, auditby, rdr, consent, pending, approvedby, 
+                      approveddate
+FROM         tblCoReq
+WHERE     (historyid = 'v40c11k12156')
+
+SELECT     id, historyid, campus, CourseAlpha, CourseNum, CourseType, edit, Progress, proposer, edit0, edit1, edit2, dispID, Division, coursetitle, credits, repeatable, maxcredit, 
+                      articulation, semester, crosslisted, coursedate, effectiveterm, gradingoptions, coursedescr, hoursperweek, reviewdate, auditdate, excluefromcatalog, dateproposed, 
+                      assessmentdate, X15, X16, X17, X18, X19, X20, X21, X22, X23, X24, X25, X26, X27, X28, X29, X30, X31, X32, X33, X34, X35, X36, X37, X38, X39, X40, X41, X42, X43, 
+                      X44, X45, X46, X47, X48, X49, X50, X51, X52, X53, X54, X55, X56, X57, X58, X59, X60, X61, X62, X63, X64, X65, X66, X67, X68, X69, X70, X71, X72, X73, X74, X75, 
+                      X76, X77, X78, X79, X80, jsid, reason, votesfor, votesagainst, votesabstain, route, subprogress, MESSAGEPAGE01, MESSAGEPAGE02, MESSAGEPAGE03, 
+                      MESSAGEPAGE04, MESSAGEPAGE05, X81, X82, X83, X84, X85, X86, X87, X88, X89, X90, X91, X92, X93, X94, X95, X96, X97, X98, X99, experimentaldate, enddate, 
+                      X100, X101, X102, X103, X104, X105, X106, X107, X108, X109, X110, X111, X112, X113, X114, X115, X116, X117, X118, X119, X120
+FROM         tblCourse
+WHERE     (campus = 'KAU') AND (CourseAlpha = 'BIOL') AND (CourseNum = '171L')
+
+SELECT     historyid, Campus, CourseAlpha, CourseNum, CourseType, id, CoreqAlpha, CoreqNum, Grading, auditdate, auditby, rdr, consent, pending, approvedby, 
+                      approveddate
+FROM         tblCoReq
+WHERE     (Campus = 'KAU') AND (CourseAlpha = 'BIOL') AND (CourseNum = '171L')
+
+// DONE
+
+select * from CCCM6100 where type='Campus' and question_number in (47,48,49)
+
+update CCCM6100 set question_type='check',question_ini='UserCampusCheckbox1',Question_Explain='C57',comments='UserCampusCheckbox1',CCCM6100='UserCampusCheckbox1' where type='Campus' and question_number = 47;
+update CCCM6100 set question_type='check',question_ini='UserCampusCheckbox2',Question_Explain='C58',comments='UserCampusCheckbox2',CCCM6100='UserCampusCheckbox2' where type='Campus' and question_number = 48;
+update CCCM6100 set question_type='check',question_ini='UserCampusCheckbox3',Question_Explain='C59',comments='UserCampusCheckbox3',CCCM6100='UserCampusCheckbox3' where type='Campus' and question_number = 49;
+

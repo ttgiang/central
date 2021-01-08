@@ -1,0 +1,37 @@
+--The Short Banner title should be <= 30 characters 
+--the Long Course title should be > 30 characters.
+--From last question number, review is not possible
+--data
+	Move pre-req/co-req down for those completed outlines
+		send message to jason
+
+	Co-proposer for AJ 230, Sandra Claveria
+		out.println(Outlines.updateReason(conn,"q0b14j12188","Co-proposer for AJ 230, Sandra Claveria","JOHNSD"));
+
+//------------------------------
+// above is done
+//------------------------------
+
+--data
+	#3 saving title during revision
+	#7 is missing for Annie
+
+future
+	Transfer from values table
+
+	edit user profile without division bombs
+
+	--Compare outline by campus
+		Show campus title at top of screen
+		Ability to select campus to compare
+
+	Include all comments on outline friendly print
+	
+	For black out date, include time with date
+		Include warning message on screen during blackout
+		
+	Single listing course outline (mix campus tab items with course)
+
+	when extra button is not on, don't bring in data for button on outline
+		- when not on, no data so no worry?
+		- what if they had it on then turned off?

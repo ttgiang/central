@@ -1,0 +1,1 @@
+exec sp_ASE_UpdateTempCopyData 'LEE','ICS','212','ICS','219','THANHG','PRE','D41f16l843','11-17-2008'

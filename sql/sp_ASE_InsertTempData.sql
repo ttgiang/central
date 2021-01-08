@@ -1,0 +1,1 @@
+exec sp_ASE_InsertTempData 'LEE','ICS','212','THANHG','CUR'

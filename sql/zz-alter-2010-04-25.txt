@@ -1,0 +1,1999 @@
+
+====================================== DONE - 2010.04.25
+
+update tblApprover
+set approver='SASAKICH'
+WHERE route=1225 
+AND approver_seq=2
+
+INSERT INTO tbltasks (campus, submittedfor, submittedby, coursealpha, coursenum, coursetype, message, dte, inviter, role) 
+VALUES('KAP','SASAKICH','AILED','ART','112','PRE','Approve outline',getdate(),'AILED','APPROVER')
+
+INSERT INTO tbltasks (campus, submittedfor, submittedby, coursealpha, coursenum, coursetype, message, dte, inviter, role) 
+VALUES('KAP','SASAKICH','AILED','ART','125','PRE','Approve outline',getdate(),'AILED','APPROVER')
+
+INSERT INTO tbltasks (campus, submittedfor, submittedby, coursealpha, coursenum, coursetype, message, dte, inviter, role) 
+VALUES('KAP','SASAKICH','AILED','ART','128','PRE','Approve outline',getdate(),'AILED','APPROVER')
+
+INSERT INTO tbltasks (campus, submittedfor, submittedby, coursealpha, coursenum, coursetype, message, dte, inviter, role) 
+VALUES('KAP','SASAKICH','AILED','ART','293V','PRE','Approve outline',getdate(),'AILED','APPROVER')
+
+
+====================================== DONE - 2010.04.11
+
+C:\tomcat\webapps\central\docs\help has sample attached file for upload data file
+
+tblTab
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblMode]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblMode]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblMode2]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblMode2]
+GO
+
+CREATE TABLE [dbo].[tblMode] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[mode] [char] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[item] [char] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[tblMode2] (
+	[id] [numeric](18, 0) NOT NULL ,
+	[se] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[item] [char] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblMode2] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblMode2] PRIMARY KEY  CLUSTERED 
+	(
+		[id],
+		[se]
+	)  ON [PRIMARY] 
+GO
+
+CREATE VIEW dbo.vw_Mode
+AS
+SELECT     tm.id, tm.campus, tm.mode, tm.item, tcq.question
+FROM         dbo.tblCourseQuestions tcq INNER JOIN
+                      dbo.CCCM6100 c61 ON tcq.questionnumber = c61.Question_Number INNER JOIN
+                      dbo.tblMode tm ON tcq.campus = tm.campus AND c61.Question_Friendly = tm.item
+WHERE     (c61.campus = 'SYS') AND (c61.type = 'Course')
+
+
+CREATE VIEW dbo.vw_ReviewStatus
+AS
+SELECT     TOP 100 PERCENT dbo.tblReviewers.campus, dbo.tblCourse.CourseAlpha, dbo.tblCourse.CourseNum, dbo.tblReviewers.userid, 
+                      dbo.tblCourse.reviewdate
+FROM         dbo.tblCourse INNER JOIN
+                      dbo.tblReviewers ON dbo.tblCourse.CourseAlpha = dbo.tblReviewers.coursealpha AND dbo.tblCourse.CourseNum = dbo.tblReviewers.coursenum AND 
+                      dbo.tblCourse.campus = dbo.tblReviewers.campus
+WHERE     (dbo.tblCourse.Progress = 'REVIEW') OR
+                      (dbo.tblCourse.Progress = 'APPROVAL') AND (dbo.tblCourse.subprogress = 'REVIEW_IN_APPROVAL')
+ORDER BY dbo.tblCourse.CourseAlpha, dbo.tblCourse.CourseNum, dbo.tblReviewers.userid
+
+ALTER TABLE tblPreReq DROP CONSTRAINT PK_tblPreReq
+ALTER TABLE tblcoreq DROP CONSTRAINT PK_tblcoReq
+
+ALTER TABLE tblPrereq ALTER column PrereqAlpha varchar(10)
+ALTER TABLE tblPrereq ALTER column PrereqNum varchar(10)
+
+ALTER TABLE tblcoreq ALTER column CoreqAlpha varchar(10)
+ALTER TABLE tblcoreq ALTER column CoreqNum varchar(10)
+
+
+CREATE 
+  INDEX [PK_ValuesData] ON [dbo].[tblValuesdata] ([historyid], [X], [XID], [Y], [id])
+WITH
+    DROP_EXISTING
+ON [PRIMARY]
+
+CREATE 
+  INDEX [PK_ValuesData2] ON [dbo].[tblValuesdata] ([historyid], [X],  [Y],[XID], [id])
+WITH
+    DROP_EXISTING
+ON [PRIMARY]
+
+
+INSERT INTO tblDEBUG (page,debug) VALUES('ValuesDB',1)
+INSERT INTO tblDEBUG (page,debug) VALUES('TalinServlet',1)
+INSERT INTO tblDEBUG (page,debug) VALUES('CopyServlet',1)
+INSERT INTO tblDEBUG (page,debug) VALUES('CancelServlet',1)
+
+--ALTER TABLE tblMisc ADD userid varchar(50)
+
+CREATE VIEW dbo.vw_CCCM6100ByIDCampusItems
+AS
+SELECT     TOP 100 PERCENT campus.campus, campus.id, campus.questionnumber, campus.questionseq, campus.question, campus.include, 
+                      c61.Question_Friendly, c61.Question_Type, c61.Question_Len, c61.Question_Max, c61.Question_Ini, c61.Question_Explain, campus.auditby, 
+                      campus.auditdate, campus.help, 'N' AS change, campus.required, campus.helpfile, campus.audiofile,rules,rulesform
+FROM         dbo.tblCampusQuestions campus INNER JOIN
+                      dbo.CCCM6100 c61 ON campus.campus = c61.campus AND campus.type = c61.type AND campus.questionnumber = c61.Question_Number
+WHERE     (c61.type = 'Campus')
+ORDER BY campus.campus, campus.id, campus.questionnumber
+
+
+CREATE VIEW dbo.vw_CCCM6100ByIDCampusCourse
+AS
+SELECT     TOP 100 PERCENT course.id, course.campus, course.questionnumber, course.questionseq, course.question, course.include, c61.Question_Friendly, 
+                      c61.Question_Type, c61.Question_Len, c61.Question_Max, c61.Question_Ini, c61.Question_Explain, course.auditby, course.auditdate, course.help, 
+                      course.change, course.required, course.helpfile, course.audiofile,rules,rulesform
+FROM         dbo.tblCourseQuestions course INNER JOIN
+                      dbo.CCCM6100 c61 ON course.questionnumber = c61.Question_Number AND course.type = c61.type
+WHERE     (course.type = 'Course')
+ORDER BY course.id, course.campus, course.questionnumber
+
+
+CREATE VIEW dbo.vw_CCCM6100_Sys
+AS
+SELECT     TOP 100 PERCENT course.campus, course.questionseq, c61.Question_Ini, c61.Question_Type, c61.Question_Len, c61.Question_Max, 
+                      c61.Question_Friendly, c61.Question_Explain, course.question, course.include, course.change, course.required, course.helpfile, course.audiofile,
+	c61.rules,c61.rulesform
+FROM         dbo.CCCM6100 c61 INNER JOIN
+                      dbo.tblCourseQuestions course ON c61.Question_Number = course.questionnumber AND c61.type = course.type
+WHERE     (c61.campus = 'SYS') AND (course.type = 'Course')
+ORDER BY course.campus, course.questionseq, c61.campus
+
+CREATE VIEW dbo.vw_CCCM6100_Campus
+AS
+SELECT     TOP 100 PERCENT campus.campus, campus.questionseq, c61.Question_Ini, c61.Question_Type, c61.Question_Len, c61.Question_Max, 
+                      c61.Question_Friendly, c61.Question_Explain, campus.question, 'N' AS change, campus.required, campus.helpfile, campus.audiofile,c61.rules,c61.rulesform
+FROM         dbo.CCCM6100 c61 INNER JOIN
+                      dbo.tblCampusQuestions campus ON c61.Question_Number = campus.questionnumber AND c61.type = campus.type AND 
+                      c61.campus = campus.campus
+WHERE     (c61.type = 'Campus') AND (campus.type = 'Campus')
+ORDER BY campus.campus, campus.questionseq, c61.campus, c61.type
+
+
+CREATE TABLE [dbo].[tblValuesdata] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursealpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursenum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursetype] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[X] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[XID] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Y] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[YID] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[CCCM6100] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[type] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Question_Number] [smallint] NULL ,
+	[CCCM6100] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Question_Friendly] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Question_Len] [smallint] NULL ,
+	[Question_Max] [smallint] NULL ,
+	[Question_Type] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Question_Ini] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Question_Explain] [varchar] (5) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[Comments] [varchar] (250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rules] [bit] NULL ,
+	[rulesform] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblValues]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblValues]
+GO
+
+CREATE TABLE [dbo].[tblValues] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[topic] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[subtopic] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[shortdescr] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[longdescr] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditby] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [smalldatetime] NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblValues] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblValues] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE tblPDF ADD colum varchar(20)
+ALTER TABLE tblApprovalHist ALTER column approved smallint
+ALTER TABLE tblApprovalHist2 ALTER column approved smallint
+
+ALTER TABLE tblApprovalHist ADD progress varchar(20)
+	ALTER TABLE tblApprovalHist2 ADD progress varchar(20)
+	
+	UPDATE tblApprovalHist set progress='APPROVED' where approved=1
+	UPDATE tblApprovalHist set progress='REVISE' where approved=0
+	UPDATE tblApprovalHist set progress='FAST-TRACKED'  where comments like '%fast track%'
+	
+	UPDATE tblApprovalHist2 set progress='APPROVED' where approved=1
+	UPDATE tblApprovalHist2 set progress='REVISE' where approved=0
+	UPDATE tblApprovalHist2 set progress='FAST-TRACKED'  where comments like '%fast track%'
+
+	CREATE VIEW dbo.vw_ApprovalHistory
+	AS
+	SELECT     ta.campus, ta.coursealpha, ta.coursenum, ta.seq, ta.historyid, ta.approver, tu.title, tu.[position], ta.dte, ta.approved, tu.department, ta.inviter, ta.role,ta.approver_seq, ta.progress
+	FROM         dbo.tblApprovalHist ta, dbo.tblUsers tu
+	WHERE     ta.approver = tu.userid AND progress <> 'RECALLED'
+	UNION
+	SELECT     campus, coursealpha, coursenum, seq, historyid, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', dte, approved, '', '', '',0,''
+	FROM         dbo.tblApprovalHist ta
+	WHERE     approver LIKE '%]'
+
+	CREATE VIEW dbo.vw_LinkedCompetency2PSLO
+	AS
+	SELECT     tl.campus, tgc.src, tgc.historyid, tl.src AS fromSrc, tgc.src AS toSrc, tl.dst, tgc.id AS tgcID, tl.seq, tl.id, tl2.id AS [2tlID], tl2.item, tcc.seq AS [2tl2Item], 
+								 tcc.rdr AS comprdr
+	FROM         dbo.tblGenericContent tgc INNER JOIN
+								 dbo.tblCourseLinked tl ON tgc.historyid = tl.historyid INNER JOIN
+								 dbo.tblCourseLinked2 tl2 ON tgc.historyid = tl2.historyid AND tl.id = tl2.id INNER JOIN
+								 dbo.tblCourseCompetency tcc ON tgc.historyid = tcc.historyid AND tl2.item = tcc.seq
+	WHERE     (tgc.src = 'X72') AND (tl.src = 'X72') AND (tl.dst = 'Competency')
+
+
+====================================== DONE - 2010.01.31
+
+CreateTaskForApprovedOutline
+	Where a task should be created for distribution list NotifiedWhenApproved
+	0
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblRequest]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblRequest]
+GO
+
+CREATE TABLE [dbo].[tblRequest] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[descr] [varchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[request] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[comments] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[status] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[userid] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [smalldatetime] NULL ,
+	[submitteddate] [smalldatetime] NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+UPDATE tblAttach SET version = 1
+UPDATE tblTempAttach SET version = 1
+
+ALTER TABLE tblAttach ADD version smallint
+ALTER TABLE tblAttach ADD fullname varchar(300)
+ALTER TABLE tblTempAttach ADD version smallint
+ALTER TABLE tblTempAttach ADD fullname varchar(300)
+
+insert into tblRpt(campus,rptname,rptfilename,rpttitle,rptformat) values('ALL','System','system','System Settings','PDF')
+
+INSERT INTO tblInikey (kid,options,descr,valu,html) VALUES('CreateTaskForApprovedOutline','YESNO','Where a task should be created for distribution list NotifiedWhenApproved','','radio')
+
+ALTER TABLE tblUserLog ADD historyid varchar(20)
+
+CREATE VIEW dbo.vw_LinkedSLO2MethodEval
+AS
+SELECT DISTINCT TOP 100 PERCENT tl.historyid, tl.seq, tl.id AS keyid, tl2.item AS ContentID, dbo.tblINI.kdesc AS content, dbo.tblINI.id AS iniID
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.id = tl2.id INNER JOIN
+                      dbo.tblINI ON tl2.item = dbo.tblINI.id
+WHERE     (tl.src = 'X18') AND (tl.dst = 'MethodEval') AND (dbo.tblINI.category = 'MethodEval')
+
+
+CREATE VIEW dbo.vw_LinkedCompetency2MethodEval
+AS
+SELECT DISTINCT TOP 100 PERCENT tl.historyid, tl.seq, tl.id AS keyid, tl2.item AS ContentID, dbo.tblINI.kdesc AS content, dbo.tblINI.id AS iniID
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.id = tl2.id INNER JOIN
+                      dbo.tblINI ON tl2.item = dbo.tblINI.id
+WHERE     (tl.src = 'X43') AND (tl.dst = 'MethodEval') AND (dbo.tblINI.category = 'MethodEval')
+
+====================================== DONE - 2010.01.17
+
+tblCourseComp and temp
+	ALTER TABLE tblCourseComp ADD reviewed char(1)
+	ALTER TABLE tblCourseComp ADD revieweddate smalldatetime
+	ALTER TABLE tblCourseComp ADD reviewedby varchar(20)
+
+tblINIKey
+	Determines whether CC should display system values keys only or keys and descriptions.
+		
+	Enter 1 to display key only
+	Enter 2 to display description only
+	Enter 3 to display both key and description
+	
+	ShowKeyDescsription
+	
+	1,2,3
+
+
+ALTER TABLE tblSystem ADD descr varchar(250)
+
+27	GLOBAL	systemEmail	ccentral@hawaii.edu
+	
+CREATE VIEW dbo.vw_WriteSyllabus
+AS
+SELECT     TOP 100 PERCENT c.campus, c.CourseAlpha, c.CourseNum, dbo.BannerDept.DEPT_DESCRIPTION AS division, c.coursetitle AS title, c.credits, 
+                      c.X17 AS recprep, c.coursedescr, dbo.tblCampusData.C25 AS prereq, dbo.tblCampusData.C26 AS coreq, c.X15 AS CoursePreReq, 
+                      c.X16 AS CourseCoReq
+FROM         dbo.tblCourse c INNER JOIN
+                      dbo.BannerDept ON c.dispID = dbo.BannerDept.DEPT_CODE INNER JOIN
+                      dbo.tblCampusData ON c.historyid = dbo.tblCampusData.historyid
+WHERE     (c.CourseType = 'CUR')
+ORDER BY c.campus, c.CourseAlpha, c.CourseNum
+
+
+update cccm6100 
+set question_ini='CONSENTPREREQ'
+where campus='SYS'
+AND type='Course' 
+AND question_number=15
+AND question_friendly='X15'
+
+update cccm6100 
+set question_ini='CONSENTCOREQ'
+where campus='SYS'
+AND type='Course' 
+AND question_number=16
+AND question_friendly='X16'
+
+DELETE FROM tblTabs WHERE     (tab = 'tblForms')
+
+====================================== DONE - 2010.01.03
+
+testfixhil.jsp
+
+ALTER TABLE tblIniKey ADD valu varchar(20)
+ALTER TABLE tblIniKey ADD html varchar(20)
+
+Create CCCM entries
+	run fill across and reset
+	X81 = Institutional Learning Objectives
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblLists]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblLists]
+GO
+
+CREATE TABLE [dbo].[tblLists] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[src] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[program] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[alpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[comments] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditDate] [smalldatetime] NULL ,
+	[auditBy] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rdr] [int] NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblLists] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblLists] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [PK_tblLists_Main] ON [dbo].[tblLists]([campus], [src], [alpha]) ON [PRIMARY]
+GO
+
+============>
+
+ACC	124
+AMT	20
+BUSN	104
+CULN	111
+DMED	113
+ED		100
+HSER	100
+ICS	100
+MGT	120
+TVPR	100
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='ACC' and coursenum='124'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='AMT' and coursenum='20'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='BUSN' and coursenum='104'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='CULN' and coursenum='111'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='DMED' and coursenum='113'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='ED' and coursenum='100'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='HSER' and coursenum='100'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='ICS' and coursenum='100'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='MGT' and coursenum='120'
+
+INSERT INTO tblLists (src, campus, alpha, comments, auditDate, auditBy, rdr)
+SELECT src, Campus, CourseAlpha, comments, AuditDate, AuditBy, rdr
+FROM tblGenericContent
+WHERE (Campus = 'LEE') AND (src = 'X72') and CourseAlpha='TVPR' and coursenum='100'
+
+====================================== DONE - 2009.12.31
+
+INSERT INTO tblinikey (kid,options,descr) VALUES('CancelApprovalAnyTime','YESNO','Allows cancellation of the approval process at any time by the proposer.')
+
+update tblCourseQuestions 
+set question='Program Modifications',help='Program Modifications'
+where type='Course' 
+AND questionnumber=84
+
+update cccm6100 
+set cccm6100='Program Modifications',comments='Program Modifications'
+where campus='SYS'
+AND type='Course' 
+AND question_number=84
+AND question_friendly='X80'
+
+INSERT INTO tblDebug (page, debug) VALUES('CourseRestore',0)
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblINIKey]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblINIKey]
+GO
+
+CREATE TABLE [dbo].[tblINIKey] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[kid] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[options] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[descr] [varchar] (1000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblINIKey] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblINIKey] PRIMARY KEY  CLUSTERED 
+	(
+		[kid]
+	)  ON [PRIMARY] 
+GO
+
+====================================== DONE - 2009.12.27
+
+CREATE VIEW dbo.vw_ApprovalHistory
+AS
+SELECT     ta.campus, ta.coursealpha, ta.coursenum, ta.seq, ta.historyid, ta.approver, tu.title, tu.[position], ta.dte, ta.approved, tu.department, ta.inviter, ta.role,ta.approver_seq
+FROM         dbo.tblApprovalHist ta, dbo.tblUsers tu
+WHERE     ta.approver = tu.userid
+UNION
+SELECT     campus, coursealpha, coursenum, seq, historyid, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', dte, approved, '', '', '',0
+FROM         dbo.tblApprovalHist ta
+WHERE     approver LIKE '%]'
+
+ShowKeyDescsription
+	Determines whether CC should display system values keys only or keys and descriptions.
+	
+	Enter 1 to display key only
+	Enter 2 to display description only
+	Enter 3 to display both key and description
+	
+	3
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblDebug]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblDebug]
+GO
+
+CREATE TABLE [dbo].[tblDebug] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[page] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[debug] [bit] NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblDebug] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblDebug] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblDebug] ADD 
+	CONSTRAINT [DF_tblDebug_debug] DEFAULT (0) FOR [debug]
+GO
+
+ CREATE  INDEX [PK_tblDebug_Page] ON [dbo].[tblDebug]([page]) ON [PRIMARY]
+GO
+
+====================================== DONE - 2009.12.20
+
+CREATE VIEW dbo.vw_ApprovalHistory
+AS
+SELECT     ta.campus, ta.coursealpha, ta.coursenum, ta.seq, ta.historyid, ta.approver, tu.title, tu.[position], ta.dte, ta.approved, tu.department, ta.inviter, ta.role
+FROM         dbo.tblApprovalHist ta, dbo.tblUsers tu
+WHERE     ta.approver = tu.userid
+UNION
+SELECT     campus, coursealpha, coursenum, seq, historyid, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', dte, approved, '', '', ''
+FROM         dbo.tblApprovalHist ta
+WHERE     approver LIKE '%]'
+
+UPDATE tblCourseQuestions
+SET question='Banner Title',help='Banner Title'
+WHERE (questionnumber = 83)
+
+update cccm6100 
+set cccm6100='Banner Title',question_len=30, question_max=30, question_type='text',comments='Banner Title'
+where campus='SYS'
+AND type='Course' 
+AND question_number=83
+AND question_friendly='X79'
+
+UPDATE tblApprovalHist2 set role = 'APPROVER'
+UPDATE tblApprovalHist set role = 'APPROVER'
+
+ALTER TABLE tblApprovalHist2 ADD role varchar(20)
+ALTER TABLE tblApprovalHist ADD role varchar(20)
+ALTER TABLE tblTasks ADD role varchar(20)
+
+====================================== DONE - 2009.12.12
+
+SELECT     userid, COUNT(userid) AS access
+FROM         (SELECT     userid, LTRIM(YEAR(datetime)) AS yy, LTRIM(MONTH(datetime)) AS mm, LTRIM(DAY(datetime)) AS dd
+                       FROM          tblUserLog
+                       WHERE      (campus = 'KAP') AND ([action] = 'Log in')
+                       GROUP BY userid, LTRIM(YEAR(datetime)), LTRIM(MONTH(datetime)), LTRIM(DAY(datetime))) tab
+GROUP BY userid
+
+ALTER TABLE tblusers ADD sendnow int DEFAULT (1) 
+update tblusers set sendnow = 1
+
+ALTER TABLE tblApprovalHist2 ADD inviter varchar(20)
+ALTER TABLE tblApprovalHist ADD inviter varchar(20)
+ALTER TABLE tblTasks ADD inviter varchar(20)
+
+====================================== DONE - 2009.12.05
+
+Index for tblUserLog, tblMail
+ CREATE  INDEX [PK_tblUserLog_Campus] ON [dbo].[tblUserLog]([campus], [id] DESC ) ON [PRIMARY]
+	GO
+
+ CREATE  INDEX [PK_tblMail_Campus] ON [dbo].[tblMail]([campus], [id] DESC ) ON [PRIMARY]
+	GO
+
+EnableOutlineValidation
+	Determines whether an outline should be validated prior to submission for approval
+
+CREATE VIEW dbo.vw_Linked2SLO
+AS
+SELECT DISTINCT tl.campus, tl.historyid, tl.src, tl.dst, tl.seq AS linkedseq, tl.id AS linkedid, tl2.item AS compid, tl2.item2, tc.Comp, tc.rdr AS comprdr
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.historyid = tl2.historyid AND tl.id = tl2.id INNER JOIN
+                      dbo.tblCourseComp tc ON tl2.historyid = tc.historyid AND tl.campus = tc.Campus AND tl2.item = tc.CompID
+WHERE     (tl.src = 'X43') AND (tl.dst = 'SLO' OR
+                      tl.dst = 'Objectives')
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblExtended]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblExtended]
+GO
+
+CREATE TABLE [dbo].[tblExtended] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[tab] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[friendly] [varchar] (15) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[key1] [varchar] (15) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[key2] [varchar] (15) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblExtended] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblExtended] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+CCCM6100 Question_Friendly	varchar	50
+
+CREATE TABLE [dbo].[tblEmailList] (
+	[seq] [numeric](10, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[title] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[members] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [smalldatetime] NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblEmailList] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblEmailList] PRIMARY KEY  CLUSTERED 
+	(
+		[seq]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblEmailList] ADD 
+	CONSTRAINT [DF_tblEmailList_auditdate] DEFAULT (getdate()) FOR [auditdate]
+GO
+
+ CREATE  INDEX [PK_tblEmailList_Campus] ON [dbo].[tblEmailList]([campus], [title]) WITH  FILLFACTOR = 90 ON [PRIMARY]
+GO
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblPageHelp]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblPageHelp]
+GO
+
+CREATE TABLE [dbo].[tblPageHelp] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[page] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[filename] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblPageHelp] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblPageHelp] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [PK_tblPageHelpPageCampus] ON [dbo].[tblPageHelp]([page], [campus]) ON [PRIMARY]
+GO
+
+====================================== DONE - 2009.11.18
+
+SELECT DISTINCT CourseAlpha
+FROM tblCourse
+WHERE (CourseAlpha NOT IN
+(SELECT course_alpha
+ FROM banneralpha)) ***FACM***
+
+BannerDept replaced with BannerAlpha
+
+WAS
+SELECT ta.approver, ta.delegated, tu.department, tu.division, 
+BannerDept.DEPT_DESCRIPTION AS dept, BannerDivision.DIVS_DESCRIPTION AS div 
+FROM BannerDivision LEFT OUTER JOIN 
+tblUsers tu ON BannerDivision.DIVISION_CODE = tu.division RIGHT OUTER JOIN 
+BannerDept ON tu.department = BannerDept.DEPT_CODE RIGHT OUTER JOIN 
+tblApprover ta ON tu.campus = ta.campus AND tu.userid = ta.approver 
+WHERE ta.campus='KAP'
+AND ta.route=0 
+AND ta.approver_seq=1
+ORDER BY ta.approver
+
+NOW
+SELECT ta.approver, ta.delegated, tu.department, tu.division, 
+ba.ALPHA_DESCRIPTION AS dept, BannerDivision.DIVS_DESCRIPTION AS div 
+FROM BannerDivision LEFT OUTER JOIN 
+tblUsers tu ON BannerDivision.DIVISION_CODE = tu.division RIGHT OUTER JOIN 
+BannerAlpha ba ON tu.department = ba.COURSE_ALPHA RIGHT OUTER JOIN 
+tblApprover ta ON tu.campus = ta.campus AND tu.userid = ta.approver 
+WHERE ta.campus='KAP'
+AND ta.route=702
+AND ta.approver_seq=1
+ORDER BY ta.approver
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','HAW','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','HIL','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','HON','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','KAP','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','KAU','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','LEE','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','MAN','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','MAU','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','WIN','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+INSERT INTO tblINI (seq, category, campus, kid, kdesc, kval1, kedit, klanid, kdate, note)
+VALUES (1,'System','WOA','BannerDepartment3','Alpha in Banner by Description','SELECT DISTINCT COURSE_ALPHA, ALPHA_DESCRIPTION FROM BannerAlpha ORDER BY ALPHA_DESCRIPTION','N','THANHG',getdate(),'Display banner alpha')
+
+====================================== DONE - 2009.11.15
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblRpt]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblRpt]
+GO
+
+CREATE TABLE [dbo].[tblRpt] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rptname] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rptfilename] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rpttitle] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rptformat] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblRpt] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblRpt] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblRpt] ADD 
+	CONSTRAINT [DF_tblRpt_campus] DEFAULT ('ALL') FOR [campus],
+	CONSTRAINT [DF_tblRpt_rptformat] DEFAULT ('PDF') FOR [rptformat]
+GO
+
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Competency','X43','Competency')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Content','X19','Content')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Course SLO','X18','Objectives')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('GenED SLO','X71','GESLO')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Method of Evaluation','X23','MethodEval')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Program SLO','X72','PSLO')
+
+====================================== DONE - 2009.11.04
+
+CREATE VIEW dbo.zvw_AnnBerner
+AS
+SELECT     *
+FROM         (SELECT     campus, historyid, coursealpha, coursenum, MAX(approver_seq) AS approver_seq, approved
+                       FROM          tblApprovalHist
+                       GROUP BY campus, historyid, coursealpha, coursenum, approved
+                       HAVING      (campus = 'LEE') AND (MAX(approver_seq) = 2) AND (approved = 0)
+                       UNION
+                       SELECT     campus, historyid, coursealpha, coursenum, MAX(approver_seq) AS approver_seq, approved
+                       FROM         tblApprovalHist
+                       GROUP BY campus, historyid, coursealpha, coursenum, approved
+                       HAVING      (campus = 'LEE') AND (MAX(approver_seq) = 1) AND (approved = 1)) Tbl
+
+SELECT distinct historyid, coursealpha, coursenum
+FROM zvw_AnnBerner
+ORDER BY coursealpha, coursenum
+
+====================================== DONE - 2009.11.03
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblLinkedItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblLinkedItem]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblLinkedKeys]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblLinkedKeys]
+GO
+
+CREATE TABLE [dbo].[tblLinkedItem] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[linkeditem] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[linkedkey] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[linkeddst] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[tblLinkedKeys] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[linkedsrc] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[linkeddst] [varchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[level] [int] NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblLinkedItem] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblLinkedItem] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblLinkedKeys] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblLinkedKeys] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Competency','X43','Competency')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Content','X19','Content')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Course SLO','X18','Objectives')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('GenED SLO','X71','GESLO')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Method of Evaluation','X23','MethodEval')
+INSERT INTO tblLinkedItem (linkeditem,linkedkey,linkeddst) VALUES ('Program SLO','X72','PSLO')
+
+====================================== DONE - 2009.11.01
+
+CREATE VIEW dbo.vw_WriteSyllabus
+AS
+SELECT     TOP 100 PERCENT c.campus, c.CourseAlpha, c.CourseNum, dbo.BannerDept.DEPT_DESCRIPTION AS division, c.coursetitle AS title, c.credits, 
+                      c.X17 AS recprep, c.coursedescr, dbo.tblCampusData.C25 AS prereq, dbo.tblCampusData.C26 AS coreq
+FROM         dbo.tblCourse c INNER JOIN
+                      dbo.BannerDept ON c.dispID = dbo.BannerDept.DEPT_CODE INNER JOIN
+                      dbo.tblCampusData ON c.historyid = dbo.tblCampusData.historyid
+WHERE     (c.CourseType = 'CUR')
+ORDER BY c.campus, c.CourseAlpha, c.CourseNum
+
+====================================== DONE - 2009.10.27
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblPageHelp]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblPageHelp]
+GO
+
+CREATE TABLE [dbo].[tblPageHelp] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[page] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[filename] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblPageHelp] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblPageHelp] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [PK_tblPageHelpPageCampus] ON [dbo].[tblPageHelp]([page], [campus]) ON [PRIMARY]
+GO
+
+/central/docs/help/KAP/crsedt.pdf
+
+====================================== DONE - 2009.10.26
+
+correct editing process for HIL courses. All should have route of 1038 (CoP graduates)
+
+	edit=1
+	edit0=
+	edit1=0,0,3,0,0,0,0,15,0,0,0,0,0,0,0,0,21,0,0,0,0,0,0
+	edit2=0
+	
+	PHPS
+		565 - 029a23k9188
+		591 - U1g21k9192
+	
+	PHPP
+		514 -	h27i21k9171
+		557 - m58b21k9178
+		559 - D28k22k937		
+		
+====================================== DONE - 2009.10.18
+
+ALTER TABLE tblINI ADD note text
+
+CREATE VIEW dbo.vw_HelpGetContent
+AS
+SELECT     TOP 100 PERCENT dbo.tblHelpidx.id, dbo.tblHelpidx.category, dbo.tblHelpidx.title, dbo.tblHelpidx.subtitle, dbo.tblHelpidx.auditby, 
+                      dbo.tblHelpidx.auditdate, dbo.tblHelp.content, dbo.tblHelpidx.campus
+FROM         dbo.tblHelp INNER JOIN
+                      dbo.tblHelpidx ON dbo.tblHelp.id = dbo.tblHelpidx.id
+ORDER BY dbo.tblHelpidx.category, dbo.tblHelpidx.title
+
+add campus to helpidx before category
+	fix data in helpidx for campus
+
+====================================== DONE - 2009.10.12
+
+CREATE VIEW dbo.vw_WriteSyllabus
+AS
+SELECT     TOP 100 PERCENT c.campus, c.CourseAlpha, c.CourseNum, dbo.BannerDept.DEPT_DESCRIPTION AS division, c.coursetitle AS title, c.credits, 
+                      c.X15 AS prereq, c.X16 AS coreq, c.X17 AS recprep, c.coursedescr
+FROM         dbo.tblCourse c INNER JOIN
+                      dbo.BannerDept ON c.dispID = dbo.BannerDept.DEPT_CODE
+WHERE     (c.CourseType = 'CUR')
+ORDER BY c.campus, c.CourseAlpha, c.CourseNum
+
+====================================== DONE - 2009.10.04
+
+reject = revise message on approver sequence selection and system description
+	When outline revision is requested during approval, should CC start again from the beginning?
+
+SELECT     *
+FROM         tblINI
+WHERE     (kdesc LIKE '%reject%')	
+
+UPDATE tblApprover SET multilevel = 0
+
+NEED TO CORRECT item number for current REVIEW items (PRODUCTION for source=2)
+
+====================================== DONE - 2009.09.28
+
+CREATE VIEW dbo.vw_ApproversNoDivisionChair
+AS
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus, ta.route
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] NOT LIKE 'D% CHAIR')
+UNION
+SELECT     approver_seq AS Sequence, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', '', campus, route
+FROM         dbo.tblApprover
+WHERE     approver LIKE '%]'
+
+CREATE VIEW dbo.vw_ApproversDivisionChair
+AS
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus, ta.route
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] LIKE 'D% CHAIR')
+
+update tbluserlog set script = '' where script like '%.jsp'
+
+SELECT     campus, CourseAlpha, CourseNum, CourseType
+FROM         tblCourse
+WHERE     (campus LIKE 'TTG%')
+ORDER BY CourseAlpha, CourseNum
+
+====================================== DONE - 2009.09.22
+
+CancelReviewAnyTime/Allows cancellation of the review process at any time by the proposer.
+
+delete from tblCourse where campus='HON'
+delete from tblCourse2 where campus='HON'
+delete from tblCourse3 where campus='HON'
+
+delete from tblCourse where campus='KAU'
+delete from tblCourse2 where campus='KAU'
+delete from tblCourse3 where campus='KAU'
+
+delete from tblCourse where campus='MAN'
+delete from tblCourse2 where campus='MAN'
+delete from tblCourse3 where campus='MAN'
+
+delete from tblCourse where campus='HAW'
+delete from tblCourse2 where campus='HAW'
+delete from tblCourse3 where campus='HAW'
+
+
+ALTER TABLE tblUsers ADD alphas varchar(250)
+
+tblInfo ID is not identiy
+
+ALTER TABLE tblInfo ADD attach varchar(250)
+ALTER TABLE tblsyllabus ADD attach varchar(250)
+
+tblSystem ID is identiy
+26	GLOBAL	aseGenericUploadFolder	 /central/docs/uploads/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblUploads]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblUploads]
+GO
+
+CREATE TABLE [dbo].[tblUploads] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[userid] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[uploadid] [numeric](18, 0) NULL ,
+	[type] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[filename] [varchar] (250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblUploads] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblUploads] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+
+CREATE VIEW dbo.vw_ReviewStatus
+AS
+SELECT     TOP 100 PERCENT dbo.tblReviewers.campus, dbo.tblCourse.CourseAlpha, dbo.tblCourse.CourseNum, dbo.tblReviewers.userid
+FROM         dbo.tblCourse INNER JOIN
+                      dbo.tblReviewers ON dbo.tblCourse.CourseAlpha = dbo.tblReviewers.coursealpha AND dbo.tblCourse.CourseNum = dbo.tblReviewers.coursenum AND 
+                      dbo.tblCourse.campus = dbo.tblReviewers.campus
+WHERE     (dbo.tblCourse.Progress = 'REVIEW') OR
+                      (dbo.tblCourse.Progress = 'APPROVAL') AND (dbo.tblCourse.subprogress = 'REVIEW_IN_APPROVAL')
+ORDER BY dbo.tblCourse.CourseAlpha, dbo.tblCourse.CourseNum, dbo.tblReviewers.userid
+
+CREATE VIEW dbo.vw_ReviewerHistory
+AS
+SELECT     historyid, source, seq, item, acktion, dte, reviewer, campus, coursealpha, coursenum, comments, question
+FROM         (SELECT     r.historyid, r.source, r.item, q.questionseq AS seq, r.acktion, r.dte, r.reviewer, r.campus, r.coursealpha, r.coursenum, 
+                                              CAST(r.comments AS varchar(500)) AS comments, CAST(q.question AS varchar(500)) AS question
+                       FROM          tblReviewHist r INNER JOIN
+                                              tblCourseQuestions q ON r.campus = q.campus AND r.item = q.questionnumber
+                       WHERE     (r.source = '1')
+                       UNION
+                       SELECT     r.historyid, r.source, r.item, q.questionseq AS seq, r.acktion, r.dte, r.reviewer, r.campus, r.coursealpha, r.coursenum, 
+                                             CAST(r.comments AS varchar(500)) AS comments, CAST(q.question AS varchar(500)) AS question
+                       FROM         tblReviewHist r INNER JOIN
+                                             tblCampusQuestions q ON r.campus = q.campus AND r.item = q.questionnumber
+                       WHERE  (r.source = '2')) ReviewHistory
+UNION
+SELECT     historyid, source, seq, item,acktion, dte, reviewer, campus, coursealpha, coursenum, comments, question
+FROM         (SELECT     r.historyid, r.source, r.item, q.questionseq AS seq, r.acktion, r.dte, r.reviewer, r.campus, r.coursealpha, r.coursenum, 
+                                              CAST(r.comments AS varchar(500)) AS comments, CAST(q.question AS varchar(500)) AS question
+                       FROM          tblReviewHist2 r INNER JOIN
+                                              tblCourseQuestions q ON r.campus = q.campus AND r.item = q.questionnumber
+                       WHERE      (r.source = '1')
+                       UNION
+                       SELECT     r.historyid, r.source, r.item, q.questionseq AS seq, r.acktion, r.dte, r.reviewer, r.campus, r.coursealpha, r.coursenum, 
+                                             CAST(r.comments AS varchar(500)) AS comments, CAST(q.question AS varchar(500)) AS question
+                       FROM         tblReviewHist2 r INNER JOIN
+                                             tblCampusQuestions q ON r.campus = q.campus AND r.item = q.questionnumber
+                       WHERE     (r.source = '2')) ReviewHistory2
+
+
+ALTER TABLE tblCourse ADD subprogress varchar(20)
+ALTER TABLE tblCourseCAN ADD subprogress varchar(20)
+ALTER TABLE tblCourseARC ADD subprogress varchar(20)
+ALTER TABLE tblTempCourse ADD subprogress varchar(20)
+
+====================================== DONE - 2009.09.14
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblSystem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblSystem]
+GO
+
+CREATE TABLE [dbo].[tblSystem] (
+	[id] [numeric](18, 0) IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[named] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[valu] [varchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblSystem] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblSystem] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+====================================== DONE - 2009.09.13
+
+
+tblAttach needs historyid as key as well
+
+CREATE VIEW dbo.vw_ReviewerComments
+AS
+SELECT     tr2.historyid, tr2.campus, tr2.coursealpha, tr2.coursenum, tr2.item, tcq.questionseq, tr2.dte, tr2.reviewer, tr2.comments, tr2.acktion
+FROM         dbo.tblReviewHist2 tr2 INNER JOIN
+                      dbo.tblCourseQuestions tcq ON tr2.campus = tcq.campus AND tr2.item = tcq.questionnumber
+
+UPDATE tblReviewHist SET acktion=3
+UPDATE tblReviewHist2 SET acktion=3
+
+ALTER TABLE tblReviewHist ADD acktion int DEFAULT 3
+ALTER TABLE tblReviewHist2 ADD acktion int DEFAULT 3
+
+testfixkappslo.jsp
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','CAFNRM','CAFNRM')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','COBE','COBE')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','CHL','CHL')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','CAS-SocialSciences','CAS-SocialSciences')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','CAS-Humanities','CAS-Humanities')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','CAS-NaturalSciences','CAS-NaturalSciences')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc) VALUES(0,'ApprovalRouting','HIL','COP','COP')
+
+====================================== DONE - 2009.09.10
+
+CREATE VIEW dbo.vw_CCCM6100_Campus
+AS
+SELECT     TOP 100 PERCENT campus.campus, campus.questionseq, c61.Question_Ini, c61.Question_Type, c61.Question_Len, c61.Question_Max, 
+                      c61.Question_Friendly, c61.Question_Explain, campus.question, 'N' AS change, campus.required, campus.helpfile, campus.audiofile
+FROM         dbo.CCCM6100 c61 INNER JOIN
+                      dbo.tblCampusQuestions campus ON c61.Question_Number = campus.questionnumber AND c61.type = campus.type AND 
+                      c61.campus = campus.campus
+WHERE     (c61.type = 'Campus') AND (campus.type = 'Campus')
+ORDER BY campus.campus, campus.questionseq, c61.campus, c61.type
+
+CREATE VIEW dbo.vw_CCCM6100_Sys
+AS
+SELECT     TOP 100 PERCENT course.campus, course.questionseq, c61.Question_Ini, c61.Question_Type, c61.Question_Len, c61.Question_Max, 
+                      c61.Question_Friendly, c61.Question_Explain, course.question, course.include, course.change, course.required, course.helpfile, course.audiofile
+FROM         dbo.CCCM6100 c61 INNER JOIN
+                      dbo.tblCourseQuestions course ON c61.Question_Number = course.questionnumber AND c61.type = course.type
+WHERE     (c61.campus = 'SYS') AND (course.type = 'Course')
+ORDER BY course.campus, course.questionseq, c61.campus
+
+CREATE VIEW dbo.vw_CCCM6100ByIDCampusCourse
+AS
+SELECT     TOP 100 PERCENT course.id, course.campus, course.questionnumber, course.questionseq, course.question, course.include, c61.Question_Friendly, 
+                      c61.Question_Type, c61.Question_Len, c61.Question_Max, c61.Question_Ini, c61.Question_Explain, course.auditby, course.auditdate, course.help, 
+                      course.change, course.required, course.helpfile, course.audiofile
+FROM         dbo.tblCourseQuestions course INNER JOIN
+                      dbo.CCCM6100 c61 ON course.questionnumber = c61.Question_Number AND course.type = c61.type
+WHERE     (course.type = 'Course')
+ORDER BY course.id, course.campus, course.questionnumber
+
+CREATE VIEW dbo.vw_CCCM6100ByIDCampusItems
+AS
+SELECT     TOP 100 PERCENT campus.campus, campus.id, campus.questionnumber, campus.questionseq, campus.question, campus.include, 
+                      c61.Question_Friendly, c61.Question_Type, c61.Question_Len, c61.Question_Max, c61.Question_Ini, c61.Question_Explain, campus.auditby, 
+                      campus.auditdate, campus.help, 'N' AS change, campus.required, campus.helpfile, campus.audiofile
+FROM         dbo.tblCampusQuestions campus INNER JOIN
+                      dbo.CCCM6100 c61 ON campus.campus = c61.campus AND campus.type = c61.type AND campus.questionnumber = c61.Question_Number
+WHERE     (c61.type = 'Campus')
+ORDER BY campus.campus, campus.id, campus.questionnumber
+
+ALTER TABLE tblCourseQuestions ADD helpfile varchar(250)
+ALTER TABLE tblCourseQuestions ADD audiofile varchar(250)
+
+ALTER TABLE tblCampusQuestions ADD helpfile varchar(250)
+ALTER TABLE tblCampusQuestions ADD audiofile varchar(250)
+
+testfix15-16.jsp
+
+UPDATE CCCM6100 SET 
+	question_len=1,
+	question_max=1,
+	question_type='radio',
+	question_ini='YESNO',
+	question_explain='C25'	
+	WHERE campus='SYS' AND question_number = 15
+
+UPDATE CCCM6100 SET 
+	question_len=1,
+	question_max=1,
+	question_type='radio',
+	question_ini='YESNO',
+	question_explain='C26'	
+	WHERE campus='SYS' AND question_number = 16
+
+UPDATE CCCM6100 SET cccm6100='Do Not Use - Prereq',comments='Do Not Use - Prereq' WHERE campus='TTG' AND question_number = 25
+UPDATE CCCM6100 SET cccm6100='Do Not Use - coreq',comments='Do Not Use - coreq' WHERE campus='TTG' AND question_number = 26
+
+====================================== DONE - 2009.09.6
+
+Banner dept varchar 80
+
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('ENVS','Environmental Studies and Science')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('ARAB','Arabic')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('CBES','Tropical Conservation Biology and Environmental Science')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('KED','Ke'elikolani Indigenous Language and Culture Education')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('KIND','Ke'elikolani Indigenous Studies')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('KLAN','Ke'elikolani Indigenous Language')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('PHPS','Pharmaceutical Science')
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('PHPP','Pharmaceutical Practice')
+
+====================================== DONE - 2009.09.5
+
+Resequence KAP's questions from 29 on
+
+System - ReviewDateForExperimental
+	Number of years from experimental outline approval to its next review date
+	1
+
+UPDATE tblCourseQuestions SET include='Y',questionseq=29 WHERE campus='KAP' AND type='Course' AND questionnumber=81
+UPDATE tblCourseQuestions SET question='Grading Scale',help='Grading Scale' WHERE questionnumber=81
+UPDATE CCCM6100 SET CCCM6100='Grading Scale',Comments='Grading Scale' WHERE campus='SYS' AND question_number = 81
+
+====================================== DONE - 2009.09.4
+
+CREATE VIEW dbo.vw_Linked2SLO
+AS
+SELECT     tl.campus, tl.historyid, tl.src, tl.dst, tl.seq AS linkedseq, tl.id AS linkedid, tl2.item AS compid, tl2.item2, tc.Comp, tc.rdr AS comprdr
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.historyid = tl2.historyid AND tl.id = tl2.id INNER JOIN
+                      dbo.tblCourseComp tc ON tl2.historyid = tc.historyid AND tl.campus = tc.Campus AND tl2.item = tc.CompID
+WHERE     (tl.src = 'X43') AND (tl.dst = 'SLO')
+
+====================================== DONE - 2009.09.1
+
+INSERT INTO tblFDProgram (campus,degree,seq,program) VALUES('MAU','XX','0','N/A')
+INSERT INTO tblFDProgram (campus,degree,seq,program) VALUES('MAU','XX','1','Developmental')
+INSERT INTO tblFDProgram (campus,degree,seq,program) VALUES('MAU','XX','2','Remedial')
+
+UPDATE CCCM6100 SET question_len = 200 WHERE campus='SYS' AND question_number = 15
+UPDATE CCCM6100 SET question_len = 200 WHERE campus='SYS' AND question_number = 16
+
+ALTER TABLE tblMail ADD processed bit DEFAULT 0
+ALTER TABLE tblDocs ADD campus varchar(10)
+ALTER TABLE tblMail ADD content text
+
+UPDATE tblMail SET processed = 1
+UPDATE tblDocs SET campus='KAP'
+
+====================================== DONE - 2009.08.31
+
+UPDATE tblUsers SET userlevel=2 WHERE userid='KOMENAKA'
+INSERT INTO BannerDept (DEPT_CODE,DEPT_DESCRIPTION) VALUES('MGMT','Management')
+
+====================================== DONE - 2009.08.25
+
+UPDATE tblCourseLinked SET src = 'Z72' WHERE campus='KAP' AND src = 'X72'
+
+CREATE VIEW dbo.vw_LinkedCompetency2PSLO
+AS
+SELECT DISTINCT TOP 100 PERCENT tl.campus, tl.historyid, tl.seq, tl.id, tl2.item, tcc.rdr AS comprdr, tgc.rdr AS pslordr, tl.src AS fromSrc, tgc.src AS toSrc
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.historyid = tl2.historyid AND tl.id = tl2.id INNER JOIN
+                      dbo.tblGenericContent tgc ON tl2.historyid = tgc.historyid AND tl2.item = tgc.id INNER JOIN
+                      dbo.tblCourseCompetency tcc ON tgc.historyid = tcc.historyid AND tl.seq = tcc.seq
+WHERE     (tl.src = 'X43') AND (tl.dst = 'PSLO') AND (tgc.src = 'X72')
+ORDER BY tcc.rdr
+
+
+====================================== DONE - 2009.08.23
+
+testfix41.jsp - moving 'is course comparable' from X41 to C24. X41 will be YESNO
+
+ALTER TABLE tblCourseLinked2 ADD item2 int DEFAULT 0
+ALTER TABLE tblTempCourseLinked2 ADD item2 int DEFAULT 0
+
+INSERT INTO BannerDept(DEPT_CODE,DEPT_DESCRIPTION) VALUES('SLT','Second Language Teaching')
+
+need to copy tblTabs over, tblFDCategory, tblFDProgram
+
+make sure all views for links are distinct
+
+ALTER TABLE tblAttach ADD category varchar(20);
+ALTER TABLE tblTempAttach ADD category varchar(20);
+
+NO attach needs identity for ID
+
+CREATE VIEW dbo.vw_WriteSyllabus
+AS
+SELECT     TOP 100 PERCENT c.campus, c.CourseAlpha, c.CourseNum, dbo.BannerDept.DEPT_DESCRIPTION AS division, c.coursetitle AS title, c.credits, 
+                      c.X15 AS prereq, c.X16 AS coreq, c.X17 AS recprep, c.coursedescr
+FROM         dbo.tblCourse c INNER JOIN
+                      dbo.BannerDept ON c.dispID = dbo.BannerDept.DEPT_CODE
+WHERE     (c.CourseType = 'CUR')
+ORDER BY c.campus, c.CourseAlpha, c.CourseNum
+
+====================================== DONE - 2009.07.31
+
+update tblCourseQuestions set questionseq=15 where campus='KAP' and questionnumber=23
+update tblCourseQuestions set questionseq=16 where campus='KAP' and questionnumber=24
+update tblCourseQuestions set questionseq=17 where campus='KAP' and questionnumber=75
+update tblCourseQuestions set questionseq=18 where campus='KAP' and questionnumber=76
+update tblCourseQuestions set questionseq=19 where campus='KAP' and questionnumber=18
+update tblCourseQuestions set questionseq=20 where campus='KAP' and questionnumber=43
+update tblCourseQuestions set questionseq=21 where campus='KAP' and questionnumber=19
+update tblCourseQuestions set questionseq=22 where campus='KAP' and questionnumber=20
+update tblCourseQuestions set questionseq=23 where campus='KAP' and questionnumber=22
+update tblCourseQuestions set questionseq=24 where campus='KAP' and questionnumber=21
+update tblCourseQuestions set questionseq=25 where campus='KAP' and questionnumber=8
+update tblCourseQuestions set questionseq=26 where campus='KAP' and questionnumber=11
+update tblCourseQuestions set questionseq=27 where campus='KAP' and questionnumber=72
+update tblCourseQuestions set questionseq=28 where campus='KAP' and questionnumber=12
+
+testfix32.jsp - moving 'is hours spent' from X32 to C20. X32 will be checkmarks (BY CAMPUS)
+
+DELETE
+FROM         tblINI
+WHERE     (campus = 'LEE') AND (category = 'ContactHrs')
+
+SELECT     *
+FROM         tblINI
+WHERE     (campus = 'LEE') AND (category = 'ContactHrs')
+
+testfixkap.jsp			- add historyid to linked2 from linked
+update banner from sys admin page
+
+====================================== DONE - 2009.07.31
+
+testfixkap.jsp			- add historyid to linked2 from linked
+testfixrename.jsp		- rename alpha/num (see ids.txt)
+
+====================================== DONE - 2009.07.27
+
+testfixmau.jsp - READ SOURCE code before doing
+
+testinicat.jsp			- set sequence for INI
+	GESLO 
+		Aesthetic Engagement
+		Communication
+		Interactive Learning
+		Self and Community/Diversity of Human Experience
+		Thinking/Inquiry
+
+====================================== DONE - 2009.07.24
+
+ALTER TABLE tblApprovalHist ADD votesfor int DEFAULT 0;
+ALTER TABLE tblApprovalHist ADD votesagainst int DEFAULT 0;
+ALTER TABLE tblApprovalHist ADD votesabstain int DEFAULT 0;
+
+ALTER TABLE tblApprovalHist2 ADD votesfor int DEFAULT 0;
+ALTER TABLE tblApprovalHist2 ADD votesagainst int DEFAULT 0;
+ALTER TABLE tblApprovalHist2 ADD votesabstain int DEFAULT 0;
+
+vw_ApproversNoDivisionChair
+
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus, ta.route
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] NOT LIKE 'DIVISION%')
+UNION
+SELECT     approver_seq AS Sequence, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', '', campus, route
+FROM         dbo.tblApprover
+WHERE     approver LIKE '%]'
+
+CREATE VIEW dbo.vw_ApproversDivisionChair
+AS
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus, ta.route
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] LIKE 'DIVISION%')
+
+====================================== DONE - 2009.07.19
+
+CREATE VIEW dbo.vw_ReviewerComments
+AS
+SELECT     tr2.historyid, tr2.campus, tr2.coursealpha, tr2.coursenum, tr2.item, tcq.questionseq, tr2.dte, tr2.reviewer, tr2.comments
+FROM         dbo.tblReviewHist2 tr2 INNER JOIN
+                      dbo.tblCourseQuestions tcq ON tr2.campus = tcq.campus AND tr2.item = tcq.questionnumber
+
+====================================== DONE - 2009.07.16
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','IndependentStudies','IndependentStudies','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','IndependentStudies','IndependentStudies','Y')
+
+====================================== DONE - 2009.07.15
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseContentSLO]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseContentSLO]
+GO
+CREATE TABLE [dbo].[tblTempCourseContentSLO] (
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[Campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseAlpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseNum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseType] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[contentid] [numeric](10, 0) NOT NULL ,
+	[sloid] [numeric](10, 0) NOT NULL ,
+	[auditdate] [smalldatetime] NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblTempCourseContentSLO] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblTempCourseContentSLO] PRIMARY KEY  CLUSTERED 
+	(
+		[historyid],
+		[contentid],
+		[sloid]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseACCJC]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseACCJC]
+GO
+
+CREATE TABLE [dbo].[tblTempCourseACCJC] (
+	[id] [numeric](10, 0) IDENTITY (1, 1) NOT NULL ,
+	[Campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseAlpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseNum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseType] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[ContentID] [int] NULL ,
+	[CompID] [int] NULL ,
+	[Assessmentid] [int] NULL ,
+	[ApprovedDate] [smalldatetime] NULL ,
+	[AssessedDate] [smalldatetime] NULL ,
+	[AssessedBy] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[AuditDate] [smalldatetime] NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL 
+) ON [PRIMARY]
+GO
+
+
+ALTER TABLE [dbo].[tblTempCourseACCJC] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblTempCourseACCJC] PRIMARY KEY  CLUSTERED 
+	(
+		[id],
+		[historyid]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblTempCourseACCJC] ADD 
+	CONSTRAINT [DF_tblTempCourseACCJC_AuditDate] DEFAULT (getdate()) FOR [AuditDate]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempGESLO]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempGESLO]
+GO
+
+CREATE TABLE [dbo].[tblTempGESLO] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[geid] [int] NOT NULL ,
+	[slolevel] [int] NULL ,
+	[sloevals] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditby] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [smalldatetime] NULL ,
+	[coursetype] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblTempGESLO] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblTempGESLO] PRIMARY KEY  CLUSTERED 
+	(
+		[campus],
+		[historyid],
+		[geid]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblTempGESLO] ADD 
+	CONSTRAINT [DF_tblTempGESLO_auditdate] DEFAULT (getdate()) FOR [auditdate]
+GO
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseCompetency]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseCompetency]
+GO
+
+CREATE TABLE [dbo].[tblTempCourseCompetency] (
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[seq] [int] NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursealpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursenum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[coursetype] [varchar] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[content] [varchar] (500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [smalldatetime] NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rdr] [numeric](18, 0) NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblTempCourseCompetency] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblTempCourseCompetency] PRIMARY KEY  CLUSTERED 
+	(
+		[historyid],
+		[seq]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [PK_tblTempCourseCompetencyOutline] ON [dbo].[tblTempCourseCompetency]([campus], [coursealpha], [coursenum], [coursetype]) WITH  FILLFACTOR = 90 ON [PRIMARY]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseLinked]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseLinked]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseLinked2]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseLinked2]
+GO
+
+CREATE TABLE [dbo].[tblTempCourseLinked] (
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[src] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[seq] [int] NULL ,
+	[dst] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[coursetype] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [datetime] NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[ref] [int] NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[tblTempCourseLinked2] (
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[id] [int] NULL ,
+	[item] [int] NULL ,
+	[coursetype] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[auditdate] [datetime] NULL ,
+	[auditby] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblTempCourseLinked] ADD 
+	CONSTRAINT [DF_tblTempCourseLinked_ref] DEFAULT (0) FOR [ref]
+GO
+
+ALTER TABLE [dbo].[tblTempCourseLinked2] ADD 
+	CONSTRAINT [DF__tblTempCo__cours__4A8DFDBE] DEFAULT ('PRE') FOR [coursetype],
+	CONSTRAINT [DF__tblTempCo__audit__4B8221F7] DEFAULT (getdate()) FOR [auditdate]
+GO
+
+====================================== DONE - 2009.07.14
+
+ALTER TABLE tblCourseLinked ADD ref int DEFAULT 0;
+ALTER TABLE tblTempCourseLinked ADD ref int DEFAULT 0;
+
+ALTER TABLE tblCourseLinked2 ADD historyid varchar(18);
+ALTER TABLE tblCourseLinked2 ADD coursetype char(3) DEFAULT 'PRE';
+ALTER TABLE tblCourseLinked2 ADD auditdate datetime DEFAULT (getdate());
+ALTER TABLE tblCourseLinked2 ADD auditby varchar(20);
+
+ALTER TABLE tblTempCourseLinked2 ADD historyid varchar(18);
+ALTER TABLE tblTempCourseLinked2 ADD coursetype char(3) DEFAULT 'PRE';
+ALTER TABLE tblTempCourseLinked2 ADD auditdate datetime DEFAULT (getdate());
+ALTER TABLE tblTempCourseLinked2 ADD auditby varchar(20);
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblTempCourseLinked2]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblTempCourseLinked2]
+GO
+
+CREATE TABLE [dbo].[tblTempCourseLinked2] (
+	[id] [int] NULL ,
+	[item] [int] NULL 
+) ON [PRIMARY]
+GO
+
+====================================== DONE - 2009.07.01
+
+CREATE VIEW dbo.vw_GenericContent2Linked
+AS
+SELECT     tl.historyid, tl.src, tl.seq, tl.id, tl2.item
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblGenericContent tg ON tl.historyid = tg.historyid AND tl.seq = tg.id AND tl.src = tg.src INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.id = tl2.id
+
+
+ALTER TABLE tblTempCourseComp ALTER COLUMN comp varchar(500);
+tblExtra needs - alpha and num as - coursealpha and coursenum
+
+====================================== DONE - 2009.06.21
+
+testrdr2.jsp
+
+UPDATE cccm6100
+SET question_len=60,question_max=60
+WHERE campus='SYS' AND question_number = 78
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblGenericContent]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblGenericContent]
+GO
+
+CREATE TABLE [dbo].[tblGenericContent] (
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[src] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[id] [numeric](18, 0) NOT NULL ,
+	[Campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseAlpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseNum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[CourseType] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[comments] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[AuditDate] [smalldatetime] NULL ,
+	[AuditBy] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[rdr] [numeric](18, 0) NOT NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblGenericContent] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblGenericContent] PRIMARY KEY  CLUSTERED 
+	(
+		[historyid],
+		[id],
+		[src]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[tblGenericContent] ADD 
+	CONSTRAINT [DF_tblGenericContent_id] DEFAULT (0) FOR [id],
+	CONSTRAINT [DF_tblGenericContent_AuditDate] DEFAULT (getdate()) FOR [AuditDate],
+	CONSTRAINT [DF_tblGenericContent_rdr] DEFAULT (0) FOR [rdr]
+GO
+
+
+
+---- TEMP table as well
+
+ALTER TABLE tblCourseCAN ALTER COLUMN edit1 varchar(500);
+ALTER TABLE tblCourseCAN ALTER COLUMN edit2 varchar(500);
+
+ALTER TABLE tblCourseCAN ALTER COLUMN dispID char(4);
+ALTER TABLE tblCourseCAN ALTER COLUMN Division char(4);
+ALTER TABLE tblCourseCAN ALTER COLUMN coursetitle varchar(100);
+ALTER TABLE tblCourseCAN ALTER COLUMN credits varchar(20);
+ALTER TABLE tblCourseCAN ALTER COLUMN repeatable bit;
+ALTER TABLE tblCourseCAN ALTER COLUMN maxcredit varchar(20);
+ALTER TABLE tblCourseCAN ALTER COLUMN articulation varchar(50);
+ALTER TABLE tblCourseCAN ALTER COLUMN semester varchar(50);
+ALTER TABLE tblCourseCAN ALTER COLUMN crosslisted bit;
+
+ALTER TABLE tblCourseCAN ALTER COLUMN coursedate smalldatetime;
+ALTER TABLE tblCourseCAN ALTER COLUMN effectiveterm varchar(12);
+ALTER TABLE tblCourseCAN ALTER COLUMN gradingoptions varchar(50);
+ALTER TABLE tblCourseCAN ALTER COLUMN coursedescr text;
+ALTER TABLE tblCourseCAN ALTER COLUMN hoursperweek text;
+
+ALTER TABLE tblCourseLinked ADD auditby varchar(20);
+ALTER TABLE tblTempCourseLinked ADD auditby varchar(20);
+
+ALTER TABLE tblCourseARC ALTER COLUMN edit varchar(500);
+ALTER TABLE tblCourseARC ALTER COLUMN edit varchar(500);
+ALTER TABLE tblCourseARC ALTER COLUMN credits varchar(20);
+ALTER TABLE tblCourseARC ALTER COLUMN maxcredit varchar(20);
+ALTER TABLE tblCourseARC ALTER COLUMN semester varchar(50);
+ALTER TABLE tblCourseARC ALTER COLUMN gradingoptions varchar(50);
+ALTER TABLE tblCourseARC ALTER COLUMN hoursperweek text;
+
+ALTER TABLE tblCourseContent ALTER COLUMN LongContent varchar(500);
+ALTER TABLE tblTempCourseContent ALTER COLUMN LongContent varchar(500);
+
+// 
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblApprovalRoute]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblApprovalRoute]
+GO
+
+DELETE FROM tblINI WHERE kid='Routing' AND kdesc='Routing'
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HAW','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HIL','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','HON','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAP','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','KAU','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','LEE','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAN','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','MAU','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WIN','Topical','Topical','Y')
+
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','UnderGraduate','UnderGraduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','Graduate','Graduate','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','PHD','PHD','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','Experimental','Experimental','Y')
+INSERT INTO tblINI (seq,category,campus,kid,kdesc,kedit) VALUES(0,'ApprovalRouting','WOA','Topical','Topical','Y')
+
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='HAW' AND category='ApprovalRouting') WHERE campus='HAW'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='HIL' AND category='ApprovalRouting') WHERE campus='HIL'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='HON' AND category='ApprovalRouting') WHERE campus='HON'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='KAP' AND category='ApprovalRouting') WHERE campus='KAP'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='KAU' AND category='ApprovalRouting') WHERE campus='KAU'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='LEE' AND category='ApprovalRouting') WHERE campus='LEE'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='MAN' AND category='ApprovalRouting') WHERE campus='MAN'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='MAU' AND category='ApprovalRouting') WHERE campus='MAU'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='WIN' AND category='ApprovalRouting') WHERE campus='WIN'
+UPDATE tblApprover SET route=(SELECT min(id) FROM tblINI WHERE campus='WOA' AND category='ApprovalRouting') WHERE campus='WOA'
+
+//
+
+CREATE VIEW dbo.vw_LinkedSLO2GESLO
+AS
+SELECT     TOP 100 PERCENT tl.historyid, tl.seq, tl.id AS keyid, tl2.item AS ContentID, dbo.tblINI.kid AS content
+FROM         dbo.tblCourseLinked tl INNER JOIN
+                      dbo.tblCourseLinked2 tl2 ON tl.id = tl2.id INNER JOIN
+                      dbo.tblINI ON tl2.item = dbo.tblINI.id
+WHERE     (tl.src = 'X18') AND (tl.dst = 'GESLO') AND (dbo.tblINI.category = 'GESLO')
+
+CREATE VIEW dbo.vw_LinkedContent2Compentency
+AS
+SELECT     content.historyid, content.Campus, content.CourseAlpha, content.CourseNum, content.ContentID, tcl.id AS LinkedID, tcl2.item AS Linked2Item, 
+                      comp.content
+FROM         dbo.tblCourseContent content INNER JOIN
+                      dbo.tblCourseLinked tcl ON content.historyid = tcl.historyid AND content.ContentID = tcl.seq INNER JOIN
+                      dbo.tblCourseLinked2 tcl2 ON tcl.id = tcl2.id INNER JOIN
+                      dbo.tblCourseCompetency comp ON content.historyid = comp.historyid AND tcl2.item = comp.seq
+WHERE     (tcl.src = 'X19') AND (tcl.dst = 'Competency')
+
+
+// --------------- LEE
+
+ALTER TABLE tblCourse ALTER COLUMN hoursperweek text;
+ALTER TABLE tblTempCourse ALTER COLUMN hoursperweek text;
+
+replace x32 with hoursperweek for tblCampusData
+remove x32 as question question and replace with hoursperweek
+
+run testfix01-fix05LEE
+
+--/b/c/d (tblCourse, tasks, approvalhist, pre, co)
+
+//----------------- ALL
+
+ALTER TABLE tblCourse ADD route int DEFAULT 1;
+ALTER TABLE tbltempCourse ADD route int DEFAULT 1;
+ALTER TABLE tblCourseARC ADD route int DEFAULT 1;
+ALTER TABLE tblCourseCAN ADD route int DEFAULT 1;
+
+update tblCourse set route=1
+update tbltempCourse set route=1
+update tblCourseARC set route=1
+update tblCourseCAN set route=1
+
+//-----------------
+
+CREATE VIEW dbo.vw_Approvers2
+AS
+SELECT     TOP 100 PERCENT *
+FROM         (SELECT     a.approverid, a.approver_seq, a.Approver, u.Title, u.Position, u.Department, u.Division, a.delegated, a.campus, a.experimental, 
+                                              a.route
+                       FROM          tblUsers u, tblApprover a
+                       WHERE      u.userid = a.approver
+                       UNION
+                       SELECT     approverid, approver_seq, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', '', '', '', campus, '0' AS experimental, route
+                       FROM         tblApprover
+                       WHERE     approver LIKE '%]') X
+ORDER BY campus, approver_seq
+
+=======================================
+
+//-----------------
+
+UPDATE cccm6100
+SET cccm6100='Number of Sections',question_len=30,question_max=30,question_type='text',comments='Number of Sections'
+WHERE campus='SYS' AND question_number = 78
+
+UPDATE tblCourseQuestions
+SET question='Number of Sections',help='Number of Sections'
+WHERE type='Course' AND questionnumber = 78
+
+UPDATE tblCourseQuestions
+SET questionseq=50,include='Y',change='Y'
+WHERE campus='KAP' AND type='Course' AND questionnumber = 78
+
+CREATE VIEW dbo.vw_OutlineValidation
+AS
+SELECT 	tc.campus, tc.questionnumber, tc.questionseq, c.Question_Friendly
+FROM 		tblCourseQuestions tc INNER JOIN
+		CCCM6100 c ON tc.questionnumber = c.Question_Number
+WHERE 	(tc.include = 'Y') AND 
+		(tc.required = 'Y') AND 
+		(c.campus = 'SYS') AND 
+		(c.type = 'Course')
+
+//-----------------
+
+ALTER TABLE tblApprover ADD route numeric DEFAULT 1;
+UPDATE tblApprover SET route = 1
+
+--> 
+
+CREATE VIEW dbo.vw_OutlineValidation
+AS
+SELECT 	tc.campus, tc.questionnumber, tc.questionseq, c.Question_Friendly
+FROM 		tblCourseQuestions tc INNER JOIN
+		CCCM6100 c ON tc.questionnumber = c.Question_Number
+WHERE 	(tc.include = 'Y') AND 
+		(tc.required = 'Y') AND 
+		(c.campus = 'SYS') AND 
+		(c.type = 'Course')
+
+
+CREATE VIEW dbo.vw_EffectiveTerms
+AS
+SELECT tc.campus,
+	tc.historyid,
+	tc.CourseAlpha AS Alpha,
+	tc.CourseNum As [Number],
+	tc.coursetitle As Title,
+	bt.TERM_DESCRIPTION AS Term,
+	bt.TERM_CODE
+FROM         tblCourse tc, BannerTerms bt
+WHERE 
+tc.effectiveterm = bt.TERM_CODE AND 
+tc.coursetype='CUR'
+
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('HAW','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('HIL','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('HON','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('KAP','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('KAU','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('LEE','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('MAN','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('MAU','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('WIN','AD','Administration')
+INSERT INTO tblDiscipline (campus, coursealpha, discipline) VALUES ('WOA','AD','Administration')
+
+-----------
+
+ALTER TABLE tblCoReq DROP CONSTRAINT PK_tblCoReq;
+ALTER TABLE tblCoReq ALTER COLUMN CourseAlpha varchar(10) NOT NULL;
+ALTER TABLE tblCoReq ALTER COLUMN CourseNum varchar(10) NOT NULL;
+
+ALTER TABLE [dbo].[tblCoReq] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblCoReq] PRIMARY KEY  CLUSTERED 
+	(
+		[historyid],
+		[Campus],
+		[CourseAlpha],
+		[CourseNum],
+		[CourseType],
+		[CoreqAlpha],
+		[CoreqNum]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ALTER TABLE tblExtra ALTER COLUMN Alpha varchar(10);
+ALTER TABLE tblExtra ALTER COLUMN Num varchar(10);
+
+ALTER TABLE tblTempExtra ALTER COLUMN Alpha varchar(10);
+ALTER TABLE tblTempExtra ALTER COLUMN Num varchar(10);
+
+ALTER TABLE tblTempCoReq ALTER COLUMN CourseAlpha varchar(10) NOT NULL;
+ALTER TABLE tblTempCoReq ALTER COLUMN CourseNum varchar(10) NOT NULL;
+
+ALTER TABLE tblPreReq DROP CONSTRAINT PK_tblPreReq;
+ALTER TABLE tblPreReq ALTER COLUMN CourseAlpha varchar(10) NOT NULL;
+ALTER TABLE tblPreReq ALTER COLUMN CourseNum varchar(10) NOT NULL;
+
+ALTER TABLE [dbo].[tblPreReq] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblPreReq] PRIMARY KEY  CLUSTERED 
+	(
+		[historyid],
+		[Campus],
+		[CourseAlpha],
+		[CourseNum],
+		[CourseType],
+		[PrereqAlpha],
+		[PrereqNum]
+	) WITH  FILLFACTOR = 90  ON [PRIMARY] 
+GO
+
+ALTER TABLE tblTempPreReq ALTER COLUMN CourseAlpha varchar(10) NOT NULL;
+ALTER TABLE tblTempPreReq ALTER COLUMN CourseNum varchar(10) NOT NULL;
+
+ALTER TABLE tblJsid ALTER COLUMN start datetime;
+ALTER TABLE tblJsid ALTER COLUMN enddate datetime;
+ALTER TABLE tblJsid ALTER COLUMN audit datetime;
+
+UPDATE tblCampusData 
+SET c1=''
+WHERE campus='KAP' AND coursetype='CUR'
+
+CREATE VIEW dbo.vw_Approvers2
+AS
+SELECT     TOP 100 PERCENT *
+FROM         (SELECT     a.approverid, a.approver_seq, a.Approver, u.Title, u.Position, u.Department, u.Division, a.delegated, a.campus, a.experimental
+                       FROM          tblUsers u, tblApprover a
+                       WHERE      u.userid = a.approver
+                       UNION
+                       SELECT     approverid, approver_seq, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', '', '', '', campus, '0' AS experimental
+                       FROM         tblApprover
+                       WHERE     approver LIKE '%]') X
+ORDER BY campus, approver_seq
+
+
+CREATE VIEW dbo.vw_ApprovalHistory
+AS
+SELECT     ta.campus, ta.coursealpha, ta.coursenum, ta.seq, ta.historyid, ta.approver, tu.title, tu.[position], ta.dte, ta.approved, tu.department
+FROM         dbo.tblApprovalHist ta, dbo.tblUsers tu
+WHERE     ta.approver = tu.userid
+UNION
+SELECT     campus, coursealpha, coursenum, seq, historyid, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', dte, approved, ''
+FROM         dbo.tblApprovalHist ta
+WHERE     approver LIKE '%]'
+
+
+
+CREATE VIEW dbo.vw_ApproversDivisionChair
+AS
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] LIKE 'DIVISION%')
+
+
+CREATE VIEW dbo.vw_ApproversNoDivisionChair
+AS
+SELECT     ta.approver_seq AS Sequence, ta.approver, tu.title, tu.[position], tu.department, tu.campus
+FROM         dbo.tblApprover ta INNER JOIN
+                      dbo.tblUsers tu ON ta.approver = tu.userid
+WHERE     (tu.[position] NOT LIKE 'DIVISION%')
+UNION
+SELECT     approver_seq AS Sequence, approver, 'DISTRIBUTION LIST', 'DISTRIBUTION LIST', '', campus
+FROM         dbo.tblApprover
+WHERE     approver LIKE '%]'
+
+
+System - OutlineDistributionApproval - Determines how and when to complete outline approval for distribution group. Options are ONE, ALL, or PERCENT. If percent, enter percentage in Value 2.
+
+ALTER TABLE tblApprovalHist ADD approver_seq int DEFAULT 0;
+ALTER TABLE tblApprovalHist2 ADD approver_seq int DEFAULT 0;
+
+UPDATE cccm6100
+SET question_len=10,question_max=10
+WHERE campus='SYS' AND question_number<3
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[tblMisc]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[tblMisc]
+GO
+
+CREATE TABLE [dbo].[tblMisc] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[campus] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[historyid] [varchar] (18) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[coursealpha] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[coursenum] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[coursetype] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[descr] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[val] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblMisc] WITH NOCHECK ADD 
+	CONSTRAINT [PK_tblMisc] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [PK_Misc_Main] ON [dbo].[tblMisc]([campus], [historyid]) ON [PRIMARY]
+GO
+
+ CREATE  INDEX [PK_Misc_Key] ON [dbo].[tblMisc]([campus], [coursealpha], [coursenum], [coursetype]) ON [PRIMARY]
+GO
+
+INSERT INTO tblMisc (campus, historyid, coursealpha, coursenum, coursetype, descr, val)
+SELECT campus, historyid, CourseAlpha, CourseNum, 'PRE' AS Expr1, 'Outline Modification' AS Expr2, '1' AS Expr3
+FROM tblCourse c
+WHERE (YEAR(coursedate) = 2009)
+ORDER BY CourseAlpha, CourseNum
+

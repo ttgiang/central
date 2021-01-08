@@ -1,0 +1,1 @@
+exec sp_ASE_InsertData 'LEE','ICS','219','THANHG','PRE'

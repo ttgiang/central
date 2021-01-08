@@ -1,0 +1,1 @@
+sp_renamedb @dbname='ccv20', @newname='ccv2'
